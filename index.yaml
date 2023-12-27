@@ -1,0 +1,31 @@
+apiVersion: v1
+entries:
+  kratix:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2023-12-27T15:58:57.159649593Z"
+    description: A Helm chart for installing Kratix (https://kratix.io)
+    digest: ee300dd22898732916520235e210fed42958dda54a305279da52e368acbccb54
+    name: kratix
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/kratix-0.2.0/kratix-0.2.0.tgz
+    version: 0.2.0
+  kratix-destination:
+  - apiVersion: v2
+    appVersion: 0.0.1
+    created: "2023-12-27T15:58:57.248139082Z"
+    dependencies:
+    - condition: installFlux
+      name: flux2
+      repository: ""
+      version: 2.5.1
+    description: A Helm chart for installing flux and configuring it to pull down
+      from Kratix
+    digest: ea229202dd5b1458279549dbbcf088397184c922f055ab452c1fd852a1a1dfa5
+    name: kratix-destination
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/kratix-destination-0.0.1/kratix-destination-0.0.1.tgz
+    version: 0.0.1
+generated: "2023-12-27T15:58:57.248149531Z"
