@@ -1,6 +1,0 @@
-#!/usr/bin/env bash
-
-export VERSION="${VERSION:?VERSION env variable is required}"
-package=${1:-"kratix"}
-
-yq '.version = env(VERSION)' -i "${package}/Chart.yaml"
