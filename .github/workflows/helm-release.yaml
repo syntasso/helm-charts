@@ -5,6 +5,10 @@ on:
     branches:
       - main
 
+env:
+  GITHUB_TOKEN: "${{ secrets.CR_TOKEN }}"
+  CR_TOKEN: "${{ secrets.CR_TOKEN }}"
+
 jobs:
   release:
     permissions:
@@ -18,8 +22,8 @@ jobs:
 
       - name: Configure Git
         run: |
-          git config user.name "$GITHUB_ACTOR"
-          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+          git config user.name "syntassodev"
+          git config user.email "kratix@syntasso.io"
 
       - name: Install Helm
         uses: azure/setup-helm@v3
@@ -31,5 +35,3 @@ jobs:
           skip_existing: true
           pages_branch: gh-pages
           config: config.yaml
-        env:
-          CR_TOKEN: "${{ secrets.CR_TOKEN }}"
