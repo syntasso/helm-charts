@@ -1,14 +1,18 @@
 # Kratix Worker
+
 This chart is for installing [Flux](https://github.com/fluxcd/flux2) (optional) and configuring
 it with the necessary Flux resources to pull down the resources Kratix writes to
 the configured [StateStore](https://kratix.io/docs/main/reference/statestore/intro).
 
 ## Installation
+
 The Helm Chart needs to be configured with a set of values. A `Git` or `Bucket` config
-must be provided. 
+must be provided.
 
 ### Git
+
 Example Git config:
+
 ```yaml
 config:
   path: "default/worker-1" # Path in StateStore. See https://kratix.io/docs/main/reference/destinations/intro
@@ -24,7 +28,9 @@ config:
 ```
 
 ### Bucket
+
 Example Bucket config:
+
 ```yaml
 config:
   path: "default/worker-1"
@@ -42,13 +48,18 @@ config:
 
 Flux is installed by default in the chart. If you already have Flux installed or
 wish to use your own installation method set the following value in your values file:
+
 ```yaml
 installFlux: false
 ```
 
 Once you have your values file configured you can install the chart by running
 the following:
+
 ```bash
 export WORKER=kind-worker # or the context you are installing this on
-helm --kube-context ${WORKER} install kratix-destination charts/kratix-destination/ -f values.yaml
+
+helm repo add kratix https://syntasso.github.io/helm-charts
+helm repo update
+helm --kube-context ${WORKER} install kratix-destination kratix/kratix-destination -f values.yaml
 ```

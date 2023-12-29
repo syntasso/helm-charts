@@ -4,9 +4,13 @@ This chart is for installing [Kratix](https://kratix.io/) on your Platform clust
 ## Installation
 The Helm Chart can be installed without providing any values, this will install
 the Kratix controllers and CRDs only.
+
 ```bash
 export PLATFORM=kind-platform # or your platform cluster context
-helm --kube-context ${PLATFORM} install kratix charts/kratix/
+
+helm repo add kratix https://syntasso.github.io/helm-charts
+helm repo update
+helm --kube-context ${PLATFORM} install kratix kratix/kratix
 ```
 
 ### Optional Configuration
