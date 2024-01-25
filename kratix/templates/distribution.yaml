@@ -365,7 +365,7 @@ subjects:
 ---
 apiVersion: v1
 data:
-  WC_IMG: syntasso/kratix-platform-pipeline-adapter:v0.34.0
+  WC_IMG: syntasso/kratix-platform-pipeline-adapter:v0.35.0
 kind: ConfigMap
 metadata:
   name: kratix-platform-wc-img-config
@@ -436,7 +436,7 @@ spec:
                 configMapKeyRef:
                   key: WC_IMG
                   name: kratix-platform-wc-img-config
-          image: syntasso/kratix-platform:v0.34.0
+          image: syntasso/kratix-platform:v0.35.0
           livenessProbe:
             httpGet:
               path: /healthz
@@ -591,4 +591,24 @@ webhooks:
           - UPDATE
         resources:
           - promises
+    sideEffects: None
+  - admissionReviewVersions:
+      - v1
+    clientConfig:
+      service:
+        name: kratix-platform-webhook-service
+        namespace: kratix-platform-system
+        path: /validate-platform-kratix-io-v1alpha1-promiserelease
+    failurePolicy: Fail
+    name: vpromiserelease.kb.io
+    rules:
+      - apiGroups:
+          - platform.kratix.io
+        apiVersions:
+          - v1alpha1
+        operations:
+          - CREATE
+          - UPDATE
+        resources:
+          - promisereleases
     sideEffects: None
