@@ -387,7 +387,7 @@ spec:
                         type: object
                     type: object
                   type: array
-                requirements:
+                requiredPromises:
                   items:
                     properties:
                       name:
@@ -495,7 +495,7 @@ spec:
                         type: string
                     type: object
                   type: array
-                requirements:
+                requiredPromises:
                   items:
                     properties:
                       name:
