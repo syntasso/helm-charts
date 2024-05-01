@@ -7,6 +7,8 @@ metadata:
 spec:
   group: platform.kratix.io
   names:
+    categories:
+      - kratix
     kind: BucketStateStore
     listKind: BucketStateStoreList
     plural: bucketstatestores
@@ -91,6 +93,8 @@ metadata:
 spec:
   group: platform.kratix.io
   names:
+    categories:
+      - kratix
     kind: Destination
     listKind: DestinationList
     plural: destinations
@@ -182,6 +186,8 @@ metadata:
 spec:
   group: platform.kratix.io
   names:
+    categories:
+      - kratix
     kind: GitStateStore
     listKind: GitStateStoreList
     plural: gitstatestores
@@ -262,6 +268,8 @@ metadata:
 spec:
   group: platform.kratix.io
   names:
+    categories:
+      - kratix
     kind: PromiseRelease
     listKind: PromiseReleaseList
     plural: promisereleases
@@ -403,6 +411,8 @@ spec:
         - v1beta1
   group: platform.kratix.io
   names:
+    categories:
+      - kratix
     kind: Promise
     listKind: PromiseList
     plural: promises
@@ -623,6 +633,8 @@ metadata:
 spec:
   group: platform.kratix.io
   names:
+    categories:
+      - kratix
     kind: WorkPlacement
     listKind: WorkPlacementList
     plural: workplacements
@@ -752,6 +764,8 @@ metadata:
 spec:
   group: platform.kratix.io
   names:
+    categories:
+      - kratix
     kind: Work
     listKind: WorkList
     plural: works
