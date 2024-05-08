@@ -67,6 +67,13 @@ rules:
   - apiGroups:
       - ""
     resources:
+      - events
+    verbs:
+      - create
+      - patch
+  - apiGroups:
+      - ""
+    resources:
       - secrets
     verbs:
       - get
@@ -365,7 +372,7 @@ subjects:
 ---
 apiVersion: v1
 data:
-  WC_IMG: docker.io/syntasso/kratix-platform-pipeline-adapter:v0.77.0
+  WC_IMG: docker.io/syntasso/kratix-platform-pipeline-adapter:v0.78.0
 kind: ConfigMap
 metadata:
   name: kratix-platform-wc-img-config
@@ -436,7 +443,7 @@ spec:
                 configMapKeyRef:
                   key: WC_IMG
                   name: kratix-platform-wc-img-config
-          image: docker.io/syntasso/kratix-platform:v0.77.0
+          image: docker.io/syntasso/kratix-platform:v0.78.0
           livenessProbe:
             httpGet:
               path: /healthz
