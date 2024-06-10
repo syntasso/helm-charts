@@ -3,6 +3,16 @@ entries:
   kratix:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2024-06-10T10:34:09.298739563Z"
+    description: A Helm chart for installing Kratix (https://kratix.io)
+    digest: f2b4fe35c154efba261aa2f6f6920782c92b1513dc3464956ad217ee73103e14
+    name: kratix
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/kratix-v0.98.0/kratix-v0.98.0.tgz
+    version: v0.98.0
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2024-06-04T11:01:59.567323518Z"
     description: A Helm chart for installing Kratix (https://kratix.io)
     digest: 76a773a13eaec234634550814a9c9d05351e1e443821ca92849b2977fadf78c7
@@ -898,4 +908,4 @@ entries:
     urls:
     - https://github.com/syntasso/helm-charts/releases/download/kratix-destination-0.0.1/kratix-destination-0.0.1.tgz
     version: 0.0.1
-generated: "2024-06-04T11:01:59.567577733Z"
+generated: "2024-06-10T10:34:09.299056155Z"
