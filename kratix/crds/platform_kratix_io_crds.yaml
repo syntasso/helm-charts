@@ -3,6 +3,10 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.14.0
+  labels:
+    app.kubernetes.io/component: kratix-manager
+    app.kubernetes.io/instance: kratix-platform
+    app.kubernetes.io/part-of: kratix
   name: bucketstatestores.platform.kratix.io
 spec:
   group: platform.kratix.io
@@ -89,6 +93,10 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.14.0
+  labels:
+    app.kubernetes.io/component: kratix-manager
+    app.kubernetes.io/instance: kratix-platform
+    app.kubernetes.io/part-of: kratix
   name: destinations.platform.kratix.io
 spec:
   group: platform.kratix.io
@@ -201,6 +209,10 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.14.0
+  labels:
+    app.kubernetes.io/component: kratix-manager
+    app.kubernetes.io/instance: kratix-platform
+    app.kubernetes.io/part-of: kratix
   name: gitstatestores.platform.kratix.io
 spec:
   group: platform.kratix.io
@@ -283,6 +295,10 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.14.0
+  labels:
+    app.kubernetes.io/component: kratix-manager
+    app.kubernetes.io/instance: kratix-platform
+    app.kubernetes.io/part-of: kratix
   name: promisereleases.platform.kratix.io
 spec:
   group: platform.kratix.io
@@ -423,6 +439,10 @@ metadata:
   annotations:
     cert-manager.io/inject-ca-from: kratix-platform-system/kratix-platform-serving-cert
     controller-gen.kubebuilder.io/version: v0.14.0
+  labels:
+    app.kubernetes.io/component: kratix-manager
+    app.kubernetes.io/instance: kratix-platform
+    app.kubernetes.io/part-of: kratix
   name: promises.platform.kratix.io
 spec:
   conversion:
@@ -656,6 +676,10 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.14.0
+  labels:
+    app.kubernetes.io/component: kratix-manager
+    app.kubernetes.io/instance: kratix-platform
+    app.kubernetes.io/part-of: kratix
   name: workplacements.platform.kratix.io
 spec:
   group: platform.kratix.io
@@ -793,6 +817,10 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.14.0
+  labels:
+    app.kubernetes.io/component: kratix-manager
+    app.kubernetes.io/instance: kratix-platform
+    app.kubernetes.io/part-of: kratix
   name: works.platform.kratix.io
 spec:
   group: platform.kratix.io

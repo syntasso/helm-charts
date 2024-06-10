@@ -2,18 +2,29 @@ apiVersion: v1
 kind: Namespace
 metadata:
   labels:
+    app.kubernetes.io/component: kratix-manager
+    app.kubernetes.io/instance: kratix-platform
+    app.kubernetes.io/part-of: kratix
     control-plane: controller-manager
   name: kratix-platform-system
 ---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
+  labels:
+    app.kubernetes.io/component: kratix-manager
+    app.kubernetes.io/instance: kratix-platform
+    app.kubernetes.io/part-of: kratix
   name: kratix-platform-controller-manager
   namespace: kratix-platform-system
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
+  labels:
+    app.kubernetes.io/component: kratix-manager
+    app.kubernetes.io/instance: kratix-platform
+    app.kubernetes.io/part-of: kratix
   name: kratix-platform-leader-election-role
   namespace: kratix-platform-system
 rules:
@@ -52,6 +63,10 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
+  labels:
+    app.kubernetes.io/component: kratix-manager
+    app.kubernetes.io/instance: kratix-platform
+    app.kubernetes.io/part-of: kratix
   name: kratix-platform-manager-role
 rules:
   - apiGroups:
@@ -305,6 +320,10 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
+  labels:
+    app.kubernetes.io/component: kratix-manager
+    app.kubernetes.io/instance: kratix-platform
+    app.kubernetes.io/part-of: kratix
   name: kratix-platform-metrics-reader
 rules:
   - nonResourceURLs:
@@ -315,6 +334,10 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
+  labels:
+    app.kubernetes.io/component: kratix-manager
+    app.kubernetes.io/instance: kratix-platform
+    app.kubernetes.io/part-of: kratix
   name: kratix-platform-proxy-role
 rules:
   - apiGroups:
@@ -333,6 +356,10 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
+  labels:
+    app.kubernetes.io/component: kratix-manager
+    app.kubernetes.io/instance: kratix-platform
+    app.kubernetes.io/part-of: kratix
   name: kratix-platform-leader-election-rolebinding
   namespace: kratix-platform-system
 roleRef:
@@ -347,6 +374,10 @@ subjects:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
+  labels:
+    app.kubernetes.io/component: kratix-manager
+    app.kubernetes.io/instance: kratix-platform
+    app.kubernetes.io/part-of: kratix
   name: kratix-platform-manager-rolebinding
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -360,6 +391,10 @@ subjects:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
+  labels:
+    app.kubernetes.io/component: kratix-manager
+    app.kubernetes.io/instance: kratix-platform
+    app.kubernetes.io/part-of: kratix
   name: kratix-platform-proxy-rolebinding
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -372,9 +407,13 @@ subjects:
 ---
 apiVersion: v1
 data:
-  WC_IMG: docker.io/syntasso/kratix-platform-pipeline-adapter:v0.98.0
+  WC_IMG: docker.io/syntasso/kratix-platform-pipeline-adapter:v0.99.0
 kind: ConfigMap
 metadata:
+  labels:
+    app.kubernetes.io/component: kratix-manager
+    app.kubernetes.io/instance: kratix-platform
+    app.kubernetes.io/part-of: kratix
   name: kratix-platform-wc-img-config
   namespace: kratix-platform-system
 ---
@@ -382,6 +421,9 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
+    app.kubernetes.io/component: kratix-manager
+    app.kubernetes.io/instance: kratix-platform
+    app.kubernetes.io/part-of: kratix
     control-plane: controller-manager
   name: kratix-platform-controller-manager-metrics-service
   namespace: kratix-platform-system
@@ -391,6 +433,9 @@ spec:
       port: 8443
       targetPort: https
   selector:
+    app.kubernetes.io/component: kratix-manager
+    app.kubernetes.io/instance: kratix-platform
+    app.kubernetes.io/part-of: kratix
     control-plane: controller-manager
 ---
 apiVersion: v1
@@ -417,6 +462,9 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
+    app.kubernetes.io/component: kratix-manager
+    app.kubernetes.io/instance: kratix-platform
+    app.kubernetes.io/part-of: kratix
     control-plane: controller-manager
   name: kratix-platform-controller-manager
   namespace: kratix-platform-system
@@ -424,10 +472,16 @@ spec:
   replicas: 1
   selector:
     matchLabels:
+      app.kubernetes.io/component: kratix-manager
+      app.kubernetes.io/instance: kratix-platform
+      app.kubernetes.io/part-of: kratix
       control-plane: controller-manager
   template:
     metadata:
       labels:
+        app.kubernetes.io/component: kratix-manager
+        app.kubernetes.io/instance: kratix-platform
+        app.kubernetes.io/part-of: kratix
         control-plane: controller-manager
     spec:
       containers:
@@ -443,7 +497,7 @@ spec:
                 configMapKeyRef:
                   key: WC_IMG
                   name: kratix-platform-wc-img-config
-          image: docker.io/syntasso/kratix-platform:v0.98.0
+          image: docker.io/syntasso/kratix-platform:v0.99.0
           livenessProbe:
             httpGet:
               path: /healthz
