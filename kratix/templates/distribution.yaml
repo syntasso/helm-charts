@@ -407,7 +407,7 @@ subjects:
 ---
 apiVersion: v1
 data:
-  WC_IMG: docker.io/syntasso/kratix-platform-pipeline-adapter:v0.116.0
+  WC_IMG: docker.io/syntasso/kratix-platform-pipeline-adapter:v0.117.0
 kind: ConfigMap
 metadata:
   labels:
@@ -497,7 +497,7 @@ spec:
                 configMapKeyRef:
                   key: WC_IMG
                   name: kratix-platform-wc-img-config
-          image: docker.io/syntasso/kratix-platform:v0.116.0
+          image: docker.io/syntasso/kratix-platform:v0.117.0
           livenessProbe:
             httpGet:
               path: /healthz
@@ -583,6 +583,41 @@ metadata:
   namespace: kratix-platform-system
 spec:
   selfSigned: {}
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: MutatingWebhookConfiguration
+metadata:
+  annotations:
+    cert-manager.io/inject-ca-from: kratix-platform-system/kratix-platform-serving-cert
+  labels:
+    app.kubernetes.io/component: webhook
+    app.kubernetes.io/created-by: kratix
+    app.kubernetes.io/instance: mutating-webhook-configuration
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: mutatingwebhookconfiguration
+    app.kubernetes.io/part-of: kratix
+  name: kratix-platform-mutating-webhook-configuration
+webhooks:
+  - admissionReviewVersions:
+      - v1
+    clientConfig:
+      service:
+        name: kratix-platform-webhook-service
+        namespace: kratix-platform-system
+        path: /mutate-platform-kratix-io-v1alpha1-promise
+    failurePolicy: Fail
+    name: mpromise.kb.io
+    rules:
+      - apiGroups:
+          - platform.kratix.io
+        apiVersions:
+          - v1alpha1
+        operations:
+          - CREATE
+          - UPDATE
+        resources:
+          - promises
+    sideEffects: None
 ---
 apiVersion: admissionregistration.k8s.io/v1
 kind: ValidatingWebhookConfiguration
