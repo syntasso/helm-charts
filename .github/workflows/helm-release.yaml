@@ -32,6 +32,6 @@ jobs:
         uses: helm/chart-releaser-action@v1.6.0
         with:
           charts_dir: .
-          skip_existing: true
+          skip_existing: false
           pages_branch: gh-pages
           config: config.yaml
