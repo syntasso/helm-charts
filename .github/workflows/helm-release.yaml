@@ -28,6 +28,10 @@ jobs:
       - name: Install Helm
         uses: azure/setup-helm@v3
 
+      - name: Delete existing release/tag
+        run: |
+          gh release delete kratix-v0.0.0-latest -y --cleanup-tag || true
+
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.6.0
         with:
