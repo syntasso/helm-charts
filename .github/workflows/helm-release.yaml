@@ -28,14 +28,31 @@ jobs:
       - name: Install Helm
         uses: azure/setup-helm@v3
 
+      - name: Install yq
+        uses: chrisdickinson/setup-yq@latest
+
       - name: Delete existing release/tag
         run: |
-          gh release delete kratix-v0.0.0-latest -y --cleanup-tag || true
+          gh release delete kratix-v0.0.1 -y --cleanup-tag || true
 
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.6.0
         with:
-          charts_dir: .
-          skip_existing: true
-          pages_branch: gh-pages
-          config: config.yaml
+          install_only: true
+
+      - name: Package Chart
+        run: |
+          cr package kratix/
+
+      - name: Upload Package
+        run: |
+          cr upload --owner syntasso --git-repo helm-charts --token $GITHUB_TOKEN --push
+
+      - name: Update Index
+        run: |
+          git checkout gh-pages
+          cr index --owner syntasso --git-repo helm-charts --index-path .
+          yq -i '.entries.kratix |= [. | sort_by(.created) | .[-1]]' index.yaml
+          git add index.yaml
+          git commit -m "Update index.yaml"
+          git push
