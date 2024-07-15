@@ -28,9 +28,6 @@ jobs:
       - name: Install Helm
         uses: azure/setup-helm@v3
 
-      - name: Install yq
-        uses: chrisdickinson/setup-yq@latest
-
       - name: Delete existing release/tag
         run: |
           gh release delete kratix-v0.0.1 -y --cleanup-tag || true
