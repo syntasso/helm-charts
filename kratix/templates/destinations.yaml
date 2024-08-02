@@ -11,4 +11,5 @@ spec:
   stateStoreRef:
     name: {{ .stateStoreRef.name }}
     kind: {{ .stateStoreRef.kind }}
+  strictMatchLabels: {{ .strictMatchLabels }}
 {{ end }}

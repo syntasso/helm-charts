@@ -45,6 +45,7 @@ destinations:
   stateStoreRef:
     name: default
     kind: BucketStateStore
+  strictMatchLabels: false
 ```
 
 See [the values file for more example configuration](./values.yaml). To pass the values file
