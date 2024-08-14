@@ -407,7 +407,7 @@ subjects:
 ---
 apiVersion: v1
 data:
-  WC_IMG: docker.io/syntasso/kratix-platform-pipeline-adapter@sha256:d523da2fbc8a9e5be3d2a5fee4cbc3da67813c81f9a2ae49304a54761a424bbf
+  WC_IMG: docker.io/syntasso/kratix-platform-pipeline-adapter@sha256:31cde35b976d4657a241fde90e614533995734fba46c1962724b5fdbcf235a76
 kind: ConfigMap
 metadata:
   labels:
