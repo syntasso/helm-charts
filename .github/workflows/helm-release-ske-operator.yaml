@@ -1,0 +1,34 @@
+name: Release SKE Operator Charts
+
+on:
+  push:
+    tags: [ 'ske-operator-v.*' ]
+
+env:
+  GITHUB_TOKEN: "${{ secrets.CR_TOKEN }}"
+  CR_TOKEN: "${{ secrets.CR_TOKEN }}"
+
+jobs:
+  release:
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config user.name "syntassodev"
+          git config user.email "kratix@syntasso.io"
+
+      - name: Install Helm
+        uses: azure/setup-helm@v3
+
+      - name: Run chart-releaser
+        uses: helm/chart-releaser-action@v1.6.0
+        with:
+          charts_dir: ske-operator
+          pages_branch: gh-pages

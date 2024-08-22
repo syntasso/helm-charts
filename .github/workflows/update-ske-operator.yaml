@@ -1,0 +1,32 @@
+name: Update SKE Operator
+
+on: workflow_dispatch
+
+env:
+  GITHUB_TOKEN: "${{ secrets.CR_TOKEN }}"
+  CR_TOKEN: "${{ secrets.CR_TOKEN }}"
+
+jobs:
+  release:
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config user.name "syntassodev"
+          git config user.email "kratix@syntasso.io"
+
+      - name: Update the charts
+        run: |
+          ./scripts/update-ske-operator
+      - name: Commit and push changes
+        run: |
+          git add .
+          git commit -m "feat: update SKE Operator to the latest released version"
+          git push
