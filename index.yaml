@@ -1,30 +1,42 @@
 apiVersion: v1
 entries:
   kratix:
-    - apiVersion: v2
-      appVersion: 1.16.0
-      created: "2024-07-15T16:46:53.520116016Z"
-      description: A Helm chart for installing Kratix (https://kratix.io)
-      digest: 36370339cb29e935cfaa8d7389f7a7e2ead79e44ba04ea510e14cb26244e490d
-      name: kratix
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/kratix-v0.0.1/kratix-v0.0.1.tgz
-      version: v0.0.1
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2024-07-15T16:46:53.520116016Z"
+    description: A Helm chart for installing Kratix (https://kratix.io)
+    digest: 36370339cb29e935cfaa8d7389f7a7e2ead79e44ba04ea510e14cb26244e490d
+    name: kratix
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/kratix-v0.0.1/kratix-v0.0.1.tgz
+    version: v0.0.1
   kratix-destination:
-    - apiVersion: v2
-      appVersion: 0.0.1
-      created: "2023-12-27T15:58:57.248139082Z"
-      dependencies:
-        - condition: installFlux
-          name: flux2
-          repository: ""
-          version: 2.5.1
-      description: A Helm chart for installing flux and configuring it to pull down from Kratix
-      digest: ea229202dd5b1458279549dbbcf088397184c922f055ab452c1fd852a1a1dfa5
-      name: kratix-destination
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/kratix-destination-0.0.1/kratix-destination-0.0.1.tgz
-      version: 0.0.1
-generated: "2024-07-15T16:46:53.52036316Z"
+  - apiVersion: v2
+    appVersion: 0.0.1
+    created: "2023-12-27T15:58:57.248139082Z"
+    dependencies:
+    - condition: installFlux
+      name: flux2
+      repository: ""
+      version: 2.5.1
+    description: A Helm chart for installing flux and configuring it to pull down
+      from Kratix
+    digest: ea229202dd5b1458279549dbbcf088397184c922f055ab452c1fd852a1a1dfa5
+    name: kratix-destination
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/kratix-destination-0.0.1/kratix-destination-0.0.1.tgz
+    version: 0.0.1
+  ske-operator:
+  - apiVersion: v2
+    appVersion: v0.1.1
+    created: "2024-08-22T14:53:14.149895848Z"
+    description: A Helm Chart for deploying the SKE-Operator
+    digest: 3973fe9d81e12ac116dabab3d98b5cf12bda099c969aa550343dce1d8fc55668
+    name: ske-operator
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.8.0/ske-operator-0.8.0.tgz
+    version: 0.8.0
+generated: "2024-08-22T14:53:14.149905506Z"
