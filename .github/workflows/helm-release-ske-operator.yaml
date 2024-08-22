@@ -2,10 +2,8 @@ name: Release SKE Operator Charts
 
 on:
   push:
-    branches:
-      - main
-    paths:
-      - ske-operator/Chart.yaml
+    branches: ['main']
+    paths: ['ske-operator/Chart.yaml']
 
 env:
   GITHUB_TOKEN: "${{ secrets.CR_TOKEN }}"
