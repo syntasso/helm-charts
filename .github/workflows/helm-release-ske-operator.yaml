@@ -1,6 +1,7 @@
 name: Release SKE Operator Charts
 
 on:
+  workflow_dispatch:
   push:
     branches: ['main']
     paths: ['ske-operator/Chart.yaml']
@@ -31,5 +32,6 @@ jobs:
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.6.0
         with:
+          charts_dir: .
           pages_branch: gh-pages
           skip_existing: true
