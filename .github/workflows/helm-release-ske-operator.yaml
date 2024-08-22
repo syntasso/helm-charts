@@ -31,6 +31,5 @@ jobs:
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.6.0
         with:
-          charts_dir: ske-operator/
           pages_branch: gh-pages
           skip_existing: true
