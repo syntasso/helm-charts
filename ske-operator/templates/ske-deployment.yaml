@@ -1,0 +1,17 @@
+
+{{- if .Values.skeDeployment.enabled -}}
+{{- with .Values.skeDeployment -}}
+apiVersion: platform.syntasso.io/v1alpha1
+kind: Kratix
+metadata:
+  name: kratix
+spec:
+  version: {{ .version | default "latest" }}
+  {{- with .releasesBucket }}
+  releasesBucket:
+    name: {{ .name }}
+    path: {{ .path }}
+    region: {{ .region }}
+  {{- end }}
+{{- end -}}
+{{- end -}}

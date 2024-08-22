@@ -1,0 +1,6 @@
+apiVersion: v2
+name: ske-operator
+description: A Helm Chart for deploying the SKE-Operator
+type: application
+version: 0.1.0 # the helm chart version
+appVersion: "0.1.0" # the ske-operator version

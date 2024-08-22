@@ -1,0 +1,19 @@
+# Default values for ske-operator.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# Your SKE License Key
+skeLicense: "my-ske-license"
+
+skeDeployment:
+  # Set to true if you want to deploy SKE
+  enabled: false
+  # The version to deploy
+  version: "latest"
+
+  # optional
+  # For air-gapped installations, the bucket where the SKE Manifests are stored
+  # releasesBucket:
+  #   name: "syntasso-enterprise-releases"
+  #   path: "ske"
+  #   region: "eu-west-2"
