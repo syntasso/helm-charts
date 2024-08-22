@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+    paths:
+      - 'kratix/Chart.yaml'
 
 env:
   GITHUB_TOKEN: "${{ secrets.CR_TOKEN }}"
