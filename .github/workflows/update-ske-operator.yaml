@@ -20,6 +20,8 @@ jobs:
       - name: Update the charts
         run: |
           ./scripts/update-ske-operator
+        env:
+          GH_TOKEN: ${{ secrets.CR_TOKEN }}
       - name: Commit and push changes
         run: |
           git add .
