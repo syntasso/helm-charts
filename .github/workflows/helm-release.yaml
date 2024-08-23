@@ -50,8 +50,18 @@ jobs:
       - name: Update Index
         run: |
           git checkout gh-pages
-          cr index --owner syntasso --git-repo helm-charts --index-path .
-          yq -i '.entries.kratix |= [. | sort_by(.created) | .[-1]]' index.yaml
+
+          export package_digest=$(shasum -a 256 .cr-release-packages/kratix-v0.0.1.tgz | awk '{print $1}')
+          current_digest=$(yq -r '.entries.kratix[0].digest' index.yaml)
+          if [ "$package_digest" = "$current_digest" ]; then
+            echo "No new changes detected"
+            exit 0
+          fi
+
+          export current_date=$(date -u +"%Y-%m-%dT%T.%NZ")
+
+          yq -i '.entries.kratix[0].digest = env(package_digest) | .entries.kratix[0].created = strenv(current_date) ' index.yaml
+
           git add index.yaml
           git commit -m "Update index.yaml"
           git push
