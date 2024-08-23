@@ -1,6 +1,7 @@
-name: Release Charts
+name: Release Kratix Chart
 
 on:
+  workflow_dispatch: {}
   push:
     branches:
       - main
