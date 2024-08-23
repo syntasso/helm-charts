@@ -2,6 +2,7 @@
 This chart is for installing [Kratix](https://kratix.io/) on your Platform cluster.
 
 ## Installation
+
 The Helm Chart can be installed without providing any values, this will install
 the Kratix controllers and CRDs only.
 
@@ -14,6 +15,7 @@ helm --kube-context ${PLATFORM} install kratix kratix/kratix
 ```
 
 ### Optional Configuration
+
 Kratix will often be configured with one or more [Destinations](https://kratix.io/docs/main/reference/destinations/intro)
 and [StateStores](https://kratix.io/docs/main/reference/statestore/intro). If you
 know at installation time the values for these resources you can provide
