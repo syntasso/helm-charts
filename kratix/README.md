@@ -9,9 +9,9 @@ the Kratix controllers and CRDs only.
 ```bash
 export PLATFORM=kind-platform # or your platform cluster context
 
-helm repo add kratix https://syntasso.github.io/helm-charts
+helm repo add syntasso https://syntasso.github.io/helm-charts
 helm repo update
-helm --kube-context ${PLATFORM} install kratix kratix/kratix
+helm --kube-context ${PLATFORM} install kratix syntasso/kratix
 ```
 
 ### Optional Configuration

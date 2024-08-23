@@ -1,10 +1,10 @@
 # Kratix Charts
 
-This directory contains two charts which you can use to install and operate
+This directory contains charts which you can use to install and operate
 Kratix in either a single Kubernetes cluster, or across a multi-cluster setup.
 
 To understand where to use each chart, you must understand a bit about the
-way Kratix [schedules resources](https://kratix.io/docs/main/reference/multicluster-management)
+way Kratix [schedules resources](https://docs.kratix.io/main/reference/destinations/multidestination-management)
 across destinations.
 
 ## Usage
@@ -16,9 +16,9 @@ across destinations.
 ### Install
 
 ```bash
-helm repo add kratix https://syntasso.github.io/helm-charts
+helm repo add syntasso https://syntasso.github.io/helm-charts
 helm repo update
-helm install kratix kratix/kratix
+helm install kratix syntasso/kratix
 ```
 
 Check the individual chart READMEs for more information.
@@ -56,6 +56,14 @@ GitOps project [Flux](https://fluxcd.io/) and use the same state store
 configuration options as used in the `kratix` chart.
 
 For configuration options, see the [chart README](./kratix-destination/README.md).
+
+## SKE Operator
+
+The SKE Operator chart deploys the Syntasso Kratix Enterprise Operator. This operator
+is available only to Syntasso Kratix Enterprise users for the deployment and maintenance
+of their Kratix deployments.
+
+For configuration options, see the [chart README](./ske-operator/README.md).
 
 ## Common examples
 

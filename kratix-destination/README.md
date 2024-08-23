@@ -59,7 +59,7 @@ the following:
 ```bash
 export WORKER=kind-worker # or the context you are installing this on
 
-helm repo add kratix https://syntasso.github.io/helm-charts
+helm repo add syntasso https://syntasso.github.io/helm-charts
 helm repo update
-helm --kube-context ${WORKER} install kratix-destination kratix/kratix-destination -f values.yaml
+helm --kube-context ${WORKER} install kratix-destination syntasso/kratix-destination -f values.yaml
 ```
