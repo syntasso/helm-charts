@@ -8,8 +8,12 @@ metadata:
   labels: {{ toYaml .labels | nindent 4 }}
 spec:
   path: {{ .path }}
+  {{- with .filepath }}
+  filepath:
+    mode: {{ .mode | default "nestedByMetadata" }}
+  {{- end}}
   stateStoreRef:
     name: {{ .stateStoreRef.name }}
     kind: {{ .stateStoreRef.kind }}
-  strictMatchLabels: {{ .strictMatchLabels }}
+  strictMatchLabels: {{ .strictMatchLabels | default false}}
 {{ end }}

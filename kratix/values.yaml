@@ -29,6 +29,8 @@ destinations: []
 #   labels:
 #     env: dev
 #   path: ""
+#   filepath:
+#      mode: none | nestedByMetadata
 #   stateStoreRef:
 #     name: default
 #     kind: GitStateStore

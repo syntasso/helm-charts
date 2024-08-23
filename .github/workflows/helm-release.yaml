@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - 'kratix/Chart.yaml'
+      - 'kratix/**'
 
 env:
   GITHUB_TOKEN: "${{ secrets.CR_TOKEN }}"
