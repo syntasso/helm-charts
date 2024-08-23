@@ -365,7 +365,7 @@ spec:
             - --health-probe-bind-address=:8081
           command:
             - /manager
-          image: ghcr.io/syntasso/ske-operator:0.1.1
+          image: ghcr.io/syntasso/ske-operator:0.1.2
           livenessProbe:
             httpGet:
               path: /healthz
@@ -399,6 +399,8 @@ spec:
             - mountPath: /tmp/k8s-webhook-server/serving-certs
               name: cert
               readOnly: true
+      imagePullSecrets:
+        - name: syntasso-registry
       securityContext:
         runAsNonRoot: true
       serviceAccountName: ske-operator-controller-manager
