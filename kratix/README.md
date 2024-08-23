@@ -42,6 +42,8 @@ destinations:
   labels:
     env: dev
   path: ""
+  filepath:
+    mode: nestedByMetadata
   stateStoreRef:
     name: default
     kind: BucketStateStore
