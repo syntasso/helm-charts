@@ -4,16 +4,34 @@
 
 # Your SKE License Key
 skeLicense: "my-ske-license"
-
+# Configuration for the Registry and Manifests
+# Update these values if you are using a custom registry or bucket
+# If using Syntasso Enterprise defaults, no changes are required
+imageRegistry:
+  # The host registry to pull the images from
+  # Syntasso Enterprise images are  hosted on ghcr.io
+  # If you are using a custom registry, update this value to your registry host
+  host: "ghcr.io"
+  # The name of the image pull secret to use
+  # Update this if you are using a custom image pull secret
+  # imagePullSecret: "my-secret"
+  skeOperatorImage:
+    # The name of the SKE operator use
+    # Update this if you are using a custom image name for the operator
+    name: "syntasso/ske-operator"
+    # The tag of the image to pull
+    tag: "v0.1.2"
+  skePlatformImage:
+    # The name of the SKE Platform image to pull
+    name: "syntasso/ske-platform"
+# Syntasso Enterprise manifests are available in the S3 bucket below
+# If you are using a custom bucket, update the values accordingly
+releasesBucket:
+  name: "syntasso-enterprise-releases"
+  path: "ske"
+  region: "eu-west-2"
 skeDeployment:
   # Set to true if you want to deploy SKE
   enabled: false
   # The version to deploy
   version: "latest"
-
-  # optional
-  # For air-gapped installations, the bucket where the SKE Manifests are stored
-  # releasesBucket:
-  #   name: "syntasso-enterprise-releases"
-  #   path: "ske"
-  #   region: "eu-west-2"
