@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  name: ske-operator
+data:
+  imageRegistry:
+  {{- with .Values.imageRegistry }}
+    host: {{ .host }}
+    imagePullSecret: {{ .imagePullSecret | default "syntasso-registry" }}
+    skePlatformImage:
+      name: {{ .skePlatformImage.name }}
+  {{- end }}
+  {{- with .Values.releasesBucket }}
+  releasesBucket:
+    name: {{ .name }}
+    path: {{ .path }}
+    region: {{ .region }}
+  {{- end }}
