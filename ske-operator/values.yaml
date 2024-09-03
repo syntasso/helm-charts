@@ -8,28 +8,36 @@ skeLicense: "my-ske-license"
 # Update these values if you are using a custom registry or bucket
 # If using Syntasso Enterprise defaults, no changes are required
 imageRegistry:
-  # The host registry to pull the images from
-  # Syntasso Enterprise images are  hosted on ghcr.io
+  # The host registry to pull the images from Syntasso Enterprise images are hosted on ghcr.io.
   # If you are using a custom registry, update this value to your registry host
   host: "ghcr.io"
-  # The name of the image pull secret to use
-  # Update this if you are using a custom image pull secret
+  # The name of the image pull secret to use. Update this if you are using a custom image pull secret
   # imagePullSecret: "my-secret"
   skeOperatorImage:
-    # The name of the SKE operator use
-    # Update this if you are using a custom image name for the operator
+    # The name of the SKE operator use. Update this if you are using a custom image name for the operator
     name: "syntasso/ske-operator"
     # The tag of the SKE Operator image
     tag: "v0.1.2"
   skePlatformImage:
     # The name of the SKE Platform image
     name: "syntasso/ske-platform"
+  skePlatformPipelineAdapterImage:
+    # The name of the SKE-Platform Pipeline Adapter image
+    name: "syntasso/ske-platform-pipeline-adapter"
 # Syntasso Enterprise manifests are available in the S3 bucket below
 # If you are using a custom bucket, update the values accordingly
 releasesBucket:
   name: "syntasso-enterprise-releases"
   path: "ske"
   region: "eu-west-2"
+  # if you are using a custom endpoint, update this value
+  # endpoint: "https://s3.eu-west-2.amazonaws.com"
+  # If your bucket is private, you can provide a secret with the credentials to access
+  # the bucket. The secret must be created in the same namespace as the operator. It must
+  # contain the following keys:
+  # - accessKeyID
+  # - secretAccessKey
+  # secretName: "my-secret"
 skeDeployment:
   # Set to true if you want to deploy SKE
   enabled: false

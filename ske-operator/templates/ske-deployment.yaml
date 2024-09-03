@@ -7,11 +7,5 @@ metadata:
   name: kratix
 spec:
   version: {{ .version | default "latest" }}
-  {{- with .releasesBucket }}
-  releasesBucket:
-    name: {{ .name }}
-    path: {{ .path }}
-    region: {{ .region }}
-  {{- end }}
 {{- end -}}
 {{- end -}}

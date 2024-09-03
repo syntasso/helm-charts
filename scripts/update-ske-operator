@@ -24,7 +24,7 @@ CHART_DISTRIBUTION=$root/ske-operator/templates/ske-operator-distribution.yaml
 
 # split the manifest into CRDs and the rest
 yq 'select(.kind == "CustomResourceDefinition")' ${MANIFEST_NAME} > ${CHART_CRDS}
-yq 'select(.kind != "CustomResourceDefinition")' ${MANIFEST_NAME} > ${CHART_DISTRIBUTION}
+yq 'select(.kind != "CustomResourceDefinition" and .kind != "Namespace")' ${MANIFEST_NAME} > ${CHART_DISTRIBUTION}
 
 # generate the kustomize manifest
 kubectl kustomize $root/ske-operator > $root/ske-operator/manifests.yaml

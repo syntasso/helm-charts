@@ -3,17 +3,18 @@ kind: ConfigMap
 metadata:
   creationTimestamp: null
   name: ske-operator
+  namespace: kratix-platform-system
 data:
-  imageRegistry:
   {{- with .Values.imageRegistry }}
-    host: {{ .host }}
-    imagePullSecret: {{ .imagePullSecret | default "syntasso-registry" }}
-    skePlatformImage:
-      name: {{ .skePlatformImage.name }}
+  image-registry-host: {{ .host }}
+  image-pull-secret: {{ .imagePullSecret | default "syntasso-registry" }}
+  ske-platform-image: {{ .skePlatformImage.name }}
+  ske-pipeline-image: {{ .skePlatformPipelineAdapterImage.name }}
   {{- end }}
   {{- with .Values.releasesBucket }}
-  releasesBucket:
-    name: {{ .name }}
-    path: {{ .path }}
-    region: {{ .region }}
+  releases-bucket-name: {{ .name }}
+  releases-bucket-path: {{ .path }}
+  releases-bucket-region: {{ .region }}
+  releases-bucket-endpoint: {{ .endpoint }}
+  releases-bucket-secret-name: {{ .secretName}}
   {{- end }}
