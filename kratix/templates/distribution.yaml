@@ -497,7 +497,7 @@ spec:
                 configMapKeyRef:
                   key: WC_IMG
                   name: kratix-platform-wc-img-config
-          image: docker.io/syntasso/kratix-platform@sha256:ce037ddd7e8ba2dbe2031c9c04c8760489e40512f4191a1c430cd9506076486f
+          image: docker.io/syntasso/kratix-platform@sha256:ccff6a56a99c2884745d8276d89cf8f1eee572b55b51bf11c4ff7e2b9a5062de
           livenessProbe:
             httpGet:
               path: /healthz
@@ -524,6 +524,13 @@ spec:
               memory: 100Mi
           securityContext:
             allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            privileged: false
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault
           volumeMounts:
             - mountPath: /tmp/k8s-webhook-server/serving-certs
               name: cert
