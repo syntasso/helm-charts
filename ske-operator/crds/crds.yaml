@@ -140,6 +140,8 @@ spec:
                       - type
                     type: object
                   type: array
+                lastAppliedVersion:
+                  type: string
                 ready:
                   type: boolean
               required:
