@@ -53,24 +53,6 @@ spec:
             spec:
               description: KratixSpec defines the desired state of Kratix
               properties:
-                releasesBucket:
-                  default:
-                    name: syntasso-enterprise-releases
-                    path: ske
-                    region: eu-west-2
-                  description: |-
-                    ReleasesBucket is a bucket in which the Kratix platform releases are stored.
-                    This field is to set up an internal registry within an organisation using SKE.
-                    The path should be structured as follows:
-                      <bucket-name>/<path>/<version>/ske-distribution.yaml
-                  properties:
-                    name:
-                      type: string
-                    path:
-                      type: string
-                    region:
-                      type: string
-                  type: object
                 version:
                   description: |-
                     Version is the version of the Kratix platform to deploy, and corresponds to the
