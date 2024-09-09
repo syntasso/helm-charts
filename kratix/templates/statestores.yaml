@@ -12,7 +12,11 @@ spec:
   {{- if eq .kind "GitStateStore" }}
   url: {{ .url }}
   branch: {{ .branch }}
-  {{- else }}
+  {{- if eq .authMethod "ssh" }}
+  authMethod: ssh
+  {{- else}}
+  authMethod: basicAuth
+  {{- end }}
   bucketName: {{ .bucket }}
   endpoint: {{ .endpoint }}
   insecure: {{ .insecure }}
