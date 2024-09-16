@@ -14,8 +14,6 @@ spec:
   branch: {{ .branch }}
   {{- if eq .authMethod "ssh" }}
   authMethod: ssh
-  {{- else}}
-  authMethod: basicAuth
   {{- end }}
   bucketName: {{ .bucket }}
   endpoint: {{ .endpoint }}
