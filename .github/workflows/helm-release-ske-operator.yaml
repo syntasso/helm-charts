@@ -35,6 +35,22 @@ jobs:
           charts_dir: .
           pages_branch: gh-pages
           skip_existing: true
+
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: eu-west-2
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ steps.AWS_SECRET_ACCESS_KEY }}
+
+      - name: Upload Chart to Releases Bucket
+        run: |
+          VERSION=$(cat ske-operator/Chart.yaml | grep version: | awk '{print $2}')
+          aws s3 cp .cr-release-packages/ske-operator-${VERSION}.tgz ske-operator-helm-chart/${VERSION}/
+
       - name: trigger-run-ci
         env:
           CCI_TOKEN: ${{ secrets.CCI_TOKEN }}
