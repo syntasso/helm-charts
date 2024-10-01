@@ -29,15 +29,15 @@ jobs:
       - name: Install Helm
         uses: azure/setup-helm@v3
 
+      - name: Check out code
+        uses: actions/checkout@v4
+
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.6.0
         with:
           charts_dir: .
           pages_branch: gh-pages
           skip_existing: true
-
-      - name: Check out code
-        uses: actions/checkout@v4
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
