@@ -51,7 +51,8 @@ jobs:
           VERSION=$(cat ske-operator/Chart.yaml | grep version: | awk '{print $2}')
           bucket_path="s3://syntasso-enterprise-releases/ske-operator-helm-chart/${VERSION}/"
           echo "Uploading ske-operator-${VERSION}.tgz to ${bucket_path}"
-          ls .cr-release-packages
+          mkdir .cr-release-packages
+          touch .cr-release-packages/ske-operator-${VERSION}.tgz
           aws s3 cp .cr-release-packages/ske-operator-${VERSION}.tgz ${bucket_path} --dryrun
 
       # - name: trigger-run-ci
