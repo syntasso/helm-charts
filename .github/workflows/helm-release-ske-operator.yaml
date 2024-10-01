@@ -53,12 +53,12 @@ jobs:
           echo "Uploading ske-operator-${VERSION}.tgz to ${bucket_path}"
           aws s3 cp .cr-release-packages/ske-operator-${VERSION}.tgz ${bucket_path}
 
-      # - name: trigger-run-ci
-      #   env:
-      #     CCI_TOKEN: ${{ secrets.CCI_TOKEN }}
-      #     CCI_TARGET_SLUG: ${{ secrets.CCI_TARGET_SLUG }}
-      #   run: |
-      #     curl -H "Circle-Token: ${CCI_TOKEN}" \
-      #       -H 'content-type: application/json' \
-      #       -d '{"parameters":{"ske_helm_chart_new_release":true}}' \
-      #       https://circleci.com/api/v2/project/${CCI_TARGET_SLUG}/pipeline
+      - name: trigger-run-ci
+        env:
+          CCI_TOKEN: ${{ secrets.CCI_TOKEN }}
+          CCI_TARGET_SLUG: ${{ secrets.CCI_TARGET_SLUG }}
+        run: |
+          curl -H "Circle-Token: ${CCI_TOKEN}" \
+            -H 'content-type: application/json' \
+            -d '{"parameters":{"ske_helm_chart_new_release":true}}' \
+            https://circleci.com/api/v2/project/${CCI_TARGET_SLUG}/pipeline
