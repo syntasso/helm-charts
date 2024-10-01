@@ -93,7 +93,7 @@ rules:
     verbs:
       - get
       - list
-      - watch
+      - watch // Also used by promiseRelease
   - apiGroups:
       - ""
     resources:
@@ -407,7 +407,7 @@ subjects:
 ---
 apiVersion: v1
 data:
-  WC_IMG: syntasso.docker.scarf.sh/syntasso/kratix-platform-pipeline-adapter@sha256:b1622e3660a1a36c9e79472305eec769deac5a49200cb074528d71267796b9b6
+  WC_IMG: syntasso.docker.scarf.sh/syntasso/kratix-platform-pipeline-adapter@sha256:e35816c922f9f51e9ab7bf63d085e98b83fe1bc01e4956c9ea81fb9cac02f3d4
 kind: ConfigMap
 metadata:
   labels:
@@ -497,7 +497,7 @@ spec:
                 configMapKeyRef:
                   key: WC_IMG
                   name: kratix-platform-wc-img-config
-          image: syntasso.docker.scarf.sh/syntasso/kratix-platform@sha256:0d852d15c7968aa3c9a11870b75c87b37548942c1b07ee70055c54ec830b7e1d
+          image: syntasso.docker.scarf.sh/syntasso/kratix-platform@sha256:19a48306391054ff1f7dc2456075176bfe04d5b7f186fb6428afc4bdade912a1
           livenessProbe:
             httpGet:
               path: /healthz
