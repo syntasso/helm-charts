@@ -6,6 +6,6 @@ kind: Kratix
 metadata:
   name: kratix
 spec:
-  version: {{ .version | default "latest" }}
+  version: {{ .Values.skeDeployment.version | default "latest" }}
 {{- end -}}
 {{- end -}}
