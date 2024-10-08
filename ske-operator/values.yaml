@@ -26,18 +26,25 @@ imageRegistry:
     name: "syntasso/ske-platform-pipeline-adapter"
 # Syntasso Enterprise manifests are available in the S3 bucket below
 # If you are using a custom bucket, update the values accordingly
-releasesBucket:
-  name: "syntasso-enterprise-releases"
+releaseStorage:
   path: "ske"
-  region: "eu-west-2"
-  # if you are using a custom endpoint, update this value
-  # endpoint: "https://s3.eu-west-2.amazonaws.com"
-  # If your bucket is private, you can provide a secret with the credentials to access
-  # the bucket. The secret must be created in the same namespace as the operator. It must
-  # contain the following keys:
-  # - accessKeyID
-  # - secretAccessKey
-  # secretName: "my-secret"
+  # if you are using a Git repository to store the manifests, update the values below and comment out the bucket section
+  # git:
+  #  branch: main
+  #  repo: https://github.com/org/repo
+  #  secretName: git-creds # the secret must be created in the same namespace as the operator. It must contain the following keys: username, password
+
+  bucket:
+    name: "syntasso-enterprise-releases"
+    region: "eu-west-2"
+    # if you are using a custom endpoint, update this value
+    # endpoint: "https://s3.eu-west-2.amazonaws.com"
+    # If your bucket is private, you can provide a secret with the credentials to access
+    # the bucket. The secret must be created in the same namespace as the operator. It must
+    # contain the following keys:
+    # - accessKeyID
+    # - secretAccessKey
+    # secretName: "my-secret"
 skeDeployment:
   # Set to true if you want to deploy SKE
   enabled: false

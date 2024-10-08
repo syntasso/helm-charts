@@ -5,16 +5,26 @@ metadata:
   name: ske-operator
   namespace: kratix-platform-system
 data:
-  {{- with .Values.imageRegistry }}
-  image-registry-host: {{ .host }}
-  image-pull-secret: {{ .imagePullSecret | default "syntasso-registry" }}
-  ske-platform-image: {{ .skePlatformImage.name }}
-  ske-pipeline-image: {{ .skePlatformPipelineAdapterImage.name }}
-  {{- end }}
-  {{- with .Values.releasesBucket }}
-  releases-bucket-name: {{ .name }}
-  releases-bucket-path: {{ .path }}
-  releases-bucket-region: {{ .region }}
-  releases-bucket-endpoint: {{ .endpoint }}
-  releases-bucket-secret-name: {{ .secretName}}
-  {{- end }}
+  config: |
+    releaseStorage:
+      path: {{ .Values.releaseStorage.path }}
+      git:
+        {{- with .Values.releaseStorage.git }}
+        secretName: {{ .secretName }}
+        repo: {{ .repo }}
+        branch: {{ .branch }}
+        {{- end }}
+      bucket:
+        {{- with .Values.releaseStorage.bucket }}
+        name: {{ .name }}
+        endpoint: {{ .endpoint }}
+        region: {{ .rergion }}
+        secretName: {{ .secretName }}
+        {{- end }}
+    imageRegistry:
+    {{- with .Values.imageRegistry }}
+      host: {{ .host }}
+      pullSecret: {{ .imagePullSecret | default "syntasso-registry" }}
+      platformImage: {{ .skePlatformImage.name }}
+      pipelineImage: {{ .skePlatformPipelineAdapterImage.name }}
+    {{- end }}
