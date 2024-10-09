@@ -57,6 +57,6 @@ releaseStorage:
     #     secretAccessKey: "my-secret"
 skeDeployment:
   # Set to true if you want to deploy SKE
-  enabled: false
+  enabled: true
   # The version to deploy
   version: "latest"
