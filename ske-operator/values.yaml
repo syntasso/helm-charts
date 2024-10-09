@@ -28,11 +28,17 @@ imageRegistry:
 # If you are using a custom bucket, update the values accordingly
 releaseStorage:
   path: "ske"
-  # if you are using a Git repository to store the manifests, update the values below and comment out the bucket section
+  # if you are using a Git repository to store the manifests, update the values below and comment out the bucket section.
+  # Provide either a secretName. If username and password is not provided, it
+  # assumes the secret already exist and contains the required keys.
   # git:
   #  branch: main
   #  repo: https://github.com/org/repo
-  #  secretName: git-creds # the secret must be created in the same namespace as the operator. It must contain the following keys: username, password
+  #  secret:
+    #  name: git-creds # the secret must be created in the same namespace as the operator. It must contain the following keys: username, password. If provided below it is automatically created
+    #  values:
+      #  username: "my-username" # instead of providing a secretName you can provide the username and password directly
+      #  password: "my-password"
 
   bucket:
     name: "syntasso-enterprise-releases"
@@ -44,7 +50,11 @@ releaseStorage:
     # contain the following keys:
     # - accessKeyID
     # - secretAccessKey
-    # secretName: "my-secret"
+    # secret:
+    #   name: "my-secret" # the secret must be created in the same namespace as the operator. It must contain the following keys: accessKeyID, secretAccessKey. If provided below it is automatically created
+    #   values:
+    #     accessKeyID: "my-access"
+    #     secretAccessKey: "my-secret"
 skeDeployment:
   # Set to true if you want to deploy SKE
   enabled: false

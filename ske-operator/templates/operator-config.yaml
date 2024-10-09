@@ -1,3 +1,4 @@
+---
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -10,7 +11,7 @@ data:
       path: {{ .Values.releaseStorage.path }}
       git:
         {{- with .Values.releaseStorage.git }}
-        secretName: {{ .secretName }}
+        secretName: {{ .secret.name }}
         repo: {{ .repo }}
         branch: {{ .branch }}
         {{- end }}
@@ -19,7 +20,9 @@ data:
         name: {{ .name }}
         endpoint: {{ .endpoint }}
         region: {{ .rergion }}
-        secretName: {{ .secretName }}
+        {{- if .secret }}
+        secretName: {{ .secret.name }}
+        {{- end }}
         {{- end }}
     imageRegistry:
     {{- with .Values.imageRegistry }}
@@ -28,3 +31,25 @@ data:
       platformImage: {{ .skePlatformImage.name }}
       pipelineImage: {{ .skePlatformPipelineAdapterImage.name }}
     {{- end }}
+
+{{ if and (.Values.releaseStorage.git) (.Values.releaseStorage.git.secret) (.Values.releaseStorage.git.secret.values) }}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ .Values.releaseStorage.git.secret.name }}
+  namespace: kratix-platform-system
+type: Opaque
+data: {{ toYaml .Values.releaseStorage.git.secret.values | nindent 2 }}
+{{ end }}
+
+{{ if and (.Values.releaseStorage.bucket) (.Values.releaseStorage.bucket.secret) (.Values.releaseStorage.bucket.secret.values) }}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ .Values.releaseStorage.bucket.secret.name }}
+  namespace: kratix-platform-system
+type: Opaque
+data: {{ toYaml .Values.releaseStorage.bucket.secret.values | nindent 2 }}
+{{ end }}
