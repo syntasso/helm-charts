@@ -93,7 +93,7 @@ rules:
     verbs:
       - get
       - list
-      - watch // Also used by promiseRelease
+      - watch
   - apiGroups:
       - ""
     resources:
