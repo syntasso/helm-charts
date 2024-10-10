@@ -104,6 +104,30 @@ metadata:
   name: ske-operator-manager-role
 rules:
 - apiGroups:
+  - ""
+  resources:
+  - configmaps
+  - events
+  - namespaces
+  - serviceaccounts
+  - services
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - secrets
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
   - admissionregistration.k8s.io
   resources:
   - mutatingwebhookconfigurations
@@ -166,35 +190,24 @@ rules:
   - update
   - watch
 - apiGroups:
-  - ""
-  resources:
-  - configmaps
-  - events
-  - namespaces
-  - serviceaccounts
-  - services
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
-- apiGroups:
-  - ""
-  resources:
-  - secrets
-  verbs:
-  - get
-  - list
-  - watch
-- apiGroups:
   - platform.kratix.io
   resources:
   - '*'
   verbs:
   - '*'
+- apiGroups:
+  - platform.kratix.io
+  resources:
+  - promises
+  verbs:
+  - get
+  - list
+- apiGroups:
+  - platform.kratix.io
+  resources:
+  - promises/status
+  verbs:
+  - get
 - apiGroups:
   - platform.syntasso.io
   resources:

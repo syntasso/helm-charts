@@ -17,7 +17,7 @@ imageRegistry:
     # The name of the SKE operator use. Update this if you are using a custom image name for the operator
     name: "syntasso/ske-operator"
     # The tag of the SKE Operator image
-    tag: "v0.1.6"
+    tag: "v0.3.0"
   skePlatformImage:
     # The name of the SKE Platform image
     name: "syntasso/ske-platform"
@@ -35,10 +35,10 @@ releaseStorage:
   #  branch: main
   #  repo: https://github.com/org/repo
   #  secret:
-    #  name: git-creds # the secret must be created in the same namespace as the operator. It must contain the following keys: username, password. If provided below it is automatically created
-    #  values:
-      #  username: "my-username" # instead of providing a secretName you can provide the username and password directly
-      #  password: "my-password"
+  #  name: git-creds # the secret must be created in the same namespace as the operator. It must contain the following keys: username, password. If provided below it is automatically created
+  #  values:
+  #  username: "my-username" # instead of providing a secretName you can provide the username and password directly
+  #  password: "my-password"
 
   bucket:
     name: "syntasso-enterprise-releases"
