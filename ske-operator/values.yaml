@@ -35,10 +35,10 @@ releaseStorage:
   #  branch: main
   #  repo: https://github.com/org/repo
   #  secret:
-  #  name: git-creds # the secret must be created in the same namespace as the operator. It must contain the following keys: username, password. If provided below it is automatically created
-  #  values:
-  #  username: "my-username" # instead of providing a secretName you can provide the username and password directly
-  #  password: "my-password"
+  #    name: git-creds # the secret must be created in the same namespace as the operator. It must contain the following keys: username, password. If provided below it is automatically created
+  #    values:
+  #      username: "my-username" # instead of providing a secretName you can provide the username and password directly
+  #      password: "my-password"
 
   bucket:
     name: "syntasso-enterprise-releases"
