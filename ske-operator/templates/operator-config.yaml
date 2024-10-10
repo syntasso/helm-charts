@@ -1,3 +1,4 @@
+---
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -5,16 +6,50 @@ metadata:
   name: ske-operator
   namespace: kratix-platform-system
 data:
-  {{- with .Values.imageRegistry }}
-  image-registry-host: {{ .host }}
-  image-pull-secret: {{ .imagePullSecret | default "syntasso-registry" }}
-  ske-platform-image: {{ .skePlatformImage.name }}
-  ske-pipeline-image: {{ .skePlatformPipelineAdapterImage.name }}
-  {{- end }}
-  {{- with .Values.releasesBucket }}
-  releases-bucket-name: {{ .name }}
-  releases-bucket-path: {{ .path }}
-  releases-bucket-region: {{ .region }}
-  releases-bucket-endpoint: {{ .endpoint }}
-  releases-bucket-secret-name: {{ .secretName}}
-  {{- end }}
+  config: |
+    releaseStorage:
+      path: {{ .Values.releaseStorage.path }}
+      git:
+        {{- with .Values.releaseStorage.git }}
+        secretName: {{ .secret.name }}
+        repo: {{ .repo }}
+        branch: {{ .branch }}
+        {{- end }}
+      bucket:
+        {{- with .Values.releaseStorage.bucket }}
+        name: {{ .name }}
+        endpoint: {{ .endpoint }}
+        region: {{ .rergion }}
+        {{- if .secret }}
+        secretName: {{ .secret.name }}
+        {{- end }}
+        {{- end }}
+    imageRegistry:
+    {{- with .Values.imageRegistry }}
+      host: {{ .host }}
+      pullSecret: {{ .imagePullSecret | default "syntasso-registry" }}
+      platformImage: {{ .skePlatformImage.name }}
+      pipelineImage: {{ .skePlatformPipelineAdapterImage.name }}
+    {{- end }}
+
+{{ if and (.Values.releaseStorage.git) (.Values.releaseStorage.git.secret) (.Values.releaseStorage.git.secret.values) }}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ .Values.releaseStorage.git.secret.name }}
+  namespace: kratix-platform-system
+type: Opaque
+data: {{ toYaml .Values.releaseStorage.git.secret.values | nindent 2 }}
+{{ end }}
+
+{{ if and (.Values.releaseStorage.bucket) (.Values.releaseStorage.bucket.secret) (.Values.releaseStorage.bucket.secret.values) }}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ .Values.releaseStorage.bucket.secret.name }}
+  namespace: kratix-platform-system
+type: Opaque
+data: {{ toYaml .Values.releaseStorage.bucket.secret.values | nindent 2 }}
+{{ end }}
