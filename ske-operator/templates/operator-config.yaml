@@ -46,7 +46,7 @@ metadata:
   name: {{ .Values.releaseStorage.git.secret.name }}
   namespace: kratix-platform-system
 type: Opaque
-data: {{ toYaml .Values.releaseStorage.git.secret.values | nindent 2 }}
+stringData: {{ toYaml .Values.releaseStorage.git.secret.values | nindent 2 }}
 {{ end }}
 
 {{ if and (.Values.releaseStorage) (.Values.releaseStorage.bucket) (.Values.releaseStorage.bucket.secret) (.Values.releaseStorage.bucket.secret.values) }}
@@ -57,5 +57,5 @@ metadata:
   name: {{ .Values.releaseStorage.bucket.secret.name }}
   namespace: kratix-platform-system
 type: Opaque
-data: {{ toYaml .Values.releaseStorage.bucket.secret.values | nindent 2 }}
+stringData: {{ toYaml .Values.releaseStorage.bucket.secret.values | nindent 2 }}
 {{ end }}
