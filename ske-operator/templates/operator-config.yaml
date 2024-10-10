@@ -7,8 +7,8 @@ metadata:
   namespace: kratix-platform-system
 data:
   config: |
+    {{- if and (.Values.releaseStorage) }}
     releaseStorage:
-      {{- if and (.Values.releaseStorage) }}
       path: {{ .Values.releaseStorage.path }}
       {{- if and (.Values.releaseStorage.git) }}
       git:
@@ -29,7 +29,7 @@ data:
         {{- end }}
         {{- end }}
       {{- end }}
-      {{- end }}
+    {{- end }}
     imageRegistry:
     {{- with .Values.imageRegistry }}
       host: {{ .host }}
