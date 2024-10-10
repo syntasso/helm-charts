@@ -8,13 +8,17 @@ metadata:
 data:
   config: |
     releaseStorage:
+      {{- if and (.Values.releaseStorage) }}
       path: {{ .Values.releaseStorage.path }}
+      {{- if and (.Values.releaseStorage.git) }}
       git:
         {{- with .Values.releaseStorage.git }}
         secretName: {{ .secret.name }}
         repo: {{ .repo }}
         branch: {{ .branch }}
         {{- end }}
+      {{- end }}
+      {{- if and (.Values.releaseStorage.bucket) }}
       bucket:
         {{- with .Values.releaseStorage.bucket }}
         name: {{ .name }}
@@ -24,6 +28,8 @@ data:
         secretName: {{ .secret.name }}
         {{- end }}
         {{- end }}
+      {{- end }}
+      {{- end }}
     imageRegistry:
     {{- with .Values.imageRegistry }}
       host: {{ .host }}
@@ -32,7 +38,7 @@ data:
       pipelineImage: {{ .skePlatformPipelineAdapterImage.name }}
     {{- end }}
 
-{{ if and (.Values.releaseStorage.git) (.Values.releaseStorage.git.secret) (.Values.releaseStorage.git.secret.values) }}
+{{ if and (.Values.releaseStorage) (.Values.releaseStorage.git) (.Values.releaseStorage.git.secret) (.Values.releaseStorage.git.secret.values) }}
 ---
 apiVersion: v1
 kind: Secret
@@ -43,7 +49,7 @@ type: Opaque
 data: {{ toYaml .Values.releaseStorage.git.secret.values | nindent 2 }}
 {{ end }}
 
-{{ if and (.Values.releaseStorage.bucket) (.Values.releaseStorage.bucket.secret) (.Values.releaseStorage.bucket.secret.values) }}
+{{ if and (.Values.releaseStorage) (.Values.releaseStorage.bucket) (.Values.releaseStorage.bucket.secret) (.Values.releaseStorage.bucket.secret.values) }}
 ---
 apiVersion: v1
 kind: Secret
