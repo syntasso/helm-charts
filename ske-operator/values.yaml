@@ -16,8 +16,6 @@ imageRegistry:
   skeOperatorImage:
     # The name of the SKE operator use. Update this if you are using a custom image name for the operator
     name: "syntasso/ske-operator"
-    # The tag of the SKE Operator image
-    tag: "v0.3.1"
   skePlatformImage:
     # The name of the SKE Platform image
     name: "syntasso/ske-platform"

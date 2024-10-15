@@ -3,7 +3,7 @@ resources:
 images:
 - name: ghcr.io/syntasso/ske-operator
   newName: "{{ .Values.imageRegistry.host }}/{{ .Values.imageRegistry.skeOperatorImage.name }}"
-  newTag: "{{ .Values.imageRegistry.skeOperatorImage.tag }}"
+  newTag: "{{ .Chart.AppVersion }}"
 patches:
   - target:
       kind: Deployment

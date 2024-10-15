@@ -370,7 +370,7 @@ spec:
         command:
         - /manager
         image: '{{ .Values.imageRegistry.host }}/{{ .Values.imageRegistry.skeOperatorImage.name
-          }}:{{ .Values.imageRegistry.skeOperatorImage.tag }}'
+          }}:{{ .Chart.AppVersion }}'
         livenessProbe:
           httpGet:
             path: /healthz
