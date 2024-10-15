@@ -23,7 +23,7 @@ data:
         {{- with .Values.releaseStorage.bucket }}
         name: {{ .name }}
         endpoint: {{ .endpoint }}
-        region: {{ .rergion }}
+        region: {{ .region }}
         {{- if .secret }}
         secretName: {{ .secret.name }}
         {{- end }}
