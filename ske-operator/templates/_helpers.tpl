@@ -64,5 +64,5 @@ Create the name of the service account to use
 
 {{- define "imagePullSecret" }}
 {{- printf
-"{\"auths\":{\"ghcr.io\":{\"username\":\"syntasso-pkg\",\"password\":\"%s\",\"auth\":\"%s\"}}}" .Values.skeLicense (printf "syntasso-pkg:%s" .Values.skeLicense | b64enc) | b64enc }}
+"{\"auths\":{\"registry.syntasso.io\":{\"username\":\"syntasso-pkg\",\"password\":\"%s\",\"auth\":\"%s\"}}}" .Values.skeLicense (printf "syntasso-pkg:%s" .Values.skeLicense | b64enc) | b64enc }}
 {{- end }}

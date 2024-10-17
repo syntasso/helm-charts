@@ -1,7 +1,7 @@
 resources:
 - ./templates/ske-operator-distribution.yaml
 images:
-- name: ghcr.io/syntasso/ske-operator
+- name: registry.syntasso.io/syntasso/ske-operator
   newName: "{{ .Values.imageRegistry.host }}/{{ .Values.imageRegistry.skeOperatorImage.name }}"
   newTag: "{{ .Chart.AppVersion }}"
 patches:
