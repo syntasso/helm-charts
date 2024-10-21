@@ -1,151 +1,162 @@
 apiVersion: v1
 entries:
   kratix:
-    - apiVersion: v2
-      appVersion: 1.16.0
-      created: "2024-10-21T15:29:40.343846160Z"
-      description: A Helm chart for installing Kratix (https://kratix.io)
-      digest: 1646e4298e45171d197cdab89f305185e2778f19dbe67f8188b6af446fed887f
-      name: kratix
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/kratix-v0.0.1/kratix-v0.0.1.tgz
-      version: v0.0.1
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2024-10-21T15:29:40.34384616Z"
+    description: A Helm chart for installing Kratix (https://kratix.io)
+    digest: 1646e4298e45171d197cdab89f305185e2778f19dbe67f8188b6af446fed887f
+    name: kratix
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/kratix-v0.0.1/kratix-v0.0.1.tgz
+    version: v0.0.1
   kratix-destination:
-    - apiVersion: v2
-      appVersion: 0.0.1
-      created: "2023-12-27T15:58:57.248139082Z"
-      dependencies:
-        - condition: installFlux
-          name: flux2
-          repository: ""
-          version: 2.5.1
-      description: A Helm chart for installing flux and configuring it to pull down from Kratix
-      digest: ea229202dd5b1458279549dbbcf088397184c922f055ab452c1fd852a1a1dfa5
-      name: kratix-destination
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/kratix-destination-0.0.1/kratix-destination-0.0.1.tgz
-      version: 0.0.1
+  - apiVersion: v2
+    appVersion: 0.0.1
+    created: "2023-12-27T15:58:57.248139082Z"
+    dependencies:
+    - condition: installFlux
+      name: flux2
+      repository: ""
+      version: 2.5.1
+    description: A Helm chart for installing flux and configuring it to pull down
+      from Kratix
+    digest: ea229202dd5b1458279549dbbcf088397184c922f055ab452c1fd852a1a1dfa5
+    name: kratix-destination
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/kratix-destination-0.0.1/kratix-destination-0.0.1.tgz
+    version: 0.0.1
   ske-operator:
-    - apiVersion: v2
-      appVersion: v0.4.0
-      created: "2024-10-17T11:51:22.061746611Z"
-      description: A Helm Chart for deploying the SKE-Operator
-      digest: 0afa4950f92b3ae01fb715c0cadf232f5633c4e3570daa33c7540576c95225c0
-      name: ske-operator
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.20.0/ske-operator-0.20.0.tgz
-      version: 0.20.0
-    - apiVersion: v2
-      appVersion: v0.4.0
-      created: "2024-10-17T09:38:52.449233149Z"
-      description: A Helm Chart for deploying the SKE-Operator
-      digest: 7b2df1efe3d8f84d7e9ef30d394b9ff277df2f6e831fc8fdf68ae40cd160fa89
-      name: ske-operator
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.19.0/ske-operator-0.19.0.tgz
-      version: 0.19.0
-    - apiVersion: v2
-      appVersion: v0.4.0
-      created: "2024-10-16T14:13:41.806399648Z"
-      description: A Helm Chart for deploying the SKE-Operator
-      digest: b34479428f7508ecc08e69b7949021f36b6c2069401fd750ccae5ef3b0687ff4
-      name: ske-operator
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.18.0/ske-operator-0.18.0.tgz
-      version: 0.18.0
-    - apiVersion: v2
-      appVersion: v0.3.1
-      created: "2024-10-15T11:12:46.375186276Z"
-      description: A Helm Chart for deploying the SKE-Operator
-      digest: 64fbdf13205f3895e5844f474f586b9069500c6b8941e5c61a6e914f2396fbb8
-      name: ske-operator
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.17.0/ske-operator-0.17.0.tgz
-      version: 0.17.0
-    - apiVersion: v2
-      appVersion: v0.3.0
-      created: "2024-10-10T14:13:18.129877217Z"
-      description: A Helm Chart for deploying the SKE-Operator
-      digest: 702eb0df0405191af7936b495369361f666a42ea8c17a2b5de2752b2cea4f4bc
-      name: ske-operator
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.16.0/ske-operator-0.16.0.tgz
-      version: 0.16.0
-    - apiVersion: v2
-      appVersion: v0.3.0
-      created: "2024-10-10T13:31:43.351178403Z"
-      description: A Helm Chart for deploying the SKE-Operator
-      digest: 726708bbceac89628ffb87a666822ae979fe394dc1ba7d0a7be5a1c29606871d
-      name: ske-operator
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.15.0/ske-operator-0.15.0.tgz
-      version: 0.15.0
-    - apiVersion: v2
-      appVersion: v0.1.6
-      created: "2024-09-17T14:16:32.736883984Z"
-      description: A Helm Chart for deploying the SKE-Operator.
-      digest: 9765d6a9d8bc1e342fbd5d4abe24234de4e7ec54c4e405aafa5f0f5be94c8656
-      name: ske-operator
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.13.0/ske-operator-0.13.0.tgz
-      version: 0.13.0
-    - apiVersion: v2
-      appVersion: v0.1.5
-      created: "2024-09-05T16:16:29.500172162Z"
-      description: A Helm Chart for deploying the SKE-Operator
-      digest: fcc53866c3c8ddfb6254d06c6ececc9e77de0552d17ecfa37f07b88c03dbfcf5
-      name: ske-operator
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.12.0/ske-operator-0.12.0.tgz
-      version: 0.12.0
-    - apiVersion: v2
-      appVersion: v0.1.4
-      created: "2024-09-05T13:51:31.846971124Z"
-      description: A Helm Chart for deploying the SKE-Operator
-      digest: 9b9bc9a5ff1f57493b195b627b05df04d09415e003895fda7339855dd407629c
-      name: ske-operator
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.11.0/ske-operator-0.11.0.tgz
-      version: 0.11.0
-    - apiVersion: v2
-      appVersion: v0.1.3
-      created: "2024-09-05T10:19:36.491613668Z"
-      description: A Helm Chart for deploying the SKE-Operator
-      digest: 1647ff2cf7b6388207bdc9c007a2ef8a1f59aa3c64a8e2e15a2ac5db80d489ce
-      name: ske-operator
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.10.0/ske-operator-0.10.0.tgz
-      version: 0.10.0
-    - apiVersion: v2
-      appVersion: v0.1.2
-      created: "2024-08-23T09:39:28.954884494Z"
-      description: A Helm Chart for deploying the SKE-Operator
-      digest: b70fea97aa0f708b1a474ec883576018e5981a21945652e5d029901c4d88780a
-      name: ske-operator
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.9.0/ske-operator-0.9.0.tgz
-      version: 0.9.0
-    - apiVersion: v2
-      appVersion: v0.1.1
-      created: "2024-08-22T14:53:14.149895848Z"
-      description: A Helm Chart for deploying the SKE-Operator
-      digest: 3973fe9d81e12ac116dabab3d98b5cf12bda099c969aa550343dce1d8fc55668
-      name: ske-operator
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.8.0/ske-operator-0.8.0.tgz
-      version: 0.8.0
-generated: "2024-10-17T11:51:22.061793058Z"
+  - apiVersion: v2
+    appVersion: v0.4.1
+    created: "2024-10-21T15:50:04.952871813Z"
+    description: A Helm Chart for deploying the SKE-Operator
+    digest: dc2c41f382514929e2df264ff58890c2cab2237371ae0200b962cc668c970e7d
+    name: ske-operator
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.21.0/ske-operator-0.21.0.tgz
+    version: 0.21.0
+  - apiVersion: v2
+    appVersion: v0.4.0
+    created: "2024-10-17T11:51:22.061746611Z"
+    description: A Helm Chart for deploying the SKE-Operator
+    digest: 0afa4950f92b3ae01fb715c0cadf232f5633c4e3570daa33c7540576c95225c0
+    name: ske-operator
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.20.0/ske-operator-0.20.0.tgz
+    version: 0.20.0
+  - apiVersion: v2
+    appVersion: v0.4.0
+    created: "2024-10-17T09:38:52.449233149Z"
+    description: A Helm Chart for deploying the SKE-Operator
+    digest: 7b2df1efe3d8f84d7e9ef30d394b9ff277df2f6e831fc8fdf68ae40cd160fa89
+    name: ske-operator
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.19.0/ske-operator-0.19.0.tgz
+    version: 0.19.0
+  - apiVersion: v2
+    appVersion: v0.4.0
+    created: "2024-10-16T14:13:41.806399648Z"
+    description: A Helm Chart for deploying the SKE-Operator
+    digest: b34479428f7508ecc08e69b7949021f36b6c2069401fd750ccae5ef3b0687ff4
+    name: ske-operator
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.18.0/ske-operator-0.18.0.tgz
+    version: 0.18.0
+  - apiVersion: v2
+    appVersion: v0.3.1
+    created: "2024-10-15T11:12:46.375186276Z"
+    description: A Helm Chart for deploying the SKE-Operator
+    digest: 64fbdf13205f3895e5844f474f586b9069500c6b8941e5c61a6e914f2396fbb8
+    name: ske-operator
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.17.0/ske-operator-0.17.0.tgz
+    version: 0.17.0
+  - apiVersion: v2
+    appVersion: v0.3.0
+    created: "2024-10-10T14:13:18.129877217Z"
+    description: A Helm Chart for deploying the SKE-Operator
+    digest: 702eb0df0405191af7936b495369361f666a42ea8c17a2b5de2752b2cea4f4bc
+    name: ske-operator
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.16.0/ske-operator-0.16.0.tgz
+    version: 0.16.0
+  - apiVersion: v2
+    appVersion: v0.3.0
+    created: "2024-10-10T13:31:43.351178403Z"
+    description: A Helm Chart for deploying the SKE-Operator
+    digest: 726708bbceac89628ffb87a666822ae979fe394dc1ba7d0a7be5a1c29606871d
+    name: ske-operator
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.15.0/ske-operator-0.15.0.tgz
+    version: 0.15.0
+  - apiVersion: v2
+    appVersion: v0.1.6
+    created: "2024-09-17T14:16:32.736883984Z"
+    description: A Helm Chart for deploying the SKE-Operator.
+    digest: 9765d6a9d8bc1e342fbd5d4abe24234de4e7ec54c4e405aafa5f0f5be94c8656
+    name: ske-operator
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.13.0/ske-operator-0.13.0.tgz
+    version: 0.13.0
+  - apiVersion: v2
+    appVersion: v0.1.5
+    created: "2024-09-05T16:16:29.500172162Z"
+    description: A Helm Chart for deploying the SKE-Operator
+    digest: fcc53866c3c8ddfb6254d06c6ececc9e77de0552d17ecfa37f07b88c03dbfcf5
+    name: ske-operator
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.12.0/ske-operator-0.12.0.tgz
+    version: 0.12.0
+  - apiVersion: v2
+    appVersion: v0.1.4
+    created: "2024-09-05T13:51:31.846971124Z"
+    description: A Helm Chart for deploying the SKE-Operator
+    digest: 9b9bc9a5ff1f57493b195b627b05df04d09415e003895fda7339855dd407629c
+    name: ske-operator
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.11.0/ske-operator-0.11.0.tgz
+    version: 0.11.0
+  - apiVersion: v2
+    appVersion: v0.1.3
+    created: "2024-09-05T10:19:36.491613668Z"
+    description: A Helm Chart for deploying the SKE-Operator
+    digest: 1647ff2cf7b6388207bdc9c007a2ef8a1f59aa3c64a8e2e15a2ac5db80d489ce
+    name: ske-operator
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.10.0/ske-operator-0.10.0.tgz
+    version: 0.10.0
+  - apiVersion: v2
+    appVersion: v0.1.2
+    created: "2024-08-23T09:39:28.954884494Z"
+    description: A Helm Chart for deploying the SKE-Operator
+    digest: b70fea97aa0f708b1a474ec883576018e5981a21945652e5d029901c4d88780a
+    name: ske-operator
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.9.0/ske-operator-0.9.0.tgz
+    version: 0.9.0
+  - apiVersion: v2
+    appVersion: v0.1.1
+    created: "2024-08-22T14:53:14.149895848Z"
+    description: A Helm Chart for deploying the SKE-Operator
+    digest: 3973fe9d81e12ac116dabab3d98b5cf12bda099c969aa550343dce1d8fc55668
+    name: ske-operator
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.8.0/ske-operator-0.8.0.tgz
+    version: 0.8.0
+generated: "2024-10-21T15:50:04.953002848Z"
