@@ -497,7 +497,7 @@ spec:
                 configMapKeyRef:
                   key: WC_IMG
                   name: kratix-platform-wc-img-config
-          image: syntasso.docker.scarf.sh/syntasso/kratix-platform@sha256:9c8cf88cb465e5d2e3667dedb1439031a830a489aa42168d2eb422f6a9b39be4
+          image: syntasso.docker.scarf.sh/syntasso/kratix-platform@sha256:18da0cb459eadd09e0999123c4d39c24bab610e03009ca3a37f8fdf478e95f5b
           livenessProbe:
             httpGet:
               path: /healthz
