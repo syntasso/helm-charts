@@ -1,0 +1,37 @@
+{{ if not .Values.global.enableCertManager }}
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingWebhookConfiguration
+metadata:
+  annotations: {}
+  labels:
+    app.kubernetes.io/component: webhook
+    app.kubernetes.io/created-by: ske-operator
+    app.kubernetes.io/instance: validating-webhook-configuration
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: validatingwebhookconfiguration
+    app.kubernetes.io/part-of: ske-operator
+  name: ske-operator-validating-webhook-configuration
+webhooks:
+  - admissionReviewVersions:
+      - v1
+    clientConfig:
+      service:
+        name: ske-operator-webhook-service
+        namespace: kratix-platform-system
+        path: /validate-platform-syntasso-io-v1alpha1-kratix
+      caBundle: |-
+        {{ .Values.global.ca_cert | b64enc }}
+    failurePolicy: Fail
+    name: vkratix.kb.io
+    rules:
+      - apiGroups:
+          - platform.syntasso.io
+        apiVersions:
+          - v1alpha1
+        operations:
+          - CREATE
+          - UPDATE
+        resources:
+          - kratixes
+    sideEffects: None
+{{ end }}

@@ -1,0 +1,68 @@
+{{ if .Values.global.enableCertManager }}
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  labels:
+    app.kubernetes.io/component: certificate
+    app.kubernetes.io/created-by: ske-operator
+    app.kubernetes.io/instance: serving-cert
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: certificate
+    app.kubernetes.io/part-of: ske-operator
+  name: ske-operator-serving-cert
+  namespace: kratix-platform-system
+spec:
+  dnsNames:
+    - ske-operator-webhook-service.kratix-platform-system.svc
+    - ske-operator-webhook-service.kratix-platform-system.svc.cluster.local
+  issuerRef:
+    kind: Issuer
+    name: ske-operator-selfsigned-issuer
+  secretName: ske-operator-webhook-server-cert
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: ske-operator
+  name: ske-operator-selfsigned-issuer
+  namespace: kratix-platform-system
+spec:
+  selfSigned: {}
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingWebhookConfiguration
+metadata:
+  annotations:
+    cert-manager.io/inject-ca-from: kratix-platform-system/ske-operator-serving-cert
+  labels:
+    app.kubernetes.io/component: webhook
+    app.kubernetes.io/created-by: ske-operator
+    app.kubernetes.io/instance: validating-webhook-configuration
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: validatingwebhookconfiguration
+    app.kubernetes.io/part-of: ske-operator
+  name: ske-operator-validating-webhook-configuration
+webhooks:
+  - admissionReviewVersions:
+      - v1
+    clientConfig:
+      service:
+        name: ske-operator-webhook-service
+        namespace: kratix-platform-system
+        path: /validate-platform-syntasso-io-v1alpha1-kratix
+    failurePolicy: Fail
+    name: vkratix.kb.io
+    rules:
+      - apiGroups:
+          - platform.syntasso.io
+        apiVersions:
+          - v1alpha1
+        operations:
+          - CREATE
+          - UPDATE
+        resources:
+          - kratixes
+    sideEffects: None
+{{ end }}

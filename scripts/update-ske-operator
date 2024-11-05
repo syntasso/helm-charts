@@ -19,18 +19,49 @@ trap "rm ske-operator-distribution.yaml" EXIT
 
 export latest_version=${latest_release#"ske-operator-"}
 
-CHART_CRDS=$root/ske-operator/crds/crds.yaml
-CHART_DISTRIBUTION=$root/ske-operator/templates/ske-operator-distribution.yaml
+CHART_CRDS_WITH_CERT_MANAGER=$root/ske-operator/charts/ske-operator-crds/templates/crds-with-cert.yaml
+CHART_CRDS_WITHOUT_CERT_MANAGER=$root/ske-operator/charts/ske-operator-crds/templates/crds-without-cert.yaml
 
-# split the manifest into CRDs and the rest
-yq 'select(.kind == "CustomResourceDefinition")' ${MANIFEST_NAME} > ${CHART_CRDS}
-yq 'select(.kind != "CustomResourceDefinition" and .kind != "Namespace")' ${MANIFEST_NAME} > ${CHART_DISTRIBUTION}
+CHART_DIST_COMMON=$root/ske-operator/templates/ske-operator-distribution.yaml
+
+CHART_DIST_WITH_CERT_MANAGER=$root/ske-operator/templates/with-cert-manager.yaml
+CHART_DIST_WITHOUT_CERT_MANAGER=$root/ske-operator/templates/without-cert-manager.yaml
+
+echo "{{ if .Values.global.enableCertManager }}" > "${CHART_CRDS_WITH_CERT_MANAGER}"
+yq 'select(.kind == "CustomResourceDefinition")' ${MANIFEST_NAME} >> "${CHART_CRDS_WITH_CERT_MANAGER}"
+echo "{{ end }}" >> "${CHART_CRDS_WITH_CERT_MANAGER}"
+
+echo "{{ if not .Values.global.enableCertManager }}" > "${CHART_CRDS_WITHOUT_CERT_MANAGER}"
+yq 'select(.kind == "CustomResourceDefinition")' ${MANIFEST_NAME} |
+  yq 'del(.metadata.annotations."cert-manager.io/inject-ca-from")' |
+  yq '.spec.conversion.webhook.clientConfig.caBundle= "{{ .Values.global.ca_cert | b64enc }}" | .spec.conversion.webhook.clientConfig.caBundle style="literal" '>> "${CHART_CRDS_WITHOUT_CERT_MANAGER}"
+echo "{{ end }}" >> "${CHART_CRDS_WITHOUT_CERT_MANAGER}"
+
+yq 'select(.kind != "CustomResourceDefinition"
+  and .kind != "Namespace"
+  and .kind != "Certificate"
+  and .kind != "Issuer"
+  and .kind != "ValidatingWebhookConfiguration")' ${MANIFEST_NAME} > "${CHART_DIST_COMMON}"
+
+echo "{{ if .Values.global.enableCertManager }}" > "${CHART_DIST_WITH_CERT_MANAGER}"
+yq 'select(.kind == "Certificate"
+  or .kind == "Issuer"
+  or .kind == "ValidatingWebhookConfiguration")' ${MANIFEST_NAME} >> "${CHART_DIST_WITH_CERT_MANAGER}"
+echo "{{ end }}" >> "${CHART_DIST_WITH_CERT_MANAGER}"
+
+export CA_BUNDLE="{{ .Values.global.ca_cert | b64enc }}"
+echo "{{ if not .Values.global.enableCertManager }}" > "${CHART_DIST_WITHOUT_CERT_MANAGER}"
+yq 'select(.kind == "ValidatingWebhookConfiguration")' ${MANIFEST_NAME} |
+    yq 'del(.metadata.annotations."cert-manager.io/inject-ca-from")' |
+    yq '.webhooks[0].clientConfig.caBundle= "{{ .Values.global.ca_cert | b64enc }}" | .webhooks[0].clientConfig.caBundle style="literal"' >> "${CHART_DIST_WITHOUT_CERT_MANAGER}"
+echo "{{ end }}" >> "${CHART_DIST_WITHOUT_CERT_MANAGER}"
 
 # generate the kustomize manifest
 kubectl kustomize $root/ske-operator > $root/ske-operator/manifests.yaml
-mv $root/ske-operator/manifests.yaml ${CHART_DISTRIBUTION}
+mv $root/ske-operator/manifests.yaml "${CHART_DIST_COMMON}"
 
 # Bump current chart version (always a minor bump)
 current_chart_version="$(yq -r '.version' ske-operator/Chart.yaml)"
 export new_chart_version="$(echo $current_chart_version | awk -F. '{$2 = $2 + 1;} 1' | sed 's/ /./g')"
-yq -i '.appVersion = strenv(latest_version) | .version = env(new_chart_version)' ske-operator/Chart.yaml
+yq -i '.appVersion = strenv(latest_version) | .version = env(new_chart_version) | .dependencies[0].version = env(new_chart_version)' ske-operator/Chart.yaml
+yq -i '.appVersion = strenv(latest_version) | .version = env(new_chart_version)' ske-operator/charts/ske-operator-crds/Chart.yaml
