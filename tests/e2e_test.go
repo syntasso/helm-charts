@@ -33,14 +33,14 @@ var _ = Describe("ske-operator helm chart", func() {
 		It("should create a certificate and issuer, and use them for the webhook", func() {
 			run("pwd")
 			run("helm", "install", "ske-operator", "--create-namespace", "../ske-operator/",
-				"-n=kratix-platform-system", "-f=./assets/values-with-certmanager.yaml", "--set-string skeLicense="+skeLicenseToken, "--wait")
+				"-n=kratix-platform-system", "-f=./assets/values-with-certmanager.yaml", "--set-string", "skeLicense="+skeLicenseToken, "--wait")
 
-			run("kubectl", "get", "certificates", "ske-operator-webhook-cert", "-n=kratix-platform-system")
-			run("kubectl", "get", "issuer", "ske-operator-webhook-cert", "-n=kratix-platform-system")
+			run("kubectl", "get", "certificates", "ske-operator-serving-cert", "-n=kratix-platform-system")
+			run("kubectl", "get", "issuer", "ske-operator-selfsigned-issuer", "-n=kratix-platform-system")
 
 			//if the Kratix got created successfully by helm install, this means the
 			//webhook was running successfully
-			run("kubectl", "get", "kratix", "kratix")
+			run("kubectl", "get", "kratixes", "kratix")
 		})
 	})
 
@@ -57,7 +57,7 @@ var _ = Describe("ske-operator helm chart", func() {
 
 		It("should create use the provided certs for the webhook", func() {
 			run("helm", "install", "ske-operator", "--create-namespace", "../ske-operator/",
-				"-n=kratix-platform-system", "-f=./assets/values-without-certmanager.yaml", "--set-string skeLicense="+skeLicenseToken, "--wait")
+				"-n=kratix-platform-system", "-f=./assets/values-without-certmanager.yaml", "--set-string", "skeLicense="+skeLicenseToken, "--wait")
 
 			//if the Kratix got created successfully by helm install, this means the
 			//webhook was running successfully
