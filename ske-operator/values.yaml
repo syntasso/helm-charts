@@ -1,9 +1,14 @@
-global:
-  enableCertManager: true
-  # ca_cert: "foo"
 # Default values for ske-operator.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
+
+# Global configuration for the operator and operator-crd subchart
+global:
+  enableCertManager: true
+  # if enableCertManager is set to false, the following values are required
+  # ca_cert:
+  # tls_key:
+  # tls_cert:
 
 # Your SKE License Key
 skeLicense: "my-ske-license"
