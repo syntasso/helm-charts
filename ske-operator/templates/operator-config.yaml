@@ -38,7 +38,7 @@ data:
       pipelineImage: {{ .skePlatformPipelineAdapterImage.name }}
     {{- end }}
 
-{{ if and (.Values.releaseStorage) (.Values.releaseStorage.git) (.Values.releaseStorage.git.secret) (.Values.releaseStorage.git.secret.values) }}
+{{ if and (kindIs "map" .Values.releaseStorage) (hasKey .Values.releaseStorage "git") (kindIs "map" .Values.releaseStorage.git) (hasKey .Values.releaseStorage.git "secret") (hasKey .Values.releaseStorage.git.secret "values") }}
 ---
 apiVersion: v1
 kind: Secret
