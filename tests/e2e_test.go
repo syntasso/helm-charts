@@ -58,7 +58,6 @@ var _ = Describe("ske-operator helm chart", func() {
 
 		AfterEach(func() {
 			cleanup()
-			run("rm", "./tls.crt", "./tls.key", "./ca.crt", "./ca.key", "./ca.srl")
 		})
 
 		It("should create use the provided certs for the webhook", func() {
