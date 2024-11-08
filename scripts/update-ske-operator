@@ -54,6 +54,20 @@ echo "{{ if not .Values.global.enableCertManager }}" > "${CHART_DIST_WITHOUT_CER
 yq 'select(.kind == "ValidatingWebhookConfiguration")' ${MANIFEST_NAME} |
     yq 'del(.metadata.annotations."cert-manager.io/inject-ca-from")' |
     yq '.webhooks[0].clientConfig.caBundle= "{{ .Values.global.ca_cert | b64enc }}" | .webhooks[0].clientConfig.caBundle style="literal"' >> "${CHART_DIST_WITHOUT_CERT_MANAGER}"
+cat <<EOF >> "${CHART_DIST_WITHOUT_CERT_MANAGER}"
+---
+apiVersion: v1
+data:
+  ca.crt: {{ .Values.global.ske_operator_webhook_ca_cert | b64enc }}
+  tls.crt: {{ .Values.global.ske_operator_webhook_tls_cert | b64enc }}
+  tls.key: {{ .Values.global.ske_operator_webhook_tls_key | b64enc }}
+kind: Secret
+metadata:
+  name: ske-operator-webhook-server-cert
+  namespace: kratix-platform-system
+type: kubernetes.io/tls
+
+EOF
 echo "{{ end }}" >> "${CHART_DIST_WITHOUT_CERT_MANAGER}"
 
 # generate the kustomize manifest

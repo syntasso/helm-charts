@@ -13,20 +13,24 @@ import (
 )
 
 var (
-	timeout  = time.Second * 20
-	interval = time.Second
+	timeout     = time.Second * 60
+	longTimeout = time.Second * 300
+	interval    = time.Second
 )
 
 var _ = Describe("ske-operator helm chart", func() {
-	FContext("when global.enableCertManager=true", func() {
+	Context("when global.enableCertManager=true", func() {
 		BeforeEach(func() {
 			run("kubectl", "apply", "-f=https://github.com/cert-manager/cert-manager/releases/download/v1.15.0/cert-manager.yaml")
 			run("kubectl", "wait", "crd/certificates.cert-manager.io", "--for=condition=established", "--timeout=60s")
+			Eventually(func(g Gomega) {
+				runGinkgo(g, "kubectl", "apply", "-f", "assets/example-issuer.yaml", "--dry-run=server")
+			}, timeout, interval).Should(Succeed())
 			run("kubectl", "wait", "--for=condition=available", "deployment/cert-manager-webhook", "-n=cert-manager")
 		})
 
 		AfterEach(func() {
-			run("helm", "uninstall", "ske-operator", "-n=kratix-platform-system")
+			cleanup()
 			run("kubectl", "delete", "-f=https://github.com/cert-manager/cert-manager/releases/download/v1.15.0/cert-manager.yaml")
 		})
 
@@ -49,16 +53,20 @@ var _ = Describe("ske-operator helm chart", func() {
 			//double check cert-manager is not installed
 			crds := run("kubectl", "get", "crds")
 			Expect(crds).NotTo(ContainSubstring("cert-manager"))
+			run("./assets/generate-certs")
 		})
 
 		AfterEach(func() {
-			run("helm", "uninstall", "ske-operator", "-n=kratix-platform-system")
+			cleanup()
+			run("rm", "./tls.crt", "./tls.key", "./ca.crt", "./ca.key", "./ca.srl")
 		})
 
 		It("should create use the provided certs for the webhook", func() {
 			run("helm", "install", "ske-operator", "--create-namespace", "../ske-operator/",
-				"-n=kratix-platform-system", "-f=./assets/values-without-certmanager.yaml", "--set-string", "skeLicense="+skeLicenseToken, "--wait")
-
+				"-n=kratix-platform-system", "-f=./assets/values-without-certmanager.yaml", "--set-string", "skeLicense="+skeLicenseToken, "--wait",
+				"--set-string", "global.ske_operator_webhook_tls_cert="+run("cat", "./tls.crt"),
+				"--set-string", "global.ske_operator_webhook_tls_key="+run("cat", "./tls.key"),
+				"--set-string", "global.ske_operator_webhook_ca_cert="+run("cat", "./ca.crt"))
 			//if the Kratix got created successfully by helm install, this means the
 			//webhook was running successfully
 			run("kubectl", "get", "kratix", "kratix")
@@ -66,14 +74,32 @@ var _ = Describe("ske-operator helm chart", func() {
 	})
 })
 
+func cleanup() {
+	run("kubectl", "delete", "kratixes", "kratix", "--timeout=60s")
+	run("helm", "uninstall", "ske-operator", "-n=kratix-platform-system", "--wait")
+	runLongTimeout("kubectl", "delete", "namespace", "kratix-platform-system", "--timeout=300s")
+}
+
+func runLongTimeout(args ...string) string {
+	return r(Default, longTimeout, args...)
+}
+
 func run(args ...string) string {
+	return r(Default, timeout, args...)
+}
+
+func runGinkgo(g Gomega, args ...string) string {
+	return r(g, timeout, args...)
+}
+
+func r(g Gomega, t time.Duration, args ...string) string {
 	firstArg := args[0]
 	remainingArgs := args[1:]
 	command := exec.Command(firstArg, remainingArgs...)
 	command.Env = os.Environ()
 	session, err := gexec.Start(command, GinkgoWriter, GinkgoWriter)
 	fmt.Fprintf(GinkgoWriter, "Running: %s %s\n", firstArg, strings.Join(remainingArgs, " "))
-	ExpectWithOffset(1, err).ShouldNot(HaveOccurred())
-	EventuallyWithOffset(1, session, timeout, interval).Should(gexec.Exit(0))
+	g.ExpectWithOffset(1, err).ShouldNot(HaveOccurred())
+	g.EventuallyWithOffset(1, session, t, interval).Should(gexec.Exit(0))
 	return string(session.Out.Contents())
 }

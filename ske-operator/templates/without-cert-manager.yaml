@@ -20,7 +20,7 @@ webhooks:
         namespace: kratix-platform-system
         path: /validate-platform-syntasso-io-v1alpha1-kratix
       caBundle: |-
-        {{ .Values.global.ca_cert | b64enc }}
+        {{ .Values.global.ske_operator_webhook_ca_cert | b64enc }}
     failurePolicy: Fail
     name: vkratix.kb.io
     rules:
@@ -34,4 +34,16 @@ webhooks:
         resources:
           - kratixes
     sideEffects: None
+---
+apiVersion: v1
+data:
+  ca.crt: {{ .Values.global.ske_operator_webhook_ca_cert | b64enc }}
+  tls.crt: {{ .Values.global.ske_operator_webhook_tls_cert | b64enc }}
+  tls.key: {{ .Values.global.ske_operator_webhook_tls_key | b64enc }}
+kind: Secret
+metadata:
+  name: ske-operator-webhook-server-cert
+  namespace: kratix-platform-system
+type: kubernetes.io/tls
+
 {{ end }}
