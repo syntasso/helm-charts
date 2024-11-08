@@ -61,7 +61,7 @@ var _ = Describe("ske-operator helm chart", func() {
 			cleanup()
 		})
 
-		It("should create use the provided certs for the webhook", func() {
+		It("should use the provided certs for the webhook", func() {
 			run("helm", "install", "ske-operator", "--create-namespace", "../ske-operator/",
 				"-n=kratix-platform-system", "-f=./assets/values-without-certmanager.yaml", "--set-string", "skeLicense="+skeLicenseToken, "--wait",
 				"--set-string", "global.ske_operator_webhook_tls_cert="+run("cat", "./tls.crt"),
