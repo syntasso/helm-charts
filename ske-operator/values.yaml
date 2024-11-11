@@ -6,9 +6,9 @@
 global:
   enableCertManager: true
   # if enableCertManager is set to false, the following values are required
-  # ca_cert:
-  # tls_key:
-  # tls_cert:
+  # ske_operator_webhook_ca_cert:
+  # ske_operator_webhook_tls_key:
+  # ske_operator_webhook_tls_cert:
 
 # Your SKE License Key
 skeLicense: "my-ske-license"
