@@ -1,6 +1,7 @@
 global:
-  enableCertManager: false
-  # certs set via cli arg
+  operator:
+    enableCertManager: false
+    # certs set via cli arg
 
 skeLicense: "set via cli arg"
 skeDeployment:

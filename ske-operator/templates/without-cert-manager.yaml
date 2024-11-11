@@ -1,4 +1,4 @@
-{{ if not .Values.global.enableCertManager }}
+{{ if not .Values.global.operator.enableCertManager }}
 apiVersion: admissionregistration.k8s.io/v1
 kind: ValidatingWebhookConfiguration
 metadata:
@@ -20,7 +20,7 @@ webhooks:
         namespace: kratix-platform-system
         path: /validate-platform-syntasso-io-v1alpha1-kratix
       caBundle: |-
-        {{ .Values.global.ske_operator_webhook_ca_cert | b64enc }}
+        {{ .Values.global.operator.webhookCACert | b64enc }}
     failurePolicy: Fail
     name: vkratix.kb.io
     rules:
@@ -37,9 +37,9 @@ webhooks:
 ---
 apiVersion: v1
 data:
-  ca.crt: {{ .Values.global.ske_operator_webhook_ca_cert | b64enc }}
-  tls.crt: {{ .Values.global.ske_operator_webhook_tls_cert | b64enc }}
-  tls.key: {{ .Values.global.ske_operator_webhook_tls_key | b64enc }}
+  ca.crt: {{ .Values.global.operator.webhookCACert | b64enc }}
+  tls.crt: {{ .Values.global.operator.webhookTLSCert | b64enc }}
+  tls.key: {{ .Values.global.operator.webhookTLSKey | b64enc }}
 kind: Secret
 metadata:
   name: ske-operator-webhook-server-cert

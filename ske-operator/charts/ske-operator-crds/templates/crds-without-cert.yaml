@@ -1,4 +1,4 @@
-{{ if not .Values.global.enableCertManager }}
+{{ if not .Values.global.operator.enableCertManager }}
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
@@ -15,7 +15,7 @@ spec:
           namespace: kratix-platform-system
           path: /convert
         caBundle: |-
-          {{ .Values.global.ske_operator_webhook_ca_cert | b64enc }}
+          {{ .Values.global.operator.webhookCACert | b64enc }}
       conversionReviewVersions:
         - v1
   group: platform.syntasso.io
