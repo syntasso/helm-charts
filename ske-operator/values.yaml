@@ -4,12 +4,14 @@
 
 # Global configuration for the operator and operator-crd subchart
 global:
-  operator:
-    enableCertManager: true
-    # if enableCertManager is set to false, the following values are required
-    # webhookCACert:
-    # webhookTLSKey:
-    # webhookTLSCert:
+  skeOperator:
+    tlsConfig:
+      certManagerConfig:
+        disabled: false
+    # if certManagerConfig.disabled is set to false, the following values are required
+    # global.skeOperator.tlsConfig.webhookCACert:
+    # global.skeOperator.tlsConfig.webhookTLSKey:
+    # global.skeOperator.tlsConfig.webhookTLSCert:
 
 # Your SKE License Key
 skeLicense: "my-ske-license"

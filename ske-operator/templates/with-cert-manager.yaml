@@ -1,4 +1,4 @@
-{{ if .Values.global.operator.enableCertManager }}
+{{ if not .Values.global.skeOperator.tlsConfig.certManagerConfig.disabled }}
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:

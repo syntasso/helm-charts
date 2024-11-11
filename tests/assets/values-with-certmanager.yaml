@@ -1,6 +1,8 @@
 global:
-  operator:
-    enableCertManager: true
+  skeOperator:
+    tlsConfig:
+      certManagerConfig:
+        disabled: false
 
 skeLicense: "set via cli arg"
 skeDeployment:
