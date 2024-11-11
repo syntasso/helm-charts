@@ -1,0 +1,9 @@
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: ske-operator
+  name: test-cert-manager-webhook-is-running
+spec:
+  selfSigned: {}

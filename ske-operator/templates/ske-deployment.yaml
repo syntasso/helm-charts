@@ -5,6 +5,8 @@ apiVersion: platform.syntasso.io/v1alpha1
 kind: Kratix
 metadata:
   name: kratix
+  annotations:
+    helm.sh/hook: post-install
 spec:
   version: {{ .version | default "latest" }}
 {{- end -}}

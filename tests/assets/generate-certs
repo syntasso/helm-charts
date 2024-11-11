@@ -1,0 +1,70 @@
+#!/usr/bin/env bash
+
+# Set output files
+CA_KEY="ca.key"
+CA_CERT="ca.crt"
+TLS_KEY="tls.key"
+TLS_CSR="tls.csr"
+TLS_CERT="tls.crt"
+
+# Step 1: Generate CA Certificate (Self-signed)
+echo "Generating CA private key and certificate..."
+openssl genpkey -algorithm RSA -out "$CA_KEY" -pkeyopt rsa_keygen_bits:2048
+openssl req -x509 -new -nodes -key "$CA_KEY" -sha256 -days 365 -out "$CA_CERT" -subj "/CN=ske-operator-selfsigned-issuer"
+
+# Step 2: Generate TLS Private Key
+echo "Generating TLS private key..."
+openssl genpkey -algorithm RSA -out "$TLS_KEY" -pkeyopt rsa_keygen_bits:2048
+
+# Step 3: Create the Certificate Signing Request (CSR) Configuration
+CSR_CONF="tls-csr.conf"
+cat > "$CSR_CONF" << EOF
+[ req ]
+default_bits       = 2048
+distinguished_name = req_distinguished_name
+req_extensions     = req_ext
+prompt             = no
+
+[ req_distinguished_name ]
+CN = ske-operator-webhook-service.kratix-platform-system.svc
+
+[ req_ext ]
+subjectAltName = @alt_names
+
+[ alt_names ]
+DNS.1 = ske-operator-webhook-service.kratix-platform-system.svc
+DNS.2 = ske-operator-webhook-service.kratix-platform-system.svc.cluster.local
+EOF
+
+# Step 4: Generate the CSR using the TLS Key and CSR Configuration
+echo "Generating TLS certificate signing request (CSR)..."
+openssl req -new -key "$TLS_KEY" -out "$TLS_CSR" -config "$CSR_CONF"
+
+# Step 5: Create the Certificate Configuration for SAN and Other Extensions
+CERT_CONF="tls-cert.conf"
+cat > "$CERT_CONF" << EOF
+[ v3_ext ]
+authorityKeyIdentifier=keyid,issuer
+basicConstraints=CA:FALSE
+keyUsage = digitalSignature, keyEncipherment
+extendedKeyUsage = serverAuth
+subjectAltName = @alt_names
+
+[ alt_names ]
+DNS.1 = ske-operator-webhook-service.kratix-platform-system.svc
+DNS.2 = ske-operator-webhook-service.kratix-platform-system.svc.cluster.local
+EOF
+
+# Step 6: Sign the CSR with the CA Certificate to Generate the TLS Certificate
+echo "Signing the CSR with the CA to generate the TLS certificate..."
+openssl x509 -req -in "$TLS_CSR" -CA "$CA_CERT" -CAkey "$CA_KEY" -CAcreateserial \
+-out "$TLS_CERT" -days 365 -sha256 -extfile "$CERT_CONF" -extensions v3_ext
+
+# Cleanup: Optionally remove temporary files (CSR and config files)
+rm "$TLS_CSR" "$CSR_CONF" "$CERT_CONF"
+
+echo "Certificates and keys generated:"
+echo "  CA Certificate: $CA_CERT"
+echo "  TLS Certificate: $TLS_CERT"
+echo "  TLS Key: $TLS_KEY"
+
