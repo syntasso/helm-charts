@@ -10,3 +10,6 @@ skeDeployment:
   enabled: true
   # The version to deploy
   version: "latest"
+  tlsConfig:
+    certManagerConfig:
+      disabled: false

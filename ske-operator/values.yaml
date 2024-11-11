@@ -69,3 +69,10 @@ skeDeployment:
   enabled: true
   # The version to deploy
   version: "latest"
+  tlsConfig:
+    certManagerConfig:
+      disabled: false
+    # if certManagerConfig.disabled is set to false, the following values are required
+    # skeDeployment.tlsConfig.webhookCACert:
+    # skeDeployment.tlsConfig.webhookTLSKey:
+    # skeDeployment.tlsConfig.webhookTLSCert:
