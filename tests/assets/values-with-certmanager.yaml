@@ -1,7 +1,7 @@
 global:
   skeOperator:
     tlsConfig:
-      certManagerConfig:
+      certManager:
         disabled: false
 
 skeLicense: "set via cli arg"
@@ -11,5 +11,5 @@ skeDeployment:
   # The version to deploy
   version: "latest"
   tlsConfig:
-    certManagerConfig:
+    certManager:
       disabled: false

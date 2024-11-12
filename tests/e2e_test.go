@@ -20,7 +20,7 @@ var (
 )
 
 var _ = Describe("ske-operator helm chart", func() {
-	Context("when global.skeOperator.tlsConfig.certManagerConfig.disabled=false", func() {
+	Context("when global.skeOperator.tlsConfig.certManager.disabled=false", func() {
 		BeforeEach(func() {
 			run("kubectl", context, "apply", "-f=https://github.com/cert-manager/cert-manager/releases/download/v1.15.0/cert-manager.yaml")
 			run("kubectl", context, "wait", "crd/certificates.cert-manager.io", "--for=condition=established", "--timeout=60s")
@@ -49,7 +49,7 @@ var _ = Describe("ske-operator helm chart", func() {
 		})
 	})
 
-	Context("when global.skeOperator.tlsConfig.certManagerConfig.disabled=true, and certs are provided", func() {
+	Context("when global.skeOperator.tlsConfig.certManager.disabled=true, and certs are provided", func() {
 		BeforeEach(func() {
 			//double check cert-manager is not installed
 			crds := run("kubectl", context, "get", "crds")

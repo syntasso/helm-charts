@@ -6,7 +6,7 @@ function generate_resources_without_certmanager(){
   CHART_CRDS_WITHOUT_CERT_MANAGER=$root/ske-operator/charts/ske-operator-crds/templates/crds-without-cert-manager.yaml
   CHART_DIST_WITHOUT_CERT_MANAGER=$root/ske-operator/templates/without-cert-manager.yaml
 
-  echo "{{ if .Values.global.skeOperator.tlsConfig.certManagerConfig.disabled }}" > "${CHART_DIST_WITHOUT_CERT_MANAGER}"
+  echo "{{ if .Values.global.skeOperator.tlsConfig.certManager.disabled }}" > "${CHART_DIST_WITHOUT_CERT_MANAGER}"
   yq 'select(.kind == "ValidatingWebhookConfiguration")' ${MANIFEST_NAME} |
       yq 'del(.metadata.annotations."cert-manager.io/inject-ca-from")' |
       yq '.webhooks[0].clientConfig.caBundle= "{{ .Values.global.skeOperator.tlsConfig.webhookCACert | b64enc }}" | .webhooks[0].clientConfig.caBundle style="literal"' >> "${CHART_DIST_WITHOUT_CERT_MANAGER}"
@@ -27,7 +27,7 @@ EOF
   echo "{{ end }}" >> "${CHART_DIST_WITHOUT_CERT_MANAGER}"
 
 
-  echo "{{ if .Values.global.skeOperator.tlsConfig.certManagerConfig.disabled }}" > "${CHART_CRDS_WITHOUT_CERT_MANAGER}"
+  echo "{{ if .Values.global.skeOperator.tlsConfig.certManager.disabled }}" > "${CHART_CRDS_WITHOUT_CERT_MANAGER}"
   yq 'select(.kind == "CustomResourceDefinition")' ${MANIFEST_NAME} |
     yq 'del(.metadata.annotations."cert-manager.io/inject-ca-from")' |
     yq '.spec.conversion.webhook.clientConfig.caBundle= "{{ .Values.global.skeOperator.tlsConfig.webhookCACert | b64enc }}" | .spec.conversion.webhook.clientConfig.caBundle style="literal" '>> "${CHART_CRDS_WITHOUT_CERT_MANAGER}"
@@ -38,13 +38,13 @@ function generate_resources_with_certmanager(){
   CHART_CRDS_WITH_CERT_MANAGER=$root/ske-operator/charts/ske-operator-crds/templates/crds-with-cert-manager.yaml
   CHART_DIST_WITH_CERT_MANAGER=$root/ske-operator/templates/with-cert-manager.yaml
 
-  echo "{{ if not .Values.global.skeOperator.tlsConfig.certManagerConfig.disabled }}" > "${CHART_DIST_WITH_CERT_MANAGER}"
+  echo "{{ if not .Values.global.skeOperator.tlsConfig.certManager.disabled }}" > "${CHART_DIST_WITH_CERT_MANAGER}"
   yq 'select(.kind == "Certificate"
     or .kind == "Issuer"
     or .kind == "ValidatingWebhookConfiguration")' ${MANIFEST_NAME} >> "${CHART_DIST_WITH_CERT_MANAGER}"
   echo "{{ end }}" >> "${CHART_DIST_WITH_CERT_MANAGER}"
 
-  echo "{{ if not .Values.global.skeOperator.tlsConfig.certManagerConfig.disabled }}" > "${CHART_CRDS_WITH_CERT_MANAGER}"
+  echo "{{ if not .Values.global.skeOperator.tlsConfig.certManager.disabled }}" > "${CHART_CRDS_WITH_CERT_MANAGER}"
   yq 'select(.kind == "CustomResourceDefinition")' ${MANIFEST_NAME} >> "${CHART_CRDS_WITH_CERT_MANAGER}"
   echo "{{ end }}" >> "${CHART_CRDS_WITH_CERT_MANAGER}"
 

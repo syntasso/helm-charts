@@ -9,10 +9,10 @@ metadata:
 spec:
   version: {{ .version | default "latest" }}
   tlsConfig:
-    {{- if ( .tlsConfig.certManagerConfig.disabled | default false ) }}
+    {{- if ( .tlsConfig.certManager.disabled | default false ) }}
     certSecretName: custom-kratix-platform-serving-cert
     {{- end }}
-    certManagerConfig:
-      disabled: {{ .tlsConfig.certManagerConfig.disabled | default false }}
+    certManager:
+      disabled: {{ .tlsConfig.certManager.disabled | default false }}
 {{- end }}
 {{- end }}
