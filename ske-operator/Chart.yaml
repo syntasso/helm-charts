@@ -3,7 +3,7 @@ name: ske-operator
 description: A Helm Chart for deploying the SKE-Operator
 type: application
 version: 0.22.0 # the helm chart version
-appVersion: "v0.5.0" # the ske-operator version
+appVersion: "v0.5.0" # the ske operator version
 dependencies:
   - name: ske-operator-crds
     version: 0.22.0
