@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     branches: ['main']
-    paths: ['ske-operator/Chart.yaml']
+    paths: ['ske-operator/Chart.yaml', 'ske-operator/charts/ske-operator-crds/Chart.yaml']
 
 env:
   GITHUB_TOKEN: "${{ secrets.CR_TOKEN }}"
@@ -43,13 +43,17 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
-      - name: Upload Chart to Releases Bucket
+      - name: Upload Charts to Releases Bucket
         run: |
-          VERSION=$(cat ske-operator/Chart.yaml | grep version: | awk '{print $2}')
+          VERSION=$(grep '^version:' ske-operator/Chart.yaml | awk '{print $2}' | head -n 1)
           bucket_path="s3://syntasso-enterprise-releases/ske-operator-helm-chart/${VERSION}/"
           echo "Uploading ske-operator-${VERSION}.tgz to ${bucket_path}"
           aws s3 cp .cr-release-packages/ske-operator-${VERSION}.tgz ${bucket_path}
 
+          VERSION=$(cat ske-operator/charts/ske-operator-crds/Chart.yaml | grep version: | awk '{print $2}')
+          bucket_path="s3://syntasso-enterprise-releases/ske-operator-crds-helm-chart/${VERSION}/"
+          echo "Uploading ske-operator-crds-${VERSION}.tgz to ${bucket_path}"
+          aws s3 cp .cr-release-packages/ske-operator-crds-${VERSION}.tgz ${bucket_path}
       - name: trigger-run-ci
         env:
           CCI_TOKEN: ${{ secrets.CCI_TOKEN }}

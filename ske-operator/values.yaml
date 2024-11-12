@@ -6,9 +6,9 @@
 global:
   skeOperator:
     tlsConfig:
-      certManagerConfig:
+      certManager:
         disabled: false
-    # if certManagerConfig.disabled is set to false, the following values are required
+    # if certManager.disabled is set to false, the following values are required
     # global.skeOperator.tlsConfig.webhookCACert:
     # global.skeOperator.tlsConfig.webhookTLSKey:
     # global.skeOperator.tlsConfig.webhookTLSCert:
@@ -69,3 +69,10 @@ skeDeployment:
   enabled: true
   # The version to deploy
   version: "latest"
+  tlsConfig:
+    certManager:
+      disabled: false
+    # if certManager.disabled is set to false, the following values are required within the tlsConfig
+    # webhookCACert:
+    # webhookTLSKey:
+    # webhookTLSCert:

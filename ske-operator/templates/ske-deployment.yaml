@@ -1,6 +1,5 @@
-
-{{- if .Values.skeDeployment.enabled -}}
-{{- with .Values.skeDeployment -}}
+{{- if .Values.skeDeployment.enabled }}
+{{- with .Values.skeDeployment }}
 apiVersion: platform.syntasso.io/v1alpha1
 kind: Kratix
 metadata:
@@ -9,5 +8,11 @@ metadata:
     helm.sh/hook: post-install
 spec:
   version: {{ .version | default "latest" }}
-{{- end -}}
-{{- end -}}
+  tlsConfig:
+    {{- if ( .tlsConfig.certManager.disabled | default false ) }}
+    certSecretName: custom-kratix-platform-serving-cert
+    {{- end }}
+    certManager:
+      disabled: {{ .tlsConfig.certManager.disabled | default false }}
+{{- end }}
+{{- end }}

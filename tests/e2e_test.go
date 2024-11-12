@@ -20,7 +20,7 @@ var (
 )
 
 var _ = Describe("ske-operator helm chart", func() {
-	Context("when global.skeOperator.tlsConfig.certManagerConfig.disabled=false", func() {
+	Context("when global.skeOperator.tlsConfig.certManager.disabled=false", func() {
 		BeforeEach(func() {
 			run("kubectl", context, "apply", "-f=https://github.com/cert-manager/cert-manager/releases/download/v1.15.0/cert-manager.yaml")
 			run("kubectl", context, "wait", "crd/certificates.cert-manager.io", "--for=condition=established", "--timeout=60s")
@@ -49,7 +49,7 @@ var _ = Describe("ske-operator helm chart", func() {
 		})
 	})
 
-	Context("when global.skeOperator.tlsConfig.certManagerConfig.disabled=true, and certs are provided", func() {
+	Context("when global.skeOperator.tlsConfig.certManager.disabled=true, and certs are provided", func() {
 		BeforeEach(func() {
 			//double check cert-manager is not installed
 			crds := run("kubectl", context, "get", "crds")
@@ -64,12 +64,17 @@ var _ = Describe("ske-operator helm chart", func() {
 		It("should use the provided certs for the webhook", func() {
 			run("helm", "install", "ske-operator", "--create-namespace", "../ske-operator/",
 				"-n=kratix-platform-system", "-f=./assets/values-without-certmanager.yaml", "--set-string", "skeLicense="+skeLicenseToken, "--wait",
-				"--set-string", "global.skeOperator.tlsConfig.webhookTLSCert="+run("cat", "./tls.crt"),
-				"--set-string", "global.skeOperator.tlsConfig.webhookTLSKey="+run("cat", "./tls.key"),
-				"--set-string", "global.skeOperator.tlsConfig.webhookCACert="+run("cat", "./ca.crt"))
+				"--set-string", "global.skeOperator.tlsConfig.webhookTLSCert="+run("cat", "./operator-tls.crt"),
+				"--set-string", "global.skeOperator.tlsConfig.webhookTLSKey="+run("cat", "./operator-tls.key"),
+				"--set-string", "global.skeOperator.tlsConfig.webhookCACert="+run("cat", "./operator-ca.crt"),
+				"--set-string", "skeDeployment.tlsConfig.webhookTLSCert="+run("cat", "./deployment-tls.crt"),
+				"--set-string", "skeDeployment.tlsConfig.webhookTLSKey="+run("cat", "./deployment-tls.key"),
+				"--set-string", "skeDeployment.tlsConfig.webhookCACert="+run("cat", "./deployment-ca.crt"))
 			//if the Kratix got created successfully by helm install, this means the
 			//webhook was running successfully
 			run("kubectl", context, "get", "kratix", "kratix")
+			run("kubectl", context, "wait", "kratix", "kratix", "--for=condition=KratixDeploymentReady", "--timeout=120s")
+			run("kubectl", context, "apply", "-f", "assets/example-promise.yaml")
 		})
 	})
 })
