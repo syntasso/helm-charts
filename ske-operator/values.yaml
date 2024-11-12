@@ -72,7 +72,7 @@ skeDeployment:
   tlsConfig:
     certManager:
       disabled: false
-    # if certManager.disabled is set to false, the following values are required
-    # skeDeployment.tlsConfig.webhookCACert:
-    # skeDeployment.tlsConfig.webhookTLSKey:
-    # skeDeployment.tlsConfig.webhookTLSCert:
+    # if certManager.disabled is set to false, the following values are required within the tlsConfig
+    # webhookCACert:
+    # webhookTLSKey:
+    # webhookTLSCert:
