@@ -60,6 +60,29 @@ spec:
             spec:
               description: KratixSpec defines the desired state of Kratix
               properties:
+                tlsConfig:
+                  description: TLSConfig is the configuration for TLS on the deployed SKE
+                  properties:
+                    certManager:
+                      description: CertManager is the configuration for the cert-manager integration
+                      properties:
+                        disabled:
+                          description: Disabled indicates whether the Operator should create cert-manager resources
+                          type: boolean
+                      required:
+                        - disabled
+                      type: object
+                    certSecretName:
+                      description: |-
+                        CertSecretName is the name of the secret containing the TLS Certificate.
+                        The underlying secret must include the following keys:
+                        - tls.crt: The TLS Certificate
+                        - tls.key: The TLS Private Key
+                        - ca.crt: The Certificate Authority
+                        If CertSecretName is not provided, the Operator will generate a
+                        self-signed certificate using cert-manager.
+                      type: string
+                  type: object
                 version:
                   description: |-
                     Version is the version of the Kratix platform to deploy, and corresponds to the
@@ -131,8 +154,28 @@ spec:
                   type: array
                 lastAppliedVersion:
                   type: string
+                postUpgradeStatus:
+                  properties:
+                    lastTransitionTime:
+                      format: date-time
+                      type: string
+                    promiseConfigureWorkflows:
+                      items:
+                        properties:
+                          promiseName:
+                            type: string
+                          status:
+                            type: string
+                        type: object
+                      type: array
+                    status:
+                      type: string
+                  type: object
                 ready:
                   type: boolean
+                upgradedDeploymentReadyAt:
+                  format: date-time
+                  type: string
               required:
                 - ready
               type: object
