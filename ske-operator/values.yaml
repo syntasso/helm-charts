@@ -76,4 +76,16 @@ skeDeployment:
     # webhookCACert:
     # webhookTLSKey:
     # webhookTLSCert:
-
+  additionalResources: []
+  # Example
+  # - kind: Destination
+  #   apiVersion: platform.kratix.io/v1alpha1
+  #   name: worker-1
+  #   labels:
+  #     env: dev
+  #   stateStoreRef:
+  #     name: default
+  #     kind: GitStateStore
+  #   strictMatchLabels: false
+additionalResources: []
+# Any additional k8s resources, such as Secrets, Configmaps
