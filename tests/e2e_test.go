@@ -20,7 +20,7 @@ var (
 )
 
 var _ = Describe("ske-operator helm chart", func() {
-	Context("when global.skeOperator.tlsConfig.certManager.disabled=false", func() {
+	When("global.skeOperator.tlsConfig.certManager.disabled=false", func() {
 		BeforeEach(func() {
 			run("kubectl", context, "apply", "-f=https://github.com/cert-manager/cert-manager/releases/download/v1.15.0/cert-manager.yaml")
 			run("kubectl", context, "wait", "crd/certificates.cert-manager.io", "--for=condition=established", "--timeout=60s")
@@ -43,13 +43,19 @@ var _ = Describe("ske-operator helm chart", func() {
 			run("kubectl", context, "get", "certificates", "ske-operator-serving-cert", "-n=kratix-platform-system")
 			run("kubectl", context, "get", "issuer", "ske-operator-selfsigned-issuer", "-n=kratix-platform-system")
 
+			By("deploying kratix")
 			//if the Kratix got created successfully by helm install, this means the
 			//webhook was running successfully
 			run("kubectl", context, "get", "kratixes", "kratix")
+
+			By("creating any additional resources provided in values file")
+			run("kubectl", context, "get", "secrets", "git-credentials", "-n=default")
+			run("kubectl", context, "get", "gitstatestores", "default")
+			run("kubectl", context, "get", "destinations", "worker-1")
 		})
 	})
 
-	Context("when global.skeOperator.tlsConfig.certManager.disabled=true, and certs are provided", func() {
+	When("global.skeOperator.tlsConfig.certManager.disabled=true, and certs are provided", func() {
 		BeforeEach(func() {
 			//double check cert-manager is not installed
 			crds := run("kubectl", context, "get", "crds")
@@ -104,7 +110,7 @@ func r(g Gomega, t time.Duration, args ...string) string {
 	command.Env = os.Environ()
 	session, err := gexec.Start(command, GinkgoWriter, GinkgoWriter)
 	fmt.Fprintf(GinkgoWriter, "Running: %s %s\n", firstArg, strings.Join(remainingArgs, " "))
-	g.ExpectWithOffset(1, err).ShouldNot(HaveOccurred())
-	g.EventuallyWithOffset(1, session, t, interval).Should(gexec.Exit(0))
+	g.ExpectWithOffset(2, err).ShouldNot(HaveOccurred())
+	g.EventuallyWithOffset(2, session, t, interval).Should(gexec.Exit(0))
 	return string(session.Out.Contents())
 }

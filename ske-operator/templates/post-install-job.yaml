@@ -1,0 +1,31 @@
+{{- if .Values.skeDeployment.enabled }}
+{{- if .Values.skeDeployment.additionalResources }}
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: create-additional-resources
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-delete-policy": hook-succeeded
+    "helm.sh/hook-weight": "3"
+spec:
+  template:
+    spec:
+      serviceAccountName: ske-operator-controller-manager
+      restartPolicy: Never
+      containers:
+        - name: create-resources
+          image: ghcr.io/syntasso/kratix-pipeline-utility:v0.0.1
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              set -exu
+              kubectl wait --for=condition=KratixDeploymentReady kratixes/kratix --timeout=300s
+              {{ range .Values.skeDeployment.additionalResources }}
+              cat <<EOF | kubectl apply -f -
+              {{ . | toYaml | indent 14 | trim }}
+              EOF
+              {{ end }}
+{{- end -}}
+{{- end -}}
