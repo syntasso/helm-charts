@@ -1,4 +1,4 @@
-
+# [DEPRECATED] Use additionalResources instead
 {{- range .Values.destinations }}
 ---
 apiVersion: platform.kratix.io/v1alpha1
