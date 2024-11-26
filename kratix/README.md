@@ -24,32 +24,37 @@ configure a worker destination and a [BucketStateStore](https://kratix.io/docs/m
 at installation time you could provide the following `values.yaml` file:
 
 ```yaml
-stateStores:
+additionalResources:
 - kind: BucketStateStore
-  name: default
-  namespace: default
-  secretRef:
-    name: minio-credentials
-    # Optional, omit `values` field when the secret creation is managed externally
-    values:
-      accesskey: bWluaW9hZG1pbg==
-      secretkey: bWluaW9hZG1pbg==
-  insecure: true
-  endpoint: minio.kratix-platform-system.svc.cluster.local
-  bucket: kratix
-
-destinations:
-- name: worker-1
-  namespace: default
-  labels:
-    env: dev
-  path: ""
-  filepath:
-    mode: nestedByMetadata
-  stateStoreRef:
+  apiVersion: platform.kratix.io/v1alpha1
+  metadata:
     name: default
-    kind: BucketStateStore
-  strictMatchLabels: false
+  spec:
+    endpoint: minio.kratix-platform-system.svc.cluster.local
+    insecure: true
+    bucketName: kratix
+    authMethod: accessKey
+    secretRef:
+      name: minio-credentials
+      namespace: default
+- kind: Destination
+  apiVersion: platform.kratix.io/v1alpha1
+  metadata:
+    name: worker-1
+    labels:
+      environment: dev
+  spec:
+    stateStoreRef:
+      name: default
+      kind: BucketStateStore
+- apiVersion: v1
+  kind: Secret
+  metadata:
+    name: minio-credentials
+    namespace: default
+  type: Opaque
+  data:
+...
 ```
 
 See [the values file for more example configuration](./values.yaml). To pass the values file

@@ -1,3 +1,4 @@
+# [DEPRECATED] Use additionalResources instead
 {{- range .Values.stateStores }}
 ---
 apiVersion: platform.kratix.io/v1alpha1

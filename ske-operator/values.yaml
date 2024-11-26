@@ -77,15 +77,28 @@ skeDeployment:
     # webhookTLSKey:
     # webhookTLSCert:
   additionalResources: []
-  # Example
-  # - kind: Destination
-  #   apiVersion: platform.kratix.io/v1alpha1
-  #   name: worker-1
-  #   labels:
-  #     env: dev
-  #   stateStoreRef:
-  #     name: default
-  #     kind: GitStateStore
-  #   strictMatchLabels: false
+#   Example
+#  - apiVersion: platform.kratix.io/v1alpha1
+#    kind: Destination
+#    metadata:
+#      name: worker-1
+#      labels:
+#        environment: dev
+#    spec:
+#      stateStoreRef:
+#        name: default
+#        kind: BucketStateStore
+#  - kind: BucketStateStore
+#    apiVersion: platform.kratix.io/v1alpha1
+#    metadata:
+#      name: default
+#    spec:
+#      endpoint: minio.kratix-platform-system.svc.cluster.local
+#      insecure: true
+#      bucketName: kratix
+#      authMethod: accessKey
+#      secretRef:
+#        name: minio-credentials
+#        namespace: default
 additionalResources: []
 # Any additional k8s resources, such as Secrets, Configmaps

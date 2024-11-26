@@ -2,49 +2,52 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-stateStores: []
-# Examples
-# - kind: GitStateStore
-#   name: default
-#   path: ""
-#   secretRef:
-#     name: git-creds
-#     values:
-#       username: Zm9vCg==
-#       password: Zm9vCg==
-#   url: https://github.com/kratix/kratix-repo
-#   branch: main
-# - kind: BucketStateStore
-#   name: default
-#   path: ""
-#   secretRef:
-#     name: already-created-s3-creds
-#   insecure: false
-#   endpoint: s3.aws.com
-#   bucket: kraix-platform
+# [DEPRECATED] Use additionalResources instead
+stateStores:
+  - kind: BucketStateStore
+    name: default
+    namespace: default
+    secretRef:
+      name: minio-credentials
+      # Optional, omit `values` field when the secret creation is managed externally
+      values:
+        accesskey: bWluaW9hZG1pbg==
+        secretkey: bWluaW9hZG1pbg==
+    insecure: true
+    endpoint: minio.kratix-platform-system.svc.cluster.local
+    bucket: kratix
 
+# [DEPRECATED] Use additionalResources instead
 destinations: []
-# Example
-# - name: worker-1
-#   labels:
-#     env: dev
-#   path: ""
-#   filepath:
-#      mode: none | nestedByMetadata
-#   stateStoreRef:
-#     name: default
-#     kind: GitStateStore
-#   strictMatchLabels: false
 
-# -- Array extra K8s resources to deploy
-additionalResources: []
-# Example
+# Addition kratix resources to be created, such as GitStateStores, BucketStateStores and Destinations
+additionalResources:
+#- kind: GitStateStore
+#  apiVersion: platform.kratix.io/v1alpha1
+#  metadata:
+#    name: default
+#  spec:
+#    secretRef:
+#      name: git-credentials
+#      namespace: default
+#    url: https://172.18.0.2:31333/gitea_admin/kratix
+#    branch: main
+#- apiVersion: platform.kratix.io/v1alpha1
+#  kind: Destination
+#  metadata:
+#    name: worker-1
+#    labels:
+#      environment: dev
+#  spec:
+#    stateStoreRef:
+#      name: default
+#      kind: GitStateStore
 # - apiVersion: v1
 #   kind: Secret
 #   metadata:
-#     name: minio-credentials
+#     name: git-credentials
 #     namespace: default
 #   type: Opaque
 #   data:
-#     accesskey: Zm9vCg==
-#     secretkey: Zm9vCg==
+#     username: Zm9vCg==
+#     password: Zm9vCg==
