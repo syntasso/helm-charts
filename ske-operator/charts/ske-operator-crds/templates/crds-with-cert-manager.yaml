@@ -159,15 +159,40 @@ spec:
                     lastTransitionTime:
                       format: date-time
                       type: string
-                    promiseConfigureWorkflows:
-                      items:
-                        properties:
-                          promiseName:
-                            type: string
-                          status:
-                            type: string
-                        type: object
-                      type: array
+                    promiseConfigureWorkflowsCheck:
+                      properties:
+                        promiseConfigureWorkflows:
+                          items:
+                            properties:
+                              promiseName:
+                                type: string
+                              status:
+                                type: string
+                            type: object
+                          type: array
+                        status:
+                          type: string
+                      type: object
+                    resourceConfigureWorkflowsCheck:
+                      properties:
+                        resourceConfigureWorkflows:
+                          items:
+                            properties:
+                              promiseName:
+                                type: string
+                              resourceGVK:
+                                type: string
+                              resourceName:
+                                type: string
+                              resourceNamespace:
+                                type: string
+                              status:
+                                type: string
+                            type: object
+                          type: array
+                        status:
+                          type: string
+                      type: object
                     status:
                       type: string
                   type: object
