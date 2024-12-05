@@ -318,42 +318,6 @@ rules:
       - watch
 ---
 apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
-metadata:
-  labels:
-    app.kubernetes.io/component: kratix-manager
-    app.kubernetes.io/instance: kratix-platform
-    app.kubernetes.io/part-of: kratix
-  name: kratix-platform-metrics-reader
-rules:
-  - nonResourceURLs:
-      - /metrics
-    verbs:
-      - get
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
-metadata:
-  labels:
-    app.kubernetes.io/component: kratix-manager
-    app.kubernetes.io/instance: kratix-platform
-    app.kubernetes.io/part-of: kratix
-  name: kratix-platform-proxy-role
-rules:
-  - apiGroups:
-      - authentication.k8s.io
-    resources:
-      - tokenreviews
-    verbs:
-      - create
-  - apiGroups:
-      - authorization.k8s.io
-    resources:
-      - subjectaccessreviews
-    verbs:
-      - create
----
-apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   labels:
@@ -388,26 +352,9 @@ subjects:
     name: kratix-platform-controller-manager
     namespace: kratix-platform-system
 ---
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
-metadata:
-  labels:
-    app.kubernetes.io/component: kratix-manager
-    app.kubernetes.io/instance: kratix-platform
-    app.kubernetes.io/part-of: kratix
-  name: kratix-platform-proxy-rolebinding
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: kratix-platform-proxy-role
-subjects:
-  - kind: ServiceAccount
-    name: kratix-platform-controller-manager
-    namespace: kratix-platform-system
----
 apiVersion: v1
 data:
-  WC_IMG: syntasso.docker.scarf.sh/syntasso/kratix-platform-pipeline-adapter@sha256:1d891aa63b01b9612f67be6e4f863c2d810870655f671f22be77ac9ba7dc2434
+  WC_IMG: syntasso.docker.scarf.sh/syntasso/kratix-platform-pipeline-adapter@sha256:472439943e6db1b29549551217dc09a4967b4f557b60a53e1d6063d2cb879178
 kind: ConfigMap
 metadata:
   labels:
@@ -416,27 +363,6 @@ metadata:
     app.kubernetes.io/part-of: kratix
   name: kratix-platform-wc-img-config
   namespace: kratix-platform-system
----
-apiVersion: v1
-kind: Service
-metadata:
-  labels:
-    app.kubernetes.io/component: kratix-manager
-    app.kubernetes.io/instance: kratix-platform
-    app.kubernetes.io/part-of: kratix
-    control-plane: controller-manager
-  name: kratix-platform-controller-manager-metrics-service
-  namespace: kratix-platform-system
-spec:
-  ports:
-    - name: https
-      port: 8443
-      targetPort: https
-  selector:
-    app.kubernetes.io/component: kratix-manager
-    app.kubernetes.io/instance: kratix-platform
-    app.kubernetes.io/part-of: kratix
-    control-plane: controller-manager
 ---
 apiVersion: v1
 kind: Service
@@ -487,7 +413,6 @@ spec:
       containers:
         - args:
             - --health-probe-bind-address=:8081
-            - --metrics-bind-address=127.0.0.1:8080
             - --leader-elect
           command:
             - /manager
@@ -497,7 +422,7 @@ spec:
                 configMapKeyRef:
                   key: WC_IMG
                   name: kratix-platform-wc-img-config
-          image: syntasso.docker.scarf.sh/syntasso/kratix-platform@sha256:60954b48451da05f094582eb505dad8ce82c0625f3a46d98bdaec1a8bd54ef84
+          image: syntasso.docker.scarf.sh/syntasso/kratix-platform@sha256:676b41c69f4174a0b7224c8fdf476ed9e11ddebd2c9417329623d8e894045527
           livenessProbe:
             httpGet:
               path: /healthz
@@ -535,16 +460,6 @@ spec:
             - mountPath: /tmp/k8s-webhook-server/serving-certs
               name: cert
               readOnly: true
-        - args:
-            - --secure-listen-address=0.0.0.0:8443
-            - --upstream=http://127.0.0.1:8080/
-            - --logtostderr=true
-            - --v=10
-          image: gcr.io/kubebuilder/kube-rbac-proxy:v0.8.0
-          name: kube-rbac-proxy
-          ports:
-            - containerPort: 8443
-              name: https
       securityContext:
         runAsNonRoot: true
       serviceAccountName: kratix-platform-controller-manager
