@@ -142,109 +142,9 @@ rules:
       - platform.kratix.io
     resources:
       - destinations
-    verbs:
-      - create
-      - delete
-      - get
-      - list
-      - patch
-      - update
-      - watch
-  - apiGroups:
-      - platform.kratix.io
-    resources:
-      - destinations/finalizers
-    verbs:
-      - update
-  - apiGroups:
-      - platform.kratix.io
-    resources:
-      - destinations/status
-    verbs:
-      - get
-      - patch
-      - update
-  - apiGroups:
-      - platform.kratix.io
-    resources:
       - promisereleases
-    verbs:
-      - create
-      - delete
-      - get
-      - list
-      - patch
-      - update
-      - watch
-  - apiGroups:
-      - platform.kratix.io
-    resources:
-      - promisereleases/finalizers
-    verbs:
-      - update
-  - apiGroups:
-      - platform.kratix.io
-    resources:
-      - promisereleases/status
-    verbs:
-      - get
-      - patch
-      - update
-  - apiGroups:
-      - platform.kratix.io
-    resources:
       - promises
-    verbs:
-      - create
-      - delete
-      - get
-      - list
-      - patch
-      - update
-      - watch
-  - apiGroups:
-      - platform.kratix.io
-    resources:
-      - promises/finalizers
-    verbs:
-      - update
-  - apiGroups:
-      - platform.kratix.io
-    resources:
-      - promises/status
-    verbs:
-      - get
-      - patch
-      - update
-  - apiGroups:
-      - platform.kratix.io
-    resources:
       - workplacements
-    verbs:
-      - create
-      - delete
-      - get
-      - list
-      - patch
-      - update
-      - watch
-  - apiGroups:
-      - platform.kratix.io
-    resources:
-      - workplacements/finalizers
-    verbs:
-      - update
-  - apiGroups:
-      - platform.kratix.io
-    resources:
-      - workplacements/status
-    verbs:
-      - get
-      - patch
-      - update
-  - apiGroups:
-      - platform.kratix.io
-    resources:
       - works
     verbs:
       - create
@@ -257,12 +157,20 @@ rules:
   - apiGroups:
       - platform.kratix.io
     resources:
+      - destinations/finalizers
+      - promisereleases/finalizers
+      - promises/finalizers
+      - workplacements/finalizers
       - works/finalizers
     verbs:
       - update
   - apiGroups:
       - platform.kratix.io
     resources:
+      - destinations/status
+      - promisereleases/status
+      - promises/status
+      - workplacements/status
       - works/status
     verbs:
       - get
@@ -272,29 +180,6 @@ rules:
       - rbac.authorization.k8s.io
     resources:
       - clusterrolebindings
-    verbs:
-      - create
-      - delete
-      - get
-      - list
-      - update
-      - watch
-  - apiGroups:
-      - rbac.authorization.k8s.io
-    resources:
-      - clusterroles
-    verbs:
-      - bind
-      - create
-      - delete
-      - escalate
-      - get
-      - list
-      - update
-      - watch
-  - apiGroups:
-      - rbac.authorization.k8s.io
-    resources:
       - rolebindings
     verbs:
       - create
@@ -306,6 +191,7 @@ rules:
   - apiGroups:
       - rbac.authorization.k8s.io
     resources:
+      - clusterroles
       - roles
     verbs:
       - bind
@@ -354,7 +240,7 @@ subjects:
 ---
 apiVersion: v1
 data:
-  WC_IMG: syntasso.docker.scarf.sh/syntasso/kratix-platform-pipeline-adapter@sha256:d0ac2d5bccec2be9c1a42f60dc4efcfd971141b0e3a81695f7655cb59dd29310
+  WC_IMG: syntasso.docker.scarf.sh/syntasso/kratix-platform-pipeline-adapter@sha256:25600bee57046a0540207bec67bbae9986b894f7994cbb55f7232f1f170425d6
 kind: ConfigMap
 metadata:
   labels:
@@ -422,7 +308,7 @@ spec:
                 configMapKeyRef:
                   key: WC_IMG
                   name: kratix-platform-wc-img-config
-          image: syntasso.docker.scarf.sh/syntasso/kratix-platform@sha256:073d702930fb54c9d04d33492a5886b906586af9e434125f81542d04781466dc
+          image: syntasso.docker.scarf.sh/syntasso/kratix-platform@sha256:aedcd1eba40c23c848b7f765be332924ae7b107e425e2db115700efc4273a65d
           livenessProbe:
             httpGet:
               path: /healthz
