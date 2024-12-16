@@ -240,7 +240,7 @@ subjects:
 ---
 apiVersion: v1
 data:
-  WC_IMG: syntasso.docker.scarf.sh/syntasso/kratix-platform-pipeline-adapter@sha256:944a2ed19e80280255b1a32d154b4f8c5d4f37ab5f505e8dec43e18b24aef010
+  WC_IMG: syntasso.docker.scarf.sh/syntasso/kratix-platform-pipeline-adapter@sha256:960f01ace827accd730c72ee941749c49ed737d2f69d174659c7915c13fda993
 kind: ConfigMap
 metadata:
   labels:
@@ -308,7 +308,7 @@ spec:
                 configMapKeyRef:
                   key: WC_IMG
                   name: kratix-platform-wc-img-config
-          image: syntasso.docker.scarf.sh/syntasso/kratix-platform@sha256:886c17f4bd32cfdd848b99a97a941f98f928139d1f0a76a0b63eb138a4c11a96
+          image: syntasso.docker.scarf.sh/syntasso/kratix-platform@sha256:a3ab82f1aa67064cf794218aa1cdcb2c4b1968fdb0d82aa755495aaccb061eae
           livenessProbe:
             httpGet:
               path: /healthz
