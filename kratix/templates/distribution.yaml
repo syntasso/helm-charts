@@ -240,14 +240,14 @@ subjects:
 ---
 apiVersion: v1
 data:
-  WC_IMG: syntasso.docker.scarf.sh/syntasso/kratix-platform-pipeline-adapter@sha256:0c36b0ae362e8d7d55032fb7303ec3213d02adfc44a443d788598f31dbe5e4d2
+  PIPELINE_ADAPTER_IMG: syntasso.docker.scarf.sh/syntasso/kratix-platform-pipeline-adapter@sha256:c66c2f8b04d257b0820820ba98845311ff3630a37d021a20a71f1ec2deb70b17
 kind: ConfigMap
 metadata:
   labels:
     app.kubernetes.io/component: kratix-manager
     app.kubernetes.io/instance: kratix-platform
     app.kubernetes.io/part-of: kratix
-  name: kratix-platform-wc-img-config
+  name: kratix-platform-pipeline-adapter-config
   namespace: kratix-platform-system
 ---
 apiVersion: v1
@@ -303,12 +303,12 @@ spec:
           command:
             - /manager
           env:
-            - name: WC_IMG
+            - name: PIPELINE_ADAPTER_IMG
               valueFrom:
                 configMapKeyRef:
-                  key: WC_IMG
-                  name: kratix-platform-wc-img-config
-          image: syntasso.docker.scarf.sh/syntasso/kratix-platform@sha256:77850a47ded1015b769f57207767a02583eb34b22df9c64d81db6f6036820a6a
+                  key: PIPELINE_ADAPTER_IMG
+                  name: kratix-platform-pipeline-adapter-config
+          image: syntasso.docker.scarf.sh/syntasso/kratix-platform@sha256:7bbab8f98502a386d828a118d64318802a02a27f91ebe0dba1e77540ee6430bd
           livenessProbe:
             httpGet:
               path: /healthz
