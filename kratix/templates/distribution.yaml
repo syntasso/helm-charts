@@ -142,6 +142,7 @@ rules:
       - platform.kratix.io
     resources:
       - destinations
+      - healthrecords
       - promisereleases
       - promises
       - workplacements
@@ -158,6 +159,7 @@ rules:
       - platform.kratix.io
     resources:
       - destinations/finalizers
+      - healthrecords/finalizers
       - promisereleases/finalizers
       - promises/finalizers
       - workplacements/finalizers
@@ -168,6 +170,7 @@ rules:
       - platform.kratix.io
     resources:
       - destinations/status
+      - healthrecords/status
       - promisereleases/status
       - promises/status
       - workplacements/status
@@ -240,7 +243,7 @@ subjects:
 ---
 apiVersion: v1
 data:
-  PIPELINE_ADAPTER_IMG: syntasso.docker.scarf.sh/syntasso/kratix-platform-pipeline-adapter@sha256:c66c2f8b04d257b0820820ba98845311ff3630a37d021a20a71f1ec2deb70b17
+  PIPELINE_ADAPTER_IMG: syntasso.docker.scarf.sh/syntasso/kratix-platform-pipeline-adapter@sha256:a46fb3a29f5b9dba9945cb3fd386b991e5d709e033b57707cf9abcce5954a169
 kind: ConfigMap
 metadata:
   labels:
@@ -308,7 +311,7 @@ spec:
                 configMapKeyRef:
                   key: PIPELINE_ADAPTER_IMG
                   name: kratix-platform-pipeline-adapter-config
-          image: syntasso.docker.scarf.sh/syntasso/kratix-platform@sha256:7bbab8f98502a386d828a118d64318802a02a27f91ebe0dba1e77540ee6430bd
+          image: syntasso.docker.scarf.sh/syntasso/kratix-platform@sha256:97b20afe418dad5471f1ea05645105644235225d71774b0149accd8aac1170e8
           livenessProbe:
             httpGet:
               path: /healthz
