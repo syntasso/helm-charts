@@ -16,6 +16,8 @@ spec:
   {{- if eq .authMethod "ssh" }}
   authMethod: ssh
   {{- end }}
+  {{- end }}
+  {{- if eq .kind "BucketStateStore" }}
   bucketName: {{ .bucket }}
   endpoint: {{ .endpoint }}
   insecure: {{ .insecure }}
