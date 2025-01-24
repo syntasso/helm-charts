@@ -1,12 +1,11 @@
 skeLicense: 
-version:
 imageRegistry:
   imagePullSecret: 
-  host:
+  host: "registry.syntasso.io"
   k8sHealthAgentImage:
+    name: "syntasso/k8s-health-agent"
 
 deployment:
-  name:
   resources:
     limits:
       cpu:

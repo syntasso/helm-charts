@@ -32,7 +32,8 @@ spec:
             configMapKeyRef:
               key: HEALTH_CHECK_ADAPTER_IMG
               name: k8s-health-agent-config
-        image: registry.syntasso.io/syntasso/k8s-health-agent:v0.2.0
+        image: '{{ .Values.imageRegistry.host }}/{{ .Values.imageRegistry.k8sHealthAgentImage.name
+          }}:{{ .Chart.AppVersion }}'
         imagePullPolicy: IfNotPresent
         livenessProbe:
           httpGet:
@@ -49,16 +50,18 @@ spec:
           periodSeconds: 10
         resources:
           limits:
-            cpu: 500m
-            memory: 128Mi
+            cpu: '{{ .Values.deployment.resources.limits.cpu | default "500m"  }}'
+            memory: '{{ .Values.deployment.resources.limits.memory | default "128Mi"  }}'
           requests:
-            cpu: 10m
-            memory: 64Mi
+            cpu: '{{ .Values.deployment.resources.requests.cpu | default "10m"  }}'
+            memory: '{{ .Values.deployment.resources.requests.memory | default "64Mi"  }}'
         securityContext:
           allowPrivilegeEscalation: false
           capabilities:
             drop:
             - ALL
+      imagePullSecrets:
+      - name: '{{ .Values.imageRegistry.imagePullSecret | default "syntasso-registry" }}'
       securityContext:
         runAsNonRoot: true
       serviceAccountName: k8s-health-agent-controller-manager
