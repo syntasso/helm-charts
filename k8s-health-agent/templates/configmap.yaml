@@ -1,0 +1,7 @@
+apiVersion: v1
+data:
+  HEALTH_CHECK_ADAPTER_IMG: registry.syntasso.io/syntasso/health-check-adapter:v0.2.0
+kind: ConfigMap
+metadata:
+  name: k8s-health-agent-config
+  namespace: k8s-health-agent-system

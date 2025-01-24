@@ -1,0 +1,16 @@
+skeLicense: 
+version:
+imageRegistry:
+  imagePullSecret: 
+  host:
+  k8sHealthAgentImage:
+
+deployment:
+  name:
+  resources:
+    limits:
+      cpu:
+      memory:
+    requests:
+      cpu:
+      memory:
