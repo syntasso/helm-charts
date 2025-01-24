@@ -1,0 +1,7 @@
+apiVersion: v1
+data:
+  HEALTH_CHECK_ADAPTER_IMG: '{{ .Values.imageRegistry.host }}/{{ .Values.imageRegistry.k8sHealthAgentImage.name }}:{{ .Chart.AppVersion }}'
+kind: ConfigMap
+metadata:
+  name: k8s-health-agent-config
+  namespace: k8s-health-agent-system
