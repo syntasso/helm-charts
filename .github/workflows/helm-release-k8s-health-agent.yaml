@@ -47,8 +47,12 @@ jobs:
         run: |
           VERSION=$(grep '^version:' k8s-health-agent/Chart.yaml | awk '{print $2}' | head -n 1)
           bucket_path="s3://syntasso-enterprise-releases/k8s-health-agent-helm-chart/${VERSION}/"
-          echo "Uploading k8s-health-agent-${VERSION}.tgz to ${bucket_path}"
-          aws s3 cp .cr-release-packages/k8s-health-agent-${VERSION}.tgz ${bucket_path}
+          if [ -f .cr-release-packages/k8s-health-agent-${VERSION}.tgz ]; then
+            echo "Uploading k8s-health-agent-${VERSION}.tgz to ${bucket_path}"
+            aws s3 cp .cr-release-packages/k8s-health-agent-${VERSION}.tgz ${bucket_path}
+          else
+            echo "No new package created, skipping upload"
+          fi
 
       - name: Update SKE Destination Helm
         run: |
