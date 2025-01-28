@@ -1,9 +1,0 @@
-dependencies:
-- name: flux2
-  repository: ""
-  version: 2.5.1
-- name: k8s-health-agent
-  repository: https://syntasso.github.io/helm-charts
-  version: 0.1.0
-digest: sha256:1f91b99ead6d36d2f616ed6356149a6c58110bf9b9f28c483deb8933a9253faf
-generated: "2025-01-28T14:39:12.412056199Z"
