@@ -34,10 +34,10 @@ function main(){
   yq -i '.appVersion = strenv(latest_version) | .version = env(new_chart_version)' k8s-health-agent/Chart.yaml
 
   # Bump ske destination chart version (always a minor bump)
-  current_chart_version="$(yq -r '.version' ske-destination/Chart.yaml)"
-  export new_chart_version="$(echo $current_chart_version | awk -F. '{$2 = $2 + 1;} 1' | sed 's/ /./g')"
-  yq -i '.version = env(new_chart_version)' ske-destination/Chart.yaml
-  yq -i '.dependencies[1].version = env(new_chart_version)' ske-destination/Chart.yaml
+  # current_chart_version="$(yq -r '.version' ske-destination/Chart.yaml)"
+  # export new_chart_version="$(echo $current_chart_version | awk -F. '{$2 = $2 + 1;} 1' | sed 's/ /./g')"
+  # yq -i '.version = env(new_chart_version)' ske-destination/Chart.yaml
+  # yq -i '.dependencies[1].version = env(new_chart_version)' ske-destination/Chart.yaml
 }
 
 main
