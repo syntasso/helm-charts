@@ -14,7 +14,6 @@ jobs:
           token: ${{ secrets.CR_TOKEN }}
 
       - name: Configure Git
-        if: ${{ github.event_name == 'workflow_dispatch' }}
         run: |
           git config user.name "syntassodev"
           git config user.email "kratix@syntasso.io"
@@ -26,7 +25,6 @@ jobs:
           GH_TOKEN: ${{ secrets.CR_TOKEN }}
 
       - name: Commit and push changes
-        if: ${{ github.event_name == 'workflow_dispatch' }}
         run: |
           git add .
           git commit -m "feat: update K8s Health Agent to the latest released version"

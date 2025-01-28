@@ -49,3 +49,19 @@ jobs:
           bucket_path="s3://syntasso-enterprise-releases/k8s-health-agent-helm-chart/${VERSION}/"
           echo "Uploading k8s-health-agent-${VERSION}.tgz to ${bucket_path}"
           aws s3 cp .cr-release-packages/k8s-health-agent-${VERSION}.tgz ${bucket_path}
+
+      - name: Update SKE Destination Helm
+        run: |
+          current_k8s_health_agent_version="$(yq -r '.version' k8s-health-agent/Chart.yaml)"
+          current_ske_destination_chart_version="$(yq -r '.version' ske-destination/Chart.yaml)"
+          export new_ske_destination_chart_version="$(echo $current_ske_destination_chart_version | awk -F. '{$2 = $2 + 1;} 1' | sed 's/ /./g')"
+          yq -i '.version = env(current_ske_destination_chart_version)' ske-destination/Chart.yaml
+          yq -i '.dependencies[1].version = env(current_k8s_health_agent_version)' ske-destination/Chart.yaml
+        env:
+          GH_TOKEN: ${{ secrets.CR_TOKEN }}
+
+      - name: Commit and push changes
+        run: |
+          git add .
+          git commit -m "feat: update K8s Health Agent to the latest released version"
+          git push
