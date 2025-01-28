@@ -35,7 +35,7 @@ jobs:
           charts_dir: .
           pages_branch: gh-pages
           skip_existing: true
-
+        
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -56,16 +56,23 @@ jobs:
 
       - name: Update SKE Destination Helm
         run: |
-          export current_k8s_health_agent_version="$(yq -r '.version' k8s-health-agent/Chart.yaml)"
-          current_ske_destination_chart_version="$(yq -r '.version' ske-destination/Chart.yaml)"
-          export new_ske_destination_chart_version="$(echo $current_ske_destination_chart_version | awk -F. '{$2 = $2 + 1;} 1' | sed 's/ /./g')"
-          yq -i '.version = env(new_ske_destination_chart_version)' ske-destination/Chart.yaml
-          yq -i '.dependencies[1].version = env(current_k8s_health_agent_version)' ske-destination/Chart.yaml
-        env:
-          GH_TOKEN: ${{ secrets.CR_TOKEN }}
+          if [ -f .cr-release-packages/k8s-health-agent-${VERSION}.tgz ]; then
+            echo "Updating Chart.yaml in ske-destination"
+            export current_k8s_health_agent_version="$(yq -r '.version' k8s-health-agent/Chart.yaml)"
+            current_ske_destination_chart_version="$(yq -r '.version' ske-destination/Chart.yaml)"
+            export new_ske_destination_chart_version="$(echo $current_ske_destination_chart_version | awk -F. '{$2 = $2 + 1;} 1' | sed 's/ /./g')"
+            yq -i '.version = env(new_ske_destination_chart_version)' ske-destination/Chart.yaml
+            yq -i '.dependencies[1].version = env(current_k8s_health_agent_version)' ske-destination/Chart.yaml
+          else
+            echo "No new package created, skipping update to Chart.yaml in ske-destination"
+          fi
 
       - name: Commit and push changes
         run: |
+          if [ -z "$(git status --porcelain)" ]; then
+          echo "no changes to commit; exiting"
+          exit 0
+          fi
           git add .
-          git commit -m "feat: update K8s Health Agent to the latest released version"
+          git commit -m "feat: update K8s Health Agent in SKE Destination chart"
           git push
