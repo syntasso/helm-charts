@@ -27,5 +27,5 @@ dependencies:
   - name: k8s-health-agent
     # only install Health Agent if specified in values file
     condition: k8sHealthAgent.enabled
-    version: 0.1.0
+    version: 0.0.0
     repository: https://syntasso.github.io/helm-charts
