@@ -27,24 +27,6 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.CR_TOKEN }}
 
-      - name: Ensure helm repo has updated
-        run: |
-          DESIRED_VERSION=$(grep '^version:' k8s-health-agent/Chart.yaml | awk '{print $2}' | head -n 1)
-          helm repo add syntasso https://syntasso.github.io/helm-charts
-          TIMEOUT=100
-          ELAPSED=0
-          until [ "$(helm search repo syntasso -o json | jq -r '.[] | select(.name=="syntasso/k8s-health-agent").version')" = "$DESIRED_VERSION" ]; do
-            if [ $ELAPSED -ge $TIMEOUT ]; then
-              echo "Timeout reached."
-              exit 1
-            fi
-
-            echo "Waiting for repository to update..."
-            sleep 10
-            ELAPSED=$((ELAPSED + 10))
-            helm repo update
-          done
-
       - name: Commit and push changes
         run: |
           git add .
