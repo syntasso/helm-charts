@@ -29,6 +29,8 @@ jobs:
 
       - name: Ensure helm repo has updated
         run: |
+          DESIRED_VERSION=$(grep '^version:' k8s-health-agent/Chart.yaml | awk '{print $2}' | head -n 1)
+          helm repo add syntasso https://syntasso.github.io/helm-charts
           TIMEOUT=100
           ELAPSED=0
           until [ "$(helm search repo syntasso -o json | jq -r '.[] | select(.name=="syntasso/k8s-health-agent").version')" = "$DESIRED_VERSION" ]; do
