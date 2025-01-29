@@ -54,7 +54,7 @@ jobs:
             echo "No new package created, skipping upload"
           fi
 
-      - name: Update SKE Destination Helm
+      - name: Update SKE Destination Helm Chart
         run: |
           VERSION=$(grep '^version:' k8s-health-agent/Chart.yaml | awk '{print $2}' | head -n 1)
           if [ -f .cr-release-packages/k8s-health-agent-${VERSION}.tgz ]; then

@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - '**'  # Runs on any branch
+    paths: ['ske-operator/**', 'tests/**']
   workflow_dispatch:
 
 jobs:
