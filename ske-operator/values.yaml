@@ -76,6 +76,13 @@ skeDeployment:
     # webhookCACert:
     # webhookTLSKey:
     # webhookTLSCert:
+  resources:
+    limits:
+      cpu: "100m"
+      memory: "100Mi"
+    requests:
+      cpu: "100m"
+      memory: "100Mi"
   additionalResources: []
 #   Example
 #  - apiVersion: platform.kratix.io/v1alpha1

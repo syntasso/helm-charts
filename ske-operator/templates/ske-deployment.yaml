@@ -9,6 +9,8 @@ metadata:
     "helm.sh/hook-weight": "1"
 spec:
   version: {{ .version | default "latest" }}
+  resources:
+    {{- toYaml .Values.skeDeployment.resources | nindent 2 }}
   tlsConfig:
     {{- if ( .tlsConfig.certManager.disabled | default false ) }}
     certSecretName: custom-kratix-platform-serving-cert
