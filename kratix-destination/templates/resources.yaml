@@ -50,7 +50,7 @@ spec:
   sourceRef:
     kind: {{ $kind }}
     name: kratix
-  path: ./{{ .Values.config.path }}/dependencies
+  path: ./{{ required "config.path is required" .Values.config.path }}/dependencies
   validation: client
 {{ if .Values.config.secretRef.values }}
 ---

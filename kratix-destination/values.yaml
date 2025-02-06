@@ -5,7 +5,7 @@
 installFlux: true
 
 config:
-  path: "" # Path in StateStore. See https://kratix.io/docs/main/reference/clusters/intro
+  path: "" # required; Path in StateStore. See https://kratix.io/docs/main/reference/clusters/intro
   namespace: "" # Namespace to create config
   secretRef:
     name: "" # Name of secret

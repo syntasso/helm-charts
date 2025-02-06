@@ -7,7 +7,7 @@ metadata:
   name: {{ .name }}
   labels: {{ toYaml .labels | nindent 4 }}
 spec:
-  path: {{ .path }}
+  path: {{ required "destination path is required" .path }}
   {{- with .filepath }}
   filepath:
     mode: {{ .mode | default "nestedByMetadata" }}

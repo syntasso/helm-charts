@@ -39,6 +39,7 @@ additionalResources:
 #    labels:
 #      environment: dev
 #  spec:
+#    path: worker-1
 #    stateStoreRef:
 #      name: default
 #      kind: GitStateStore
