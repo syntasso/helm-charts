@@ -17,7 +17,7 @@ spec:
       restartPolicy: Never
       containers:
         - name: create-resources
-          image: ghcr.io/syntasso/kratix-pipeline-utility:v0.0.1
+          image: {{ .Values.imageRegistry.host }}/{{ .Values.imageRegistry.skePipelineUtilityImage.name }}:{{ .Values.imageRegistry.skePipelineUtilityImage.version }}
           command: ["/bin/sh", "-c"]
           args:
             - |
