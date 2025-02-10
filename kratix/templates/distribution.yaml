@@ -243,7 +243,7 @@ subjects:
 ---
 apiVersion: v1
 data:
-  PIPELINE_ADAPTER_IMG: syntasso.docker.scarf.sh/syntasso/kratix-platform-pipeline-adapter@sha256:972eaae92b361e7a14b42a4ff121fde006f734f3f280963adcfa85a304459a25
+  PIPELINE_ADAPTER_IMG: syntasso.docker.scarf.sh/syntasso/kratix-platform-pipeline-adapter@sha256:4c66e2949964507bcdb5e5cb5b8546c1fdd0c99f1b76c4ad3c7a636e8b6e195b
 kind: ConfigMap
 metadata:
   labels:
@@ -311,7 +311,7 @@ spec:
                 configMapKeyRef:
                   key: PIPELINE_ADAPTER_IMG
                   name: kratix-platform-pipeline-adapter-config
-          image: syntasso.docker.scarf.sh/syntasso/kratix-platform@sha256:7f5c2b9312c834e0fa12f141dcf89802835f3044096f7d5d4470c7aa7ab527f1
+          image: syntasso.docker.scarf.sh/syntasso/kratix-platform@sha256:07440a039bb07ebf3aa97a6b165ed76e2dd91a58961b2bd40010fa24d3ea55cd
           livenessProbe:
             httpGet:
               path: /healthz
@@ -415,6 +415,26 @@ webhooks:
       service:
         name: kratix-platform-webhook-service
         namespace: kratix-platform-system
+        path: /mutate-platform-kratix-io-v1alpha1-destination
+    failurePolicy: Fail
+    name: mdestination.kb.io
+    rules:
+      - apiGroups:
+          - platform.kratix.io
+        apiVersions:
+          - v1alpha1
+        operations:
+          - CREATE
+          - UPDATE
+        resources:
+          - destinations
+    sideEffects: None
+  - admissionReviewVersions:
+      - v1
+    clientConfig:
+      service:
+        name: kratix-platform-webhook-service
+        namespace: kratix-platform-system
         path: /mutate-platform-kratix-io-v1alpha1-promise
     failurePolicy: Fail
     name: mpromise.kb.io
@@ -444,6 +464,26 @@ metadata:
     app.kubernetes.io/part-of: kratix
   name: kratix-platform-validating-webhook-configuration
 webhooks:
+  - admissionReviewVersions:
+      - v1
+    clientConfig:
+      service:
+        name: kratix-platform-webhook-service
+        namespace: kratix-platform-system
+        path: /validate-platform-kratix-io-v1alpha1-destination
+    failurePolicy: Fail
+    name: vdestination.kb.io
+    rules:
+      - apiGroups:
+          - platform.kratix.io
+        apiVersions:
+          - v1alpha1
+        operations:
+          - CREATE
+          - UPDATE
+        resources:
+          - destinations
+    sideEffects: None
   - admissionReviewVersions:
       - v1
     clientConfig:
