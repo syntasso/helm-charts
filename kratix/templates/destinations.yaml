@@ -6,6 +6,9 @@ kind: Destination
 metadata:
   name: {{ .name }}
   labels: {{ toYaml .labels | nindent 4 }}
+  annotations:
+    helm.sh/hook: "post-install,post-upgrade"
+    helm.sh/hook-weight: "5"
 spec:
   path: {{ .path }}
   {{- with .filepath }}

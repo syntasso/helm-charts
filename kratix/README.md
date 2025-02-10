@@ -1,4 +1,5 @@
 # Kratix
+
 This chart is for installing [Kratix](https://kratix.io/) on your Platform cluster.
 
 ## Installation
@@ -11,7 +12,7 @@ export PLATFORM=kind-platform # or your platform cluster context
 
 helm repo add syntasso https://syntasso.github.io/helm-charts
 helm repo update
-helm --kube-context ${PLATFORM} install kratix syntasso/kratix
+helm --kube-context ${PLATFORM} install kratix syntasso/kratix --wait
 ```
 
 ### Optional Configuration
@@ -54,7 +55,8 @@ additionalResources:
     namespace: default
   type: Opaque
   data:
-...
+    accessKeyID: foo
+    secretAccessKey: bar
 ```
 
 See [the values file for more example configuration](./values.yaml). To pass the values file
