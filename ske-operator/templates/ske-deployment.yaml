@@ -5,7 +5,7 @@ kind: Kratix
 metadata:
   name: kratix
   annotations:
-    helm.sh/hook: "post-install,post-upgrade"
+    helm.sh/hook: post-install
     "helm.sh/hook-weight": "1"
 spec:
   version: {{ .version | default "latest" }}
