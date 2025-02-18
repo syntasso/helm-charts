@@ -3,7 +3,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: create-additional-resources
+  name: deploy-ske-deployment
   namespace: kratix-platform-system
   annotations:
     "helm.sh/hook": post-install,post-upgrade
@@ -15,20 +15,20 @@ spec:
       serviceAccountName: ske-operator-controller-manager
       restartPolicy: Never
       containers:
-        - name: create-resources
+        - name: deploy-ske
           image: {{ .Values.imageRegistry.host }}/{{ .Values.imageRegistry.skePipelineUtilityImage.name }}:{{ .Values.imageRegistry.skePipelineUtilityImage.version }}
           command: ["/bin/sh", "-c"]
           args:
             - |
               set -exu
-              kubectl wait --for=condition=Ready deployments/ske-operator-controller-manager -n kratix-platform-system --timeout=300s
+              kubectl wait --for=condition=Available deployments/ske-operator-controller-manager -n kratix-platform-system --timeout=300s
               kubectl apply -f /etc/config/ske-deployment/ske-deployment.yaml
               kubectl wait --for=condition=KratixDeploymentReady kratixes/kratix --timeout=300s
           volumeMounts:
-            - name: ske-deployment-config
+            - name: ske-deployment-config-volume
               mountPath: /etc/config/ske-deployment
       volumes:
-        - name: config-volume
+        - name: ske-deployment-config-volume
           configMap:
             name: ske-deployment-config
             items:
