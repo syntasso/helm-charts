@@ -1,19 +1,22 @@
 {{- if .Values.skeDeployment.enabled }}
 {{- with .Values.skeDeployment }}
-apiVersion: platform.syntasso.io/v1alpha1
-kind: Kratix
+apiVersion: v1
+kind: ConfigMap
 metadata:
-  name: kratix
-  annotations:
-    helm.sh/hook: post-install
-    "helm.sh/hook-weight": "1"
-spec:
-  version: {{ .version | default "latest" }}
-  tlsConfig:
-    {{- if ( .tlsConfig.certManager.disabled | default false ) }}
-    certSecretName: custom-kratix-platform-serving-cert
-    {{- end }}
-    certManager:
-      disabled: {{ .tlsConfig.certManager.disabled | default false }}
+  name: ske-deployment-config
+data:
+  ske-deployment: |
+    apiVersion: platform.syntasso.io/v1alpha1
+    kind: Kratix
+    metadata:
+      name: kratix
+    spec:
+      version: {{ .version | default "latest" }}
+      tlsConfig:
+        {{- if ( .tlsConfig.certManager.disabled | default false ) }}
+        certSecretName: custom-kratix-platform-serving-cert
+        {{- end }}
+        certManager:
+          disabled: {{ .tlsConfig.certManager.disabled | default false }}
 {{- end }}
 {{- end }}

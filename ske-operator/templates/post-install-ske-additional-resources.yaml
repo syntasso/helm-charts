@@ -9,7 +9,7 @@ metadata:
   annotations:
     "helm.sh/hook": post-install,post-upgrade
     "helm.sh/hook-delete-policy": hook-succeeded
-    "helm.sh/hook-weight": "3"
+    "helm.sh/hook-weight": "4"
 spec:
   template:
     spec:
@@ -22,7 +22,6 @@ spec:
           args:
             - |
               set -exu
-              kubectl wait --for=condition=KratixDeploymentReady kratixes/kratix --timeout=300s
               {{ range .Values.skeDeployment.additionalResources }}
               cat <<EOF | kubectl apply -f -
               {{ . | toYaml | indent 14 | trim }}
