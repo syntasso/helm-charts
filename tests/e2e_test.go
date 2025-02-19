@@ -78,8 +78,8 @@ var _ = Describe("ske-operator helm chart", func() {
 				"--set-string", "skeDeployment.tlsConfig.webhookCACert="+run("cat", "./deployment-ca.crt"))
 			//if the Kratix got created successfully by helm install, this means the
 			//webhook was running successfully
-			run("kubectl", context, "get", "kratix", "kratix")
-			run("kubectl", context, "wait", "kratix", "kratix", "--for=condition=KratixDeploymentReady", "--timeout=120s")
+			run("kubectl", context, "get", "kratixes", "kratix")
+			run("kubectl", context, "wait", "kratixes", "kratix", "--for=condition=KratixDeploymentReady", "--timeout=120s")
 			run("kubectl", context, "apply", "-f", "assets/example-promise.yaml")
 		})
 	})
