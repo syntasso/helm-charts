@@ -4,25 +4,24 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: create-additional-resources
+  name: deploy-additional-resources
   namespace: kratix-platform-system
   annotations:
     "helm.sh/hook": post-install,post-upgrade
     "helm.sh/hook-delete-policy": hook-succeeded
-    "helm.sh/hook-weight": "3"
+    "helm.sh/hook-weight": "4"
 spec:
   template:
     spec:
       serviceAccountName: ske-operator-controller-manager
       restartPolicy: Never
       containers:
-        - name: create-resources
+        - name: deploy-resources
           image: {{ .Values.imageRegistry.host }}/{{ .Values.imageRegistry.skePipelineUtilityImage.name }}:{{ .Values.imageRegistry.skePipelineUtilityImage.version }}
           command: ["/bin/sh", "-c"]
           args:
             - |
               set -exu
-              kubectl wait --for=condition=KratixDeploymentReady kratixes/kratix --timeout=300s
               {{ range .Values.skeDeployment.additionalResources }}
               cat <<EOF | kubectl apply -f -
               {{ . | toYaml | indent 14 | trim }}

@@ -1,0 +1,23 @@
+{{- if .Values.skeDeployment.enabled }}
+{{- with .Values.skeDeployment }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ske-deployment-config
+  namespace: kratix-platform-system
+data:
+  ske-deployment: |
+    apiVersion: platform.syntasso.io/v1alpha1
+    kind: Kratix
+    metadata:
+      name: kratix
+    spec:
+      version: {{ .version | default "latest" }}
+      tlsConfig:
+        {{- if ( .tlsConfig.certManager.disabled | default false ) }}
+        certSecretName: custom-kratix-platform-serving-cert
+        {{- end }}
+        certManager:
+          disabled: {{ .tlsConfig.certManager.disabled | default false }}
+{{- end }}
+{{- end }}
