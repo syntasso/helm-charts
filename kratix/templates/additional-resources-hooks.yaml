@@ -1,0 +1,120 @@
+{{- if .Values.additionalResources }}
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade,pre-delete
+    "helm.sh/hook-delete-policy": hook-succeeded
+    "helm.sh/hook-weight": "3"
+  labels:
+    app.kubernetes.io/component: kratix-manager
+    app.kubernetes.io/instance: kratix-platform
+    app.kubernetes.io/part-of: kratix
+  name: kratix-additional-resources
+  namespace: kratix-platform-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade,pre-delete
+    "helm.sh/hook-delete-policy": hook-succeeded
+    "helm.sh/hook-weight": "3"
+  labels:
+    app.kubernetes.io/component: kratix-manager
+    app.kubernetes.io/instance: kratix-platform
+    app.kubernetes.io/part-of: kratix
+  name: kratix-additional-resources-role
+  namespace: kratix-platform-system
+rules:
+  - apiGroups:
+      - platform.kratix.io
+    resources:
+      - '*'
+    verbs:
+      - get
+      - create
+      - patch
+      - delete
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade,pre-delete
+    "helm.sh/hook-delete-policy": hook-succeeded
+    "helm.sh/hook-weight": "3"
+  labels:
+    app.kubernetes.io/component: kratix-manager
+    app.kubernetes.io/instance: kratix-platform
+    app.kubernetes.io/part-of: kratix
+  name: kratix-additional-resources-rolebinding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: kratix-additional-resources-role
+subjects:
+  - kind: ServiceAccount
+    name: kratix-additional-resources
+    namespace: kratix-platform-system
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: deploy-additional-resources
+  namespace: kratix-platform-system
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-delete-policy": hook-succeeded
+    "helm.sh/hook-weight": "4"
+spec:
+  template:
+    spec:
+      serviceAccountName: kratix-additional-resources
+      restartPolicy: Never
+      containers:
+        - name: deploy-resources
+          image: ghcr.io/syntasso/kratix-pipeline-utility:v0.0.1
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              set -exu
+              {{ range .Values.additionalResources }}
+              {{- $resource := tpl (toYaml .) $ | fromYaml }}
+              {{- if eq $resource.apiVersion "platform.kratix.io/v1alpha1" }}
+              cat <<EOF | kubectl apply -f -
+              {{ toYaml $resource | indent 14 | trim }}
+              EOF
+              {{ end }}
+              {{ end }}
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: undeploy-additional-resources
+  namespace: kratix-platform-system
+  annotations:
+    "helm.sh/hook": pre-delete
+    "helm.sh/hook-delete-policy": hook-succeeded
+    "helm.sh/hook-weight": "4"
+spec:
+  template:
+    spec:
+      serviceAccountName: kratix-additional-resources
+      restartPolicy: Never
+      containers:
+        - name: undeploy-resources
+          image: ghcr.io/syntasso/kratix-pipeline-utility:v0.0.1
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              set -exu
+              {{ range .Values.additionalResources }}
+              {{- $resource := tpl (toYaml .) $ | fromYaml }}
+              {{- if eq $resource.apiVersion "platform.kratix.io/v1alpha1" }}
+              cat <<EOF | kubectl delete -f -
+              {{ toYaml $resource | indent 14 | trim }}
+              EOF
+              {{ end }}
+              {{ end }}
+{{- end -}}
