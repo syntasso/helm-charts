@@ -1,0 +1,61 @@
+{{- if .Values.additionalResources }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: deploy-additional-resources
+  namespace: kratix-platform-system
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-delete-policy": hook-succeeded
+    "helm.sh/hook-weight": "4"
+spec:
+  template:
+    spec:
+      serviceAccountName: kratix-platform-controller-manager
+      restartPolicy: Never
+      containers:
+        - name: deploy-resources
+          image: ghcr.io/syntasso/kratix-pipeline-utility:v0.0.1
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              set -exu
+              {{ range .Values.additionalResources }}
+              {{- $resource := tpl (toYaml .) $ | fromYaml }}
+              {{- if eq $resource.apiVersion "platform.kratix.io/v1alpha1" }}
+              cat <<EOF | kubectl apply -f -
+              {{ toYaml $resource | indent 14 | trim }}
+              EOF
+              {{ end }}
+              {{ end }}
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: undeploy-additional-resources
+  namespace: kratix-platform-system
+  annotations:
+    "helm.sh/hook": pre-delete
+    "helm.sh/hook-delete-policy": hook-succeeded
+    "helm.sh/hook-weight": "4"
+spec:
+  template:
+    spec:
+      serviceAccountName: kratix-platform-controller-manager
+      restartPolicy: Never
+      containers:
+        - name: undeploy-resources
+          image: ghcr.io/syntasso/kratix-pipeline-utility:v0.0.1
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              set -exu
+              {{ range .Values.additionalResources }}
+              {{- $resource := tpl (toYaml .) $ | fromYaml }}
+              {{- if eq $resource.apiVersion "platform.kratix.io/v1alpha1" }}
+              cat <<EOF | kubectl delete -f -
+              {{ toYaml $resource | indent 14 | trim }}
+              EOF
+              {{ end }}
+              {{ end }}
+{{- end -}}
