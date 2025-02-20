@@ -1,12 +1,7 @@
 {{- range .Values.additionalResources }}
 ---
 {{- $resource := tpl (toYaml .) $ | fromYaml }}
-{{- if not (hasKey $resource.metadata "annotations") }}
-{{- $_ := set $resource.metadata "annotations" dict }}
-{{- end }}
-{{- if eq $resource.apiVersion "platform.kratix.io/v1alpha1" }}
-{{- $_ := set $resource.metadata.annotations "helm.sh/hook" "post-install,post-upgrade" }}
-{{- $_ := set $resource.metadata.annotations "helm.sh/hook-weight" "5" }}
-{{- end }}
+{{- if not (eq $resource.apiVersion "platform.kratix.io/v1alpha1") }}
 {{ toYaml $resource }}
+{{- end }}
 {{- end }}
