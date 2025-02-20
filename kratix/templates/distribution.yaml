@@ -133,15 +133,8 @@ rules:
       - platform.kratix.io
     resources:
       - bucketstatestores
-      - gitstatestores
-    verbs:
-      - get
-      - list
-      - watch
-  - apiGroups:
-      - platform.kratix.io
-    resources:
       - destinations
+      - gitstatestores
       - healthrecords
       - promisereleases
       - promises
@@ -243,7 +236,7 @@ subjects:
 ---
 apiVersion: v1
 data:
-  PIPELINE_ADAPTER_IMG: syntasso.docker.scarf.sh/syntasso/kratix-platform-pipeline-adapter@sha256:ef8daf7f18cd91dd5e28a7d9235103fde63a37b9e388f75b4c994af6a4a4a40c
+  PIPELINE_ADAPTER_IMG: syntasso.docker.scarf.sh/syntasso/kratix-platform-pipeline-adapter@sha256:9ebf2841345f01332b18d52952f933bc11f26ae316ca88d8c0b2dc1c56fc85e7
 kind: ConfigMap
 metadata:
   labels:
@@ -311,7 +304,7 @@ spec:
                 configMapKeyRef:
                   key: PIPELINE_ADAPTER_IMG
                   name: kratix-platform-pipeline-adapter-config
-          image: syntasso.docker.scarf.sh/syntasso/kratix-platform@sha256:9dbc88e5a9217c6233f7f3c18f3940d689558fa087e55f7283aac641854d1f6b
+          image: syntasso.docker.scarf.sh/syntasso/kratix-platform@sha256:ded699d5a321d8f5514c9c5168bfc5e7399f123b908a1d75891e8c84d3a10fcb
           livenessProbe:
             httpGet:
               path: /healthz
