@@ -7,7 +7,7 @@ global:
 skeLicense: "set via cli arg"
 skeDeployment:
   enabled: true
-  version: "v0.16.0" # older version so we can test upgrade
+  version: "v0.17.0"
   tlsConfig:
     certManager:
       disabled: false
