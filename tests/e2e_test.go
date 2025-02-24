@@ -13,7 +13,7 @@ import (
 )
 
 var (
-	timeout     = time.Second * 60
+	timeout     = time.Second * 100
 	longTimeout = time.Second * 300
 	interval    = time.Second
 	context     = "--context=kind-platform"
@@ -35,11 +35,12 @@ var _ = Describe("ske-operator helm chart", func() {
 			run("kubectl", context, "delete", "-f=https://github.com/cert-manager/cert-manager/releases/download/v1.15.0/cert-manager.yaml")
 		})
 
-		It("should create a certificate and issuer, and use them for the webhook", func() {
+		It("can install and upgrade SKE successfully", func() {
 			run("pwd")
 			run("helm", "install", "ske-operator", "--create-namespace", "../ske-operator/",
 				"-n=kratix-platform-system", "-f=./assets/values-with-certmanager.yaml", "--set-string", "skeLicense="+skeLicenseToken, "--wait")
 
+			By("creating a certificate and issuer, and use them for the webhook")
 			run("kubectl", context, "get", "certificates", "ske-operator-serving-cert", "-n=kratix-platform-system")
 			run("kubectl", context, "get", "issuer", "ske-operator-selfsigned-issuer", "-n=kratix-platform-system")
 
@@ -47,12 +48,23 @@ var _ = Describe("ske-operator helm chart", func() {
 			//if the Kratix got created successfully by helm install, this means the
 			//webhook was running successfully
 			run("kubectl", context, "get", "kratixes", "kratix")
+			kratixVersion := r(Default, timeout, "kubectl", context, "get", "kratixes", "kratix", "-o", "jsonpath={.spec.version}")
+			creationTimestamp := r(Default, timeout, "kubectl", context, "get", "kratixes", "kratix", "-o", "jsonpath={.metadata.creationTimestamp}")
 
 			By("creating any additional resources provided in values file")
 			run("kubectl", context, "get", "secrets", "git-credentials", "-n=default")
 			run("kubectl", context, "get", "gitstatestores", "default")
 			run("kubectl", context, "get", "destinations", "worker-1")
+
+			By("upgrading SKE")
+			run("pwd")
+			run("helm", "upgrade", "ske-operator", "../ske-operator/", "-n=kratix-platform-system",
+				"-f=./assets/values-with-upgrade.yaml", "--set-string", "skeLicense="+skeLicenseToken, "--wait")
+
+			Expect(r(Default, timeout, "kubectl", context, "get", "kratixes", "kratix", "-o", "jsonpath={.metadata.creationTimestamp}")).To(Equal(creationTimestamp))
+			Expect(r(Default, timeout, "kubectl", context, "get", "kratixes", "kratix", "-o", "jsonpath={.spec.version}")).NotTo(Equal(kratixVersion))
 		})
+
 	})
 
 	When("global.skeOperator.tlsConfig.certManager.disabled=true, and certs are provided", func() {
