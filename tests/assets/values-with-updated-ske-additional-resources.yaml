@@ -1,0 +1,43 @@
+global:
+  skeOperator:
+    tlsConfig:
+      certManager:
+        disabled: false
+
+skeLicense: "set via cli arg"
+skeDeployment:
+  enabled: true
+  version: "v0.16.0" # older version so we can test upgrade
+  tlsConfig:
+    certManager:
+      disabled: false
+  additionalResources:
+    - kind: GitStateStore
+      apiVersion: platform.kratix.io/v1alpha1
+      metadata:
+        name: default
+      spec:
+        secretRef:
+          name: git-credentials
+          namespace: default
+        url: https://172.18.0.2:31333/gitea_admin/kratix
+        branch: prod-branch
+    - apiVersion: platform.kratix.io/v1alpha1
+      kind: Destination
+      metadata:
+        name: worker-1
+        labels:
+          environment: prod
+      spec:
+        stateStoreRef:
+          name: default
+          kind: GitStateStore
+additionalResources:
+  - apiVersion: v1
+    kind: Secret
+    metadata:
+      name: git-credentials
+      namespace: default
+    stringData:
+      username: wow
+      password: what=_=lookingat
