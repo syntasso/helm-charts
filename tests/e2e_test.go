@@ -22,7 +22,7 @@ var (
 
 var _ = Describe("ske-operator helm chart", func() {
 	When("global.skeOperator.tlsConfig.certManager.disabled=false", func() {
-		var kratixVersion, creationTimestamp string
+		var kratixVersion, creationTimestamp, gitStateStoreCreationTimestamp, destinationCreationTimestamp string
 		BeforeEach(func() {
 			run("kubectl", context, "apply", "-f=https://github.com/cert-manager/cert-manager/releases/download/v1.15.0/cert-manager.yaml")
 			run("kubectl", context, "wait", "crd/certificates.cert-manager.io", "--for=condition=established", "--timeout=60s")
@@ -58,7 +58,9 @@ var _ = Describe("ske-operator helm chart", func() {
 				run("kubectl", context, "get", "secrets", "git-credentials", "-n=default")
 				run("kubectl", context, "get", "configmaps", "test-cm", "-n=default")
 				run("kubectl", context, "get", "gitstatestores", "default")
+				gitStateStoreCreationTimestamp = run("kubectl", context, "get", "gitstatestores", "default", "-o", "jsonpath={.metadata.creationTimestamp}")
 				run("kubectl", context, "get", "destinations", "worker-1")
+				destinationCreationTimestamp = run("kubectl", context, "get", "destinations", "worker-1", "-o", "jsonpath={.metadata.creationTimestamp}")
 			})
 
 			By("upgrading SKE", func() {
@@ -80,7 +82,9 @@ var _ = Describe("ske-operator helm chart", func() {
 				Expect(run("kubectl", context, "get", "configmaps", "default", "--ignore-not-found")).To(BeEmpty())
 
 				By("updating some SKE additional resources")
+				Expect(run("kubectl", context, "get", "gitstatestores.platform.kratix.io", "default", "-o", "jsonpath={.metadata.creationTimestamp}")).To(Equal(gitStateStoreCreationTimestamp))
 				Expect(run("kubectl", context, "get", "destinations.platform.kratix.io", "worker-1", "-o", "jsonpath={.metadata.labels.environment}")).To(Equal("prod"))
+				Expect(run("kubectl", context, "get", "destinations.platform.kratix.io", "worker-1", "-o", "jsonpath={.metadata.creationTimestamp}")).To(Equal(destinationCreationTimestamp))
 			})
 
 			By("uninstalling SKE", func() {
