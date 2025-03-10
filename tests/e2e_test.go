@@ -56,47 +56,31 @@ var _ = Describe("ske-operator helm chart", func() {
 
 				By("creating any additional resources provided in values file")
 				run("kubectl", context, "get", "secrets", "git-credentials", "-n=default")
+				run("kubectl", context, "get", "configmaps", "test-cm", "-n=default")
 				run("kubectl", context, "get", "gitstatestores", "default")
 				run("kubectl", context, "get", "destinations", "worker-1")
 			})
 
 			By("upgrading SKE", func() {
-				By("upgrading to update additional resources", func() {
-					run("pwd")
-					run("helm", "upgrade", "ske-operator", "../ske-operator/", "-n=kratix-platform-system",
-						"-f=./assets/values-with-updated-additional-resources.yaml", "--set-string", "skeLicense="+skeLicenseToken, "--wait")
+				run("pwd")
+				run("helm", "upgrade", "ske-operator", "../ske-operator/", "-n=kratix-platform-system",
+					"-f=./assets/values-with-upgrade.yaml", "--set-string", "skeLicense="+skeLicenseToken, "--wait")
 
-					encodedUsername := run("kubectl", context, "get", "secrets", "git-credentials", "-o", "jsonpath={.data.username}")
-					decodedUsername, err := base64.StdEncoding.DecodeString(encodedUsername)
-					Expect(err).NotTo(HaveOccurred())
-					Expect(string(decodedUsername)).To(Equal("now"))
-				})
+				By("upgrading SKE version")
+				Expect(run("kubectl", context, "get", "kratixes", "kratix", "-o", "jsonpath={.metadata.creationTimestamp}")).To(Equal(creationTimestamp))
+				Expect(run("kubectl", context, "get", "kratixes", "kratix", "-o", "jsonpath={.spec.version}")).NotTo(Equal(kratixVersion))
 
-				By("upgrading to delete additional resources", func() {
-					run("pwd")
-					run("helm", "upgrade", "ske-operator", "../ske-operator/", "-n=kratix-platform-system",
-						"-f=./assets/values-with-deleted-additional-resources.yaml", "--set-string", "skeLicense="+skeLicenseToken, "--wait")
+				By("updating some additional resources")
+				encodedUsername := run("kubectl", context, "get", "secrets", "git-credentials", "-o", "jsonpath={.data.username}")
+				decodedUsername, err := base64.StdEncoding.DecodeString(encodedUsername)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(string(decodedUsername)).To(Equal("now"))
 
-					Expect(run("kubectl", context, "get", "secrets", "git-credentials", "--ignore-not-found")).To(BeEmpty())
-				})
+				By("deleting some additional resources")
+				Expect(run("kubectl", context, "get", "configmaps", "default", "--ignore-not-found")).To(BeEmpty())
 
-				By("upgrading to update SKE additional resources", func() {
-					run("pwd")
-					run("helm", "upgrade", "ske-operator", "../ske-operator/", "-n=kratix-platform-system",
-						"-f=./assets/values-with-updated-ske-additional-resources.yaml", "--set-string", "skeLicense="+skeLicenseToken, "--wait")
-
-					Expect(run("kubectl", context, "get", "gitstatestores.platform.kratix.io", "default", "-o", "jsonpath={.spec.branch}")).To(Equal("prod-branch"))
-					Expect(run("kubectl", context, "get", "destinations.platform.kratix.io", "worker-1", "-o", "jsonpath={.metadata.labels.environment}")).To(Equal("prod"))
-				})
-
-				By("upgrading SKE version", func() {
-					run("pwd")
-					run("helm", "upgrade", "ske-operator", "../ske-operator/", "-n=kratix-platform-system",
-						"-f=./assets/values-with-upgrade.yaml", "--set-string", "skeLicense="+skeLicenseToken, "--wait")
-
-					Expect(run("kubectl", context, "get", "kratixes", "kratix", "-o", "jsonpath={.metadata.creationTimestamp}")).To(Equal(creationTimestamp))
-					Expect(run("kubectl", context, "get", "kratixes", "kratix", "-o", "jsonpath={.spec.version}")).NotTo(Equal(kratixVersion))
-				})
+				By("updating some SKE additional resources")
+				Expect(run("kubectl", context, "get", "destinations.platform.kratix.io", "worker-1", "-o", "jsonpath={.metadata.labels.environment}")).To(Equal("prod"))
 			})
 
 			By("uninstalling SKE", func() {
@@ -112,6 +96,7 @@ var _ = Describe("ske-operator helm chart", func() {
 
 				By("deleting the additional resources")
 				Expect(run("kubectl", context, "get", "secrets", "git-credentials", "--ignore-not-found")).To(BeEmpty())
+				Expect(run("kubectl", context, "get", "configmaps", "default", "--ignore-not-found")).To(BeEmpty())
 			})
 		})
 

@@ -41,3 +41,10 @@ additionalResources:
     stringData:
       username: wow
       password: what=_=lookingat
+  - apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      name: test-cm
+      namespace: default
+    data:
+      test: this
