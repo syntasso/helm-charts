@@ -27,7 +27,7 @@ skeDeployment:
       metadata:
         name: worker-1
         labels:
-          environment: dev
+          environment: prod
       spec:
         stateStoreRef:
           name: default
@@ -39,5 +39,5 @@ additionalResources:
       name: git-credentials
       namespace: default
     stringData:
-      username: wow
+      username: now
       password: what=_=lookingat

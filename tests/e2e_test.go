@@ -1,6 +1,7 @@
 package tests_test
 
 import (
+	"encoding/base64"
 	"fmt"
 	"os"
 	"os/exec"
@@ -21,6 +22,7 @@ var (
 
 var _ = Describe("ske-operator helm chart", func() {
 	When("global.skeOperator.tlsConfig.certManager.disabled=false", func() {
+		var kratixVersion, creationTimestamp, gitStateStoreCreationTimestamp, destinationCreationTimestamp string
 		BeforeEach(func() {
 			run("kubectl", context, "apply", "-f=https://github.com/cert-manager/cert-manager/releases/download/v1.15.0/cert-manager.yaml")
 			run("kubectl", context, "wait", "crd/certificates.cert-manager.io", "--for=condition=established", "--timeout=60s")
@@ -31,38 +33,75 @@ var _ = Describe("ske-operator helm chart", func() {
 		})
 
 		AfterEach(func() {
-			cleanup()
+			runLongTimeout("kubectl", context, "delete", "namespace", "kratix-platform-system", "--timeout=300s")
 			run("kubectl", context, "delete", "-f=https://github.com/cert-manager/cert-manager/releases/download/v1.15.0/cert-manager.yaml")
 		})
 
-		It("can install and upgrade SKE successfully", func() {
-			run("pwd")
-			run("helm", "install", "ske-operator", "--create-namespace", "../ske-operator/",
-				"-n=kratix-platform-system", "-f=./assets/values-with-certmanager.yaml", "--set-string", "skeLicense="+skeLicenseToken, "--wait")
+		It("can install, upgrade and uninstall SKE successfully", func() {
+			By("installing SKE", func() {
+				run("pwd")
+				run("helm", "install", "ske-operator", "--create-namespace", "../ske-operator/",
+					"-n=kratix-platform-system", "-f=./assets/values-with-certmanager.yaml", "--set-string", "skeLicense="+skeLicenseToken, "--wait")
 
-			By("creating a certificate and issuer, and use them for the webhook")
-			run("kubectl", context, "get", "certificates", "ske-operator-serving-cert", "-n=kratix-platform-system")
-			run("kubectl", context, "get", "issuer", "ske-operator-selfsigned-issuer", "-n=kratix-platform-system")
+				By("creating a certificate and issuer, and use them for the webhook")
+				run("kubectl", context, "get", "certificates", "ske-operator-serving-cert", "-n=kratix-platform-system")
+				run("kubectl", context, "get", "issuer", "ske-operator-selfsigned-issuer", "-n=kratix-platform-system")
 
-			By("deploying kratix")
-			//if the Kratix got created successfully by helm install, this means the
-			//webhook was running successfully
-			run("kubectl", context, "get", "kratixes", "kratix")
-			kratixVersion := r(Default, timeout, "kubectl", context, "get", "kratixes", "kratix", "-o", "jsonpath={.spec.version}")
-			creationTimestamp := r(Default, timeout, "kubectl", context, "get", "kratixes", "kratix", "-o", "jsonpath={.metadata.creationTimestamp}")
+				By("deploying kratix")
+				//if the Kratix got created successfully by helm install, this means the
+				//webhook was running successfully
+				run("kubectl", context, "get", "kratixes", "kratix")
+				kratixVersion = run("kubectl", context, "get", "kratixes", "kratix", "-o", "jsonpath={.spec.version}")
+				creationTimestamp = run("kubectl", context, "get", "kratixes", "kratix", "-o", "jsonpath={.metadata.creationTimestamp}")
 
-			By("creating any additional resources provided in values file")
-			run("kubectl", context, "get", "secrets", "git-credentials", "-n=default")
-			run("kubectl", context, "get", "gitstatestores", "default")
-			run("kubectl", context, "get", "destinations", "worker-1")
+				By("creating any additional resources provided in values file")
+				run("kubectl", context, "get", "secrets", "git-credentials", "-n=default")
+				run("kubectl", context, "get", "configmaps", "test-cm", "-n=default")
+				run("kubectl", context, "get", "gitstatestores", "default")
+				gitStateStoreCreationTimestamp = run("kubectl", context, "get", "gitstatestores", "default", "-o", "jsonpath={.metadata.creationTimestamp}")
+				run("kubectl", context, "get", "destinations", "worker-1")
+				destinationCreationTimestamp = run("kubectl", context, "get", "destinations", "worker-1", "-o", "jsonpath={.metadata.creationTimestamp}")
+			})
 
-			By("upgrading SKE")
-			run("pwd")
-			run("helm", "upgrade", "ske-operator", "../ske-operator/", "-n=kratix-platform-system",
-				"-f=./assets/values-with-upgrade.yaml", "--set-string", "skeLicense="+skeLicenseToken, "--wait")
+			By("upgrading SKE", func() {
+				run("pwd")
+				run("helm", "upgrade", "ske-operator", "../ske-operator/", "-n=kratix-platform-system",
+					"-f=./assets/values-with-upgrade.yaml", "--set-string", "skeLicense="+skeLicenseToken, "--wait")
 
-			Expect(r(Default, timeout, "kubectl", context, "get", "kratixes", "kratix", "-o", "jsonpath={.metadata.creationTimestamp}")).To(Equal(creationTimestamp))
-			Expect(r(Default, timeout, "kubectl", context, "get", "kratixes", "kratix", "-o", "jsonpath={.spec.version}")).NotTo(Equal(kratixVersion))
+				By("upgrading SKE version")
+				Expect(run("kubectl", context, "get", "kratixes", "kratix", "-o", "jsonpath={.metadata.creationTimestamp}")).To(Equal(creationTimestamp))
+				Expect(run("kubectl", context, "get", "kratixes", "kratix", "-o", "jsonpath={.spec.version}")).NotTo(Equal(kratixVersion))
+
+				By("updating some additional resources")
+				encodedUsername := run("kubectl", context, "get", "secrets", "git-credentials", "-o", "jsonpath={.data.username}")
+				decodedUsername, err := base64.StdEncoding.DecodeString(encodedUsername)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(string(decodedUsername)).To(Equal("now"))
+
+				By("deleting some additional resources")
+				Expect(run("kubectl", context, "get", "configmaps", "default", "--ignore-not-found")).To(BeEmpty())
+
+				By("updating some SKE additional resources")
+				Expect(run("kubectl", context, "get", "gitstatestores.platform.kratix.io", "default", "-o", "jsonpath={.metadata.creationTimestamp}")).To(Equal(gitStateStoreCreationTimestamp))
+				Expect(run("kubectl", context, "get", "destinations.platform.kratix.io", "worker-1", "-o", "jsonpath={.metadata.labels.environment}")).To(Equal("prod"))
+				Expect(run("kubectl", context, "get", "destinations.platform.kratix.io", "worker-1", "-o", "jsonpath={.metadata.creationTimestamp}")).To(Equal(destinationCreationTimestamp))
+			})
+
+			By("uninstalling SKE", func() {
+				run("pwd")
+				run("helm", "uninstall", "ske-operator", "-n=kratix-platform-system", "--wait")
+
+				By("deleting operator & kratix deployment")
+				Expect(run("kubectl", context, "get", "deployments", "ske-operator-controller-manager", "--ignore-not-found")).To(BeEmpty())
+				Expect(run("kubectl", context, "get", "deployments", "kratix-platform-controller-manager", "--ignore-not-found")).To(BeEmpty())
+
+				By("deleting the crds") // if the crds are deleted, so are the Kratix custom resources
+				Expect(run("kubectl", context, "get", "crds")).NotTo(ContainSubstring("kratixes.platform.syntasso.io"))
+
+				By("deleting the additional resources")
+				Expect(run("kubectl", context, "get", "secrets", "git-credentials", "--ignore-not-found")).To(BeEmpty())
+				Expect(run("kubectl", context, "get", "configmaps", "default", "--ignore-not-found")).To(BeEmpty())
+			})
 		})
 
 	})
@@ -76,7 +115,9 @@ var _ = Describe("ske-operator helm chart", func() {
 		})
 
 		AfterEach(func() {
-			cleanup()
+			run("kubectl", context, "delete", "kratixes", "kratix", "--timeout=60s")
+			run("helm", "uninstall", "ske-operator", "-n=kratix-platform-system", "--wait")
+			runLongTimeout("kubectl", context, "delete", "namespace", "kratix-platform-system", "--timeout=300s")
 		})
 
 		It("should use the provided certs for the webhook", func() {
@@ -96,12 +137,6 @@ var _ = Describe("ske-operator helm chart", func() {
 		})
 	})
 })
-
-func cleanup() {
-	run("kubectl", context, "delete", "kratixes", "kratix", "--timeout=60s")
-	run("helm", "uninstall", "ske-operator", "-n=kratix-platform-system", "--wait")
-	runLongTimeout("kubectl", context, "delete", "namespace", "kratix-platform-system", "--timeout=300s")
-}
 
 func runLongTimeout(args ...string) string {
 	return r(Default, longTimeout, args...)
