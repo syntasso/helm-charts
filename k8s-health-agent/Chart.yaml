@@ -2,5 +2,5 @@ apiVersion: v2
 name: k8s-health-agent
 description: A Helm Chart for deploying the K8s Health Agent
 type: application
-version: 0.6.0 # the helm chart version
-appVersion: "v0.2.0" # the ske health agent version
+version: 0.7.0 # the helm chart version
+appVersion: "v0.2.1" # the ske health agent version
