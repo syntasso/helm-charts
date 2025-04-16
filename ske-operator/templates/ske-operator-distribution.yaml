@@ -388,7 +388,13 @@ spec:
             port: 8081
           initialDelaySeconds: 5
           periodSeconds: 10
-        resources: {{ toYaml .Values.skeOperator.resources | nindent 10 }}
+        resources:
+          limits:
+            cpu: 100m
+            memory: 256Mi
+          requests:
+            cpu: 50m
+            memory: 128Mi
         securityContext:
           allowPrivilegeEscalation: false
           capabilities:
