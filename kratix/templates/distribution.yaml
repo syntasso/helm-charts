@@ -204,6 +204,42 @@ rules:
       - watch
 ---
 apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/component: kratix-manager
+    app.kubernetes.io/instance: kratix-platform
+    app.kubernetes.io/part-of: kratix
+  name: kratix-platform-metrics-auth-role
+rules:
+  - apiGroups:
+      - authentication.k8s.io
+    resources:
+      - tokenreviews
+    verbs:
+      - create
+  - apiGroups:
+      - authorization.k8s.io
+    resources:
+      - subjectaccessreviews
+    verbs:
+      - create
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/component: kratix-manager
+    app.kubernetes.io/instance: kratix-platform
+    app.kubernetes.io/part-of: kratix
+  name: kratix-platform-metrics-reader
+rules:
+  - nonResourceURLs:
+      - /metrics
+    verbs:
+      - get
+---
+apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   labels:
@@ -238,9 +274,26 @@ subjects:
     name: kratix-platform-controller-manager
     namespace: kratix-platform-system
 ---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+    app.kubernetes.io/component: kratix-manager
+    app.kubernetes.io/instance: kratix-platform
+    app.kubernetes.io/part-of: kratix
+  name: kratix-platform-metrics-auth-rolebinding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: kratix-platform-metrics-auth-role
+subjects:
+  - kind: ServiceAccount
+    name: kratix-platform-controller-manager
+    namespace: kratix-platform-system
+---
 apiVersion: v1
 data:
-  PIPELINE_ADAPTER_IMG: syntasso.docker.scarf.sh/syntasso/kratix-platform-pipeline-adapter@sha256:8d091763ed7578d5e18ff0a2ebad965fc409648886ebd2d6316311c5b170cd18
+  PIPELINE_ADAPTER_IMG: syntasso.docker.scarf.sh/syntasso/kratix-platform-pipeline-adapter@sha256:42dca5fc4dfb92b0a0e16c05318d24e1e65b65d4a1dd27cd056bcf8ae273c913
 kind: ConfigMap
 metadata:
   labels:
@@ -249,6 +302,24 @@ metadata:
     app.kubernetes.io/part-of: kratix
   name: kratix-platform-pipeline-adapter-config
   namespace: kratix-platform-system
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: k8s-health-agent
+    control-plane: controller-manager
+  name: kratix-platform-controller-manager-metrics-service
+  namespace: kratix-platform-system
+spec:
+  ports:
+    - name: https
+      port: 8443
+      protocol: TCP
+      targetPort: 8443
+  selector:
+    control-plane: controller-manager
 ---
 apiVersion: v1
 kind: Service
@@ -298,6 +369,7 @@ spec:
     spec:
       containers:
         - args:
+            - --metrics-bind-address=:8443
             - --health-probe-bind-address=:8081
             - --leader-elect
           command:
@@ -308,7 +380,7 @@ spec:
                 configMapKeyRef:
                   key: PIPELINE_ADAPTER_IMG
                   name: kratix-platform-pipeline-adapter-config
-          image: syntasso.docker.scarf.sh/syntasso/kratix-platform@sha256:589be6d053ecc0e8cee72a0d116fdd2251574b211b8751d70a67952df290cfe2
+          image: syntasso.docker.scarf.sh/syntasso/kratix-platform@sha256:f19a20d0c8e71835e5c4e454ea69db853942df78025790cad9225c8640528cbd
           livenessProbe:
             httpGet:
               path: /healthz
@@ -346,6 +418,9 @@ spec:
             - mountPath: /tmp/k8s-webhook-server/serving-certs
               name: cert
               readOnly: true
+            - mountPath: /tmp/k8s-metrics-server/serving-certs
+              name: metrics-certs
+              readOnly: true
       securityContext:
         runAsNonRoot: true
       serviceAccountName: kratix-platform-controller-manager
@@ -355,6 +430,38 @@ spec:
           secret:
             defaultMode: 420
             secretName: webhook-server-cert
+        - name: metrics-certs
+          secret:
+            items:
+              - key: ca.crt
+                path: ca.crt
+              - key: tls.crt
+                path: tls.crt
+              - key: tls.key
+                path: tls.key
+            optional: false
+            secretName: metrics-server-cert
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  labels:
+    app.kubernetes.io/component: certificate
+    app.kubernetes.io/created-by: kratix
+    app.kubernetes.io/instance: metrics-server-cert
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: certificate
+    app.kubernetes.io/part-of: kratix
+  name: kratix-platform-metrics-server-cert
+  namespace: kratix-platform-system
+spec:
+  dnsNames:
+    - kratix-platform-controller-manager-metrics-service.kratix-platform-system.svc
+    - kratix-platform-controller-manager-metrics-service.kratix-platform-system.svc.cluster.local
+  issuerRef:
+    kind: Issuer
+    name: kratix-platform-selfsigned-issuer
+  secretName: metrics-server-cert
 ---
 apiVersion: cert-manager.io/v1
 kind: Certificate
