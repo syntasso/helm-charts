@@ -5,7 +5,7 @@ metadata:
     app.kubernetes.io/component: kratix-manager
     app.kubernetes.io/instance: kratix-platform
     app.kubernetes.io/part-of: kratix
-    control-plane: kratix-platform-controller-manager
+    control-plane: controller-manager
   name: kratix-platform-system
 ---
 apiVersion: v1
@@ -15,7 +15,6 @@ metadata:
     app.kubernetes.io/component: kratix-manager
     app.kubernetes.io/instance: kratix-platform
     app.kubernetes.io/part-of: kratix
-    control-plane: kratix-platform-controller-manager
   name: kratix-platform-controller-manager
   namespace: kratix-platform-system
 ---
@@ -26,7 +25,6 @@ metadata:
     app.kubernetes.io/component: kratix-manager
     app.kubernetes.io/instance: kratix-platform
     app.kubernetes.io/part-of: kratix
-    control-plane: kratix-platform-controller-manager
   name: kratix-platform-leader-election-role
   namespace: kratix-platform-system
 rules:
@@ -69,7 +67,6 @@ metadata:
     app.kubernetes.io/component: kratix-manager
     app.kubernetes.io/instance: kratix-platform
     app.kubernetes.io/part-of: kratix
-    control-plane: kratix-platform-controller-manager
   name: kratix-platform-manager-role
 rules:
   - apiGroups:
@@ -213,7 +210,6 @@ metadata:
     app.kubernetes.io/component: kratix-manager
     app.kubernetes.io/instance: kratix-platform
     app.kubernetes.io/part-of: kratix
-    control-plane: kratix-platform-controller-manager
   name: kratix-platform-metrics-auth-role
 rules:
   - apiGroups:
@@ -236,7 +232,6 @@ metadata:
     app.kubernetes.io/component: kratix-manager
     app.kubernetes.io/instance: kratix-platform
     app.kubernetes.io/part-of: kratix
-    control-plane: kratix-platform-controller-manager
   name: kratix-platform-metrics-reader
 rules:
   - nonResourceURLs:
@@ -251,7 +246,6 @@ metadata:
     app.kubernetes.io/component: kratix-manager
     app.kubernetes.io/instance: kratix-platform
     app.kubernetes.io/part-of: kratix
-    control-plane: kratix-platform-controller-manager
   name: kratix-platform-leader-election-rolebinding
   namespace: kratix-platform-system
 roleRef:
@@ -270,7 +264,6 @@ metadata:
     app.kubernetes.io/component: kratix-manager
     app.kubernetes.io/instance: kratix-platform
     app.kubernetes.io/part-of: kratix
-    control-plane: kratix-platform-controller-manager
   name: kratix-platform-manager-rolebinding
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -288,7 +281,6 @@ metadata:
     app.kubernetes.io/component: kratix-manager
     app.kubernetes.io/instance: kratix-platform
     app.kubernetes.io/part-of: kratix
-    control-plane: kratix-platform-controller-manager
   name: kratix-platform-metrics-auth-rolebinding
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -301,14 +293,13 @@ subjects:
 ---
 apiVersion: v1
 data:
-  PIPELINE_ADAPTER_IMG: syntasso.docker.scarf.sh/syntasso/kratix-platform-pipeline-adapter@sha256:de97b6477b54b4ad91f763e1310adb0490363e5ddb868e0a9630958b56cf89db
+  PIPELINE_ADAPTER_IMG: syntasso.docker.scarf.sh/syntasso/kratix-platform-pipeline-adapter@sha256:f3c684eece4e793ea8dafa1b757719ff796a23f5ae4fc0efc3a27d3a52683d81
 kind: ConfigMap
 metadata:
   labels:
     app.kubernetes.io/component: kratix-manager
     app.kubernetes.io/instance: kratix-platform
     app.kubernetes.io/part-of: kratix
-    control-plane: kratix-platform-controller-manager
   name: kratix-platform-pipeline-adapter-config
   namespace: kratix-platform-system
 ---
@@ -318,7 +309,7 @@ metadata:
   labels:
     app.kubernetes.io/managed-by: kustomize
     app.kubernetes.io/name: k8s-health-agent
-    control-plane: kratix-platform-controller-manager
+    control-plane: controller-manager
   name: kratix-platform-controller-manager-metrics-service
   namespace: kratix-platform-system
 spec:
@@ -328,7 +319,7 @@ spec:
       protocol: TCP
       targetPort: 8443
   selector:
-    control-plane: kratix-platform-controller-manager
+    control-plane: controller-manager
 ---
 apiVersion: v1
 kind: Service
@@ -340,7 +331,6 @@ metadata:
     app.kubernetes.io/managed-by: kustomize
     app.kubernetes.io/name: service
     app.kubernetes.io/part-of: kratix
-    control-plane: kratix-platform-controller-manager
   name: kratix-platform-webhook-service
   namespace: kratix-platform-system
 spec:
@@ -349,7 +339,7 @@ spec:
       protocol: TCP
       targetPort: 9443
   selector:
-    control-plane: kratix-platform-controller-manager
+    control-plane: controller-manager
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -358,7 +348,7 @@ metadata:
     app.kubernetes.io/component: kratix-manager
     app.kubernetes.io/instance: kratix-platform
     app.kubernetes.io/part-of: kratix
-    control-plane: kratix-platform-controller-manager
+    control-plane: controller-manager
   name: kratix-platform-controller-manager
   namespace: kratix-platform-system
 spec:
@@ -368,14 +358,14 @@ spec:
       app.kubernetes.io/component: kratix-manager
       app.kubernetes.io/instance: kratix-platform
       app.kubernetes.io/part-of: kratix
-      control-plane: kratix-platform-controller-manager
+      control-plane: controller-manager
   template:
     metadata:
       labels:
         app.kubernetes.io/component: kratix-manager
         app.kubernetes.io/instance: kratix-platform
         app.kubernetes.io/part-of: kratix
-        control-plane: kratix-platform-controller-manager
+        control-plane: controller-manager
     spec:
       containers:
         - args:
@@ -390,7 +380,7 @@ spec:
                 configMapKeyRef:
                   key: PIPELINE_ADAPTER_IMG
                   name: kratix-platform-pipeline-adapter-config
-          image: syntasso.docker.scarf.sh/syntasso/kratix-platform@sha256:c9bcffae0168dc28f468bb71581e9e38e4220a8d4607e1cd5efccc2ada820673
+          image: syntasso.docker.scarf.sh/syntasso/kratix-platform@sha256:04ee9cbb5e4a1e8af69a93d150b2bb1f4384cc6ade4e34098982551fd3501ea3
           livenessProbe:
             httpGet:
               path: /healthz
@@ -462,7 +452,6 @@ metadata:
     app.kubernetes.io/managed-by: kustomize
     app.kubernetes.io/name: certificate
     app.kubernetes.io/part-of: kratix
-    control-plane: kratix-platform-controller-manager
   name: kratix-platform-metrics-server-cert
   namespace: kratix-platform-system
 spec:
@@ -484,7 +473,6 @@ metadata:
     app.kubernetes.io/managed-by: kustomize
     app.kubernetes.io/name: certificate
     app.kubernetes.io/part-of: kratix
-    control-plane: kratix-platform-controller-manager
   name: kratix-platform-serving-cert
   namespace: kratix-platform-system
 spec:
@@ -506,7 +494,6 @@ metadata:
     app.kubernetes.io/managed-by: kustomize
     app.kubernetes.io/name: issuer
     app.kubernetes.io/part-of: kratix
-    control-plane: kratix-platform-controller-manager
   name: kratix-platform-selfsigned-issuer
   namespace: kratix-platform-system
 spec:
@@ -524,7 +511,6 @@ metadata:
     app.kubernetes.io/managed-by: kustomize
     app.kubernetes.io/name: mutatingwebhookconfiguration
     app.kubernetes.io/part-of: kratix
-    control-plane: kratix-platform-controller-manager
   name: kratix-platform-mutating-webhook-configuration
 webhooks:
   - admissionReviewVersions:
@@ -580,7 +566,6 @@ metadata:
     app.kubernetes.io/managed-by: kustomize
     app.kubernetes.io/name: validatingwebhookconfiguration
     app.kubernetes.io/part-of: kratix
-    control-plane: kratix-platform-controller-manager
   name: kratix-platform-validating-webhook-configuration
 webhooks:
   - admissionReviewVersions:

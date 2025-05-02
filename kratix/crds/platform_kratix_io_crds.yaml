@@ -7,7 +7,6 @@ metadata:
     app.kubernetes.io/component: kratix-manager
     app.kubernetes.io/instance: kratix-platform
     app.kubernetes.io/part-of: kratix
-    control-plane: kratix-platform-controller-manager
   name: bucketstatestores.platform.kratix.io
 spec:
   group: platform.kratix.io
@@ -170,7 +169,6 @@ metadata:
     app.kubernetes.io/component: kratix-manager
     app.kubernetes.io/instance: kratix-platform
     app.kubernetes.io/part-of: kratix
-    control-plane: kratix-platform-controller-manager
   name: destinations.platform.kratix.io
 spec:
   group: platform.kratix.io
@@ -367,7 +365,6 @@ metadata:
     app.kubernetes.io/component: kratix-manager
     app.kubernetes.io/instance: kratix-platform
     app.kubernetes.io/part-of: kratix
-    control-plane: kratix-platform-controller-manager
   name: gitstatestores.platform.kratix.io
 spec:
   group: platform.kratix.io
@@ -533,7 +530,6 @@ metadata:
     app.kubernetes.io/component: kratix-manager
     app.kubernetes.io/instance: kratix-platform
     app.kubernetes.io/part-of: kratix
-    control-plane: kratix-platform-controller-manager
   name: healthrecords.platform.kratix.io
 spec:
   group: platform.kratix.io
@@ -635,7 +631,6 @@ metadata:
     app.kubernetes.io/component: kratix-manager
     app.kubernetes.io/instance: kratix-platform
     app.kubernetes.io/part-of: kratix
-    control-plane: kratix-platform-controller-manager
   name: promisereleases.platform.kratix.io
 spec:
   group: platform.kratix.io
@@ -789,7 +784,6 @@ metadata:
     app.kubernetes.io/component: kratix-manager
     app.kubernetes.io/instance: kratix-platform
     app.kubernetes.io/part-of: kratix
-    control-plane: kratix-platform-controller-manager
   name: promises.platform.kratix.io
 spec:
   conversion:
@@ -1033,7 +1027,6 @@ metadata:
     app.kubernetes.io/component: kratix-manager
     app.kubernetes.io/instance: kratix-platform
     app.kubernetes.io/part-of: kratix
-    control-plane: kratix-platform-controller-manager
   name: workplacements.platform.kratix.io
 spec:
   group: platform.kratix.io
@@ -1175,7 +1168,6 @@ metadata:
     app.kubernetes.io/component: kratix-manager
     app.kubernetes.io/instance: kratix-platform
     app.kubernetes.io/part-of: kratix
-    control-plane: kratix-platform-controller-manager
   name: works.platform.kratix.io
 spec:
   group: platform.kratix.io
