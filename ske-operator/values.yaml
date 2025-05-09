@@ -88,6 +88,9 @@ skeDeployment:
     # webhookCACert:
     # webhookTLSKey:
     # webhookTLSCert:
+    # metricsServerCACert:
+    # metricsServerTLSKey:
+    # metricsServerTLSCert:
   additionalResources: []
 #   Example
 #  - apiVersion: platform.kratix.io/v1alpha1

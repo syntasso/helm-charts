@@ -112,6 +112,7 @@ var _ = Describe("ske-operator helm chart", func() {
 			crds := run("kubectl", context, "get", "crds")
 			Expect(crds).NotTo(ContainSubstring("cert-manager"))
 			run("./assets/generate-certs")
+			run("./assets/generate-metrics-certs")
 		})
 
 		AfterEach(func() {
@@ -128,7 +129,10 @@ var _ = Describe("ske-operator helm chart", func() {
 				"--set-string", "global.skeOperator.tlsConfig.webhookCACert="+run("cat", "./operator-ca.crt"),
 				"--set-string", "skeDeployment.tlsConfig.webhookTLSCert="+run("cat", "./deployment-tls.crt"),
 				"--set-string", "skeDeployment.tlsConfig.webhookTLSKey="+run("cat", "./deployment-tls.key"),
-				"--set-string", "skeDeployment.tlsConfig.webhookCACert="+run("cat", "./deployment-ca.crt"))
+				"--set-string", "skeDeployment.tlsConfig.webhookCACert="+run("cat", "./deployment-ca.crt"),
+				"--set-string", "skeDeployment.tlsConfig.metricsServerTLSCert="+run("cat", "./metrics-tls.crt"),
+				"--set-string", "skeDeployment.tlsConfig.metricsServerTLSKey="+run("cat", "./metrics-tls.key"),
+				"--set-string", "skeDeployment.tlsConfig.metricsServerCACert="+run("cat", "./metrics-ca.crt"))
 			//if the Kratix got created successfully by helm install, this means the
 			//webhook was running successfully
 			run("kubectl", context, "get", "kratixes", "kratix")
