@@ -79,8 +79,16 @@ spec:
                         - tls.crt: The TLS Certificate
                         - tls.key: The TLS Private Key
                         - ca.crt: The Certificate Authority
-                        If CertSecretName is not provided, the Operator will generate a
-                        self-signed certificate using cert-manager.
+                        MetricsServerCertSecretName must be set if cert-manager is disabled.
+                      type: string
+                    metricsServerCertSecretName:
+                      description: |-
+                        MetricsServerCertSecretName is the name of the secret containing the TLS Certificate for the metrics endpoint.
+                        The underlying secret must include the following keys:
+                        - tls.crt: The TLS Certificate
+                        - tls.key: The TLS Private Key
+                        - ca.crt: The Certificate Authority
+                        MetricsServerCertSecretName must be set if cert-manager is disabled.
                       type: string
                   type: object
                 version:
