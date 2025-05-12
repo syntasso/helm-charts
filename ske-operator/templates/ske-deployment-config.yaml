@@ -16,6 +16,7 @@ data:
       tlsConfig:
         {{- if ( .tlsConfig.certManager.disabled | default false ) }}
         certSecretName: custom-kratix-platform-serving-cert
+        metricsServerCertSecretName: custom-kratix-platform-metrics-server-cert
         {{- end }}
         certManager:
           disabled: {{ .tlsConfig.certManager.disabled | default false }}
