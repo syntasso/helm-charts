@@ -48,6 +48,7 @@ additionalResources:
     stateStoreRef:
       name: default
       kind: BucketStateStore
+    path: path/in/statestore
 - apiVersion: v1
   kind: Secret
   metadata:
