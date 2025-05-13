@@ -1,0 +1,30 @@
+{{- $manifest := .Files.Get "files/deployment.yaml" | fromYaml }}
+
+{{- define "patch" }}
+spec:
+  template:
+    spec:
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- . | toYaml | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- . | toYaml | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- . | toYaml | nindent 8 }}
+      {{- end }}
+{{- end }}
+
+{{- define "containerPatch" }}
+{{- with .Values.resources }}
+resources:
+  {{- . | toYaml | nindent 2 }}
+{{- end }}
+{{- end }}
+
+{{- $_ := merge $manifest (include "patch" . | fromYaml) }}
+{{- $_ := merge (index $manifest.spec.template.spec.containers 0) (include "containerPatch" . | fromYaml) }}
+{{- $manifest | toYaml }}
