@@ -1,9 +1,9 @@
-{{- $manifest := .Files.Get "files/deployment.yaml" | fromYaml }}
-
 {{- define "patch" }}
 spec:
   template:
     spec:
+      containers:
+        {{- .container | list | toYaml | nindent 8 }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- . | toYaml | nindent 8 }}
@@ -25,6 +25,12 @@ resources:
 {{- end }}
 {{- end }}
 
-{{- $_ := merge $manifest (include "patch" . | fromYaml) }}
-{{- $_ := merge (index $manifest.spec.template.spec.containers 0) (include "containerPatch" . | fromYaml) }}
-{{- $manifest | toYaml }}
+{{- $manifest := .Files.Get "files/deployment.yaml" | fromYaml }}
+{{- $container := index $manifest.spec.template.spec.containers 0
+                    | merge (include "containerPatch" . | fromYaml) }}
+{{- $_ := set $manifest.spec.template "spec"
+              (omit $manifest.spec.template.spec "containers") }}
+
+{{- $manifest
+      | merge (include "patch" (merge . (dict "container" $container)) | fromYaml)
+      | toYaml }}
