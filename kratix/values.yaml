@@ -42,6 +42,7 @@ additionalResources:
 #    stateStoreRef:
 #      name: default
 #      kind: GitStateStore
+#    path: path/in/statestore
 # - apiVersion: v1
 #   kind: Secret
 #   metadata:

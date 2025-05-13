@@ -103,6 +103,7 @@ skeDeployment:
 #      stateStoreRef:
 #        name: default
 #        kind: BucketStateStore
+#      path: path/in/statestore
 #  - kind: BucketStateStore
 #    apiVersion: platform.kratix.io/v1alpha1
 #    metadata:
