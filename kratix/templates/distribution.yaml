@@ -293,7 +293,7 @@ subjects:
 ---
 apiVersion: v1
 data:
-  PIPELINE_ADAPTER_IMG: syntasso.docker.scarf.sh/syntasso/kratix-platform-pipeline-adapter@sha256:d64e24bcb573073abc4d9ba4f63158075d376a48c2a4792579854325d40efc73
+  PIPELINE_ADAPTER_IMG: syntasso.docker.scarf.sh/syntasso/kratix-platform-pipeline-adapter@sha256:be37e73a3a96f228dec5f137a807cd2b3fab1b9cfdcce7934ff5b7f982675036
 kind: ConfigMap
 metadata:
   labels:
@@ -467,6 +467,26 @@ metadata:
     app.kubernetes.io/part-of: kratix
   name: kratix-platform-validating-webhook-configuration
 webhooks:
+  - admissionReviewVersions:
+      - v1
+    clientConfig:
+      service:
+        name: kratix-platform-webhook-service
+        namespace: kratix-platform-system
+        path: /validate-platform-kratix-io-v1alpha1-bucketstatestore
+    failurePolicy: Fail
+    name: vbucketstatestore-v1alpha1.kb.io
+    rules:
+      - apiGroups:
+          - platform.kratix.io
+        apiVersions:
+          - v1alpha1
+        operations:
+          - CREATE
+          - UPDATE
+        resources:
+          - bucketstatestores
+    sideEffects: None
   - admissionReviewVersions:
       - v1
     clientConfig:
