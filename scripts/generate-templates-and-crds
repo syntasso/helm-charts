@@ -8,7 +8,9 @@ root=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )/.." &> /dev/null && pwd )
 
 CHART_CRDS=$root/kratix/crds/platform_kratix_io_crds.yaml
 CHART_DISTRIBUTION=$root/kratix/templates/distribution.yaml
+CHART_DEPLOYMENT=$root/kratix/files/deployment.yaml
 
 yq 'select(.kind == "CustomResourceDefinition")' ${kratixDist} > ${CHART_CRDS}
-yq 'select(.kind != "CustomResourceDefinition")' ${kratixDist} > ${CHART_DISTRIBUTION}
+yq 'select(.kind == "Deployment")' ${kratixDist} > ${CHART_DEPLOYMENT}
+yq 'select(.kind != "CustomResourceDefinition" and .kind != "Deployment")' ${kratixDist} > ${CHART_DISTRIBUTION}
 
