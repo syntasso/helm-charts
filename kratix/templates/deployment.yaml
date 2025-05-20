@@ -19,6 +19,9 @@ spec:
 {{- end }}
 
 {{- define "containerPatch" }}
+{{- if .Values.image }}
+image: {{ .Values.image | quote }}
+{{- end }}
 {{- with .Values.resources }}
 resources:
   {{- . | toYaml | nindent 2 }}
