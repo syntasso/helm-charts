@@ -142,6 +142,26 @@ entries:
   ske-destination:
   - apiVersion: v2
     appVersion: 0.0.1
+    created: "2025-06-11T13:41:22.305280431Z"
+    dependencies:
+    - condition: installFlux
+      name: flux2
+      repository: ""
+      version: 2.5.1
+    - condition: k8sHealthAgent.enabled
+      name: k8s-health-agent
+      repository: https://syntasso.github.io/helm-charts
+      version: 0.10.0
+    description: A Helm chart for installing flux, configuring it to pull down from
+      Kratix and optionally installing SKE features
+    digest: 5c26f4d8cafb87ec5512a522ffe6d30ac0c0bb5c235db00199953eb2189f12ff
+    name: ske-destination
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/ske-destination-0.10.0/ske-destination-0.10.0.tgz
+    version: 0.10.0
+  - apiVersion: v2
+    appVersion: 0.0.1
     created: "2025-05-07T16:33:54.55038715Z"
     dependencies:
     - condition: installFlux
@@ -675,4 +695,4 @@ entries:
     urls:
     - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.8.0/ske-operator-0.8.0.tgz
     version: 0.8.0
-generated: "2025-06-11T13:40:10.862203045Z"
+generated: "2025-06-11T13:41:22.305394376Z"
