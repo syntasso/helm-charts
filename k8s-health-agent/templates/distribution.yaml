@@ -390,7 +390,7 @@ spec:
                 configMapKeyRef:
                   key: HEALTH_CHECK_ADAPTER_IMG
                   name: k8s-health-agent-config
-          image: registry.syntasso.io/syntasso/k8s-health-agent:v0.3.1
+          image: registry.syntasso.io/syntasso/k8s-health-agent:v0.3.2
           imagePullPolicy: IfNotPresent
           livenessProbe:
             httpGet:
