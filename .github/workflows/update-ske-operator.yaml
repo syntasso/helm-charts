@@ -6,6 +6,12 @@ on:
       - '**'  # Runs on any branch
     paths: ['ske-operator/**', 'tests/**']
   workflow_dispatch:
+    inputs:
+      ssh_session:
+        type: boolean
+        description: 'Run the build with tmate debugging.'
+        required: false
+        default: false
 
 jobs:
   update-ske-operator:
@@ -49,6 +55,13 @@ jobs:
           go install github.com/onsi/ginkgo/v2/ginkgo@latest
         env:
           PATH: ${{ env.PATH }}:/home/runner/go/bin
+
+      - name: Start tmate ssh debugging session
+        uses: mxschmitt/action-tmate@v3
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.ssh_session }}
+        with:
+          limit-access-to-actor: true
+          detached: true
 
       - name: Update and test charts
         run: |
