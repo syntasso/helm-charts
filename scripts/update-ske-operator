@@ -32,6 +32,8 @@ EOF
     yq 'del(.metadata.annotations."cert-manager.io/inject-ca-from")' |
     yq '.spec.conversion.webhook.clientConfig.caBundle= "{{ .Values.global.skeOperator.tlsConfig.webhookCACert | b64enc }}" | .spec.conversion.webhook.clientConfig.caBundle style="literal" '>> "${CHART_CRDS_WITHOUT_CERT_MANAGER}"
   echo "{{ end }}" >> "${CHART_CRDS_WITHOUT_CERT_MANAGER}"
+
+  add_resource_policy_to_template $CHART_CRDS_WITHOUT_CERT_MANAGER
 }
 
 function generate_resources_with_certmanager(){
@@ -48,6 +50,19 @@ function generate_resources_with_certmanager(){
   yq 'select(.kind == "CustomResourceDefinition")' ${MANIFEST_NAME} >> "${CHART_CRDS_WITH_CERT_MANAGER}"
   echo "{{ end }}" >> "${CHART_CRDS_WITH_CERT_MANAGER}"
 
+  add_resource_policy_to_template $CHART_CRDS_WITH_CERT_MANAGER
+}
+
+function add_resource_policy_to_template(){
+  TEMP_FILE=$(mktemp)
+
+sed '/^[[:space:]]*annotations:[[:space:]]*$/r /dev/stdin' "$1" > "$TEMP_FILE" <<'EOF'
+{{- if or (not .Values.global.skeDeployment) (eq (default false .Values.global.skeDeployment.deleteOnUninstall) false) }}
+    helm.sh/resource-policy: keep
+{{- end }}
+EOF
+
+mv "$TEMP_FILE" "$1"
 }
 
 function main(){
