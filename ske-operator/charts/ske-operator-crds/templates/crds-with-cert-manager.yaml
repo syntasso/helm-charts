@@ -8,7 +8,7 @@ metadata:
 {{- end }}
     cert-manager.io/inject-ca-from: kratix-platform-system/ske-operator-serving-cert
     controller-gen.kubebuilder.io/version: v0.15.0
-  name: kratixes.platform.syntasso.io
+    name: kratixes.platform.syntasso.io
 spec:
   conversion:
     strategy: Webhook
