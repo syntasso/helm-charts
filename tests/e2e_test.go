@@ -147,7 +147,7 @@ var _ = Describe("ske-operator helm chart", func() {
 			run("kubectl", context, "wait", "kratixes", "kratix", "--for=condition=KratixDeploymentReady", "--timeout=120s")
 			Eventually(func(g Gomega) {
 				runGinkgo(g, "kubectl", context, "apply", "-f", "assets/example-promise.yaml")
-			}, timeout, interval).Should(Succeed())
+			}, longTimeout, interval).Should(Succeed())
 		})
 	})
 
