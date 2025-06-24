@@ -33,8 +33,9 @@ var _ = Describe("ske-operator helm chart", func() {
 		})
 
 		AfterEach(func() {
-			runLongTimeout("kubectl", context, "delete", "namespace", "kratix-platform-system", "--timeout=300s")
+			runLongTimeout("kubectl", context, "delete", "namespace", "kratix-platform-system", "--timeout=300s", "--ignore-not-found")
 			run("kubectl", context, "delete", "-f=https://github.com/cert-manager/cert-manager/releases/download/v1.15.0/cert-manager.yaml")
+			deleteCRDs(context)
 		})
 
 		It("can install, upgrade and uninstall SKE successfully", func() {
@@ -101,7 +102,7 @@ var _ = Describe("ske-operator helm chart", func() {
 				By("retaining the Kratix CR")
 				Expect(run("kubectl", context, "get", "kratixes", "kratix", "-o", "jsonpath={.spec.version}")).To(Equal(upgradedKratixVersion))
 
-				By("retaining the crds") // if the crds are deleted, so are the Kratix custom resources
+				By("retaining the crds")
 				Expect(run("kubectl", context, "get", "crds")).To(ContainSubstring("kratixes.platform.syntasso.io"))
 
 				By("retaining the registry secret")
@@ -127,6 +128,7 @@ var _ = Describe("ske-operator helm chart", func() {
 			run("kubectl", context, "delete", "kratixes", "kratix", "--timeout=60s")
 			run("helm", "uninstall", "ske-operator", "-n=kratix-platform-system", "--wait")
 			runLongTimeout("kubectl", context, "delete", "namespace", "kratix-platform-system", "--timeout=300s")
+			deleteCRDs(context)
 		})
 
 		It("should use the provided certs for the webhook", func() {
@@ -189,20 +191,19 @@ var _ = Describe("ske-operator helm chart", func() {
 			AfterEach(func() {
 				runLongTimeout("kubectl", context, "delete", "namespace", "kratix-platform-system", "--timeout=300s", "--ignore-not-found")
 				run("kubectl", context, "delete", "-f=https://github.com/cert-manager/cert-manager/releases/download/v1.15.0/cert-manager.yaml")
-			})
-
-			It("the secret template sets the resource-policy to 'keep'", func() {
-				template := run("helm", "template", "ske-operator", "../ske-operator/", "-s=templates/registry-secret.yaml", "-f=./assets/values-with-delete-on-uninstall-true.yaml")
-				Expect(template).ToNot(ContainSubstring("helm.sh/resource-policy: keep"))
-			})
-
-			It("the CRD template sets the resource-policy to 'keep'", func() {
-				template := run("helm", "template", "ske-operator", "../ske-operator/", "-s=charts/ske-operator-crds/templates/crds-with-cert-manager.yaml", "-f=./assets/values-with-delete-on-uninstall-true.yaml")
-				Expect(template).ToNot(ContainSubstring("helm.sh/resource-policy: keep"))
+				deleteCRDs(context)
 			})
 
 			It("uninstalls the deployed kratix when uninstalling the ske operator", func() {
-				By("installing SKE", func() {
+				By("setting the secret template resource-policy to 'keep'")
+				template := run("helm", "template", "ske-operator", "../ske-operator/", "-s=templates/registry-secret.yaml", "-f=./assets/values-with-delete-on-uninstall-true.yaml")
+				Expect(template).ToNot(ContainSubstring("helm.sh/resource-policy: keep"))
+
+				By("setting the crd template resource-policy to 'keep'")
+				template = run("helm", "template", "ske-operator", "../ske-operator/", "-s=charts/ske-operator-crds/templates/crds-with-cert-manager.yaml", "-f=./assets/values-with-delete-on-uninstall-true.yaml")
+				Expect(template).ToNot(ContainSubstring("helm.sh/resource-policy: keep"))
+
+				By("installing the ske operator", func() {
 					run("pwd")
 					run("helm", "install", "ske-operator", "--create-namespace", "../ske-operator/",
 						"-n=kratix-platform-system", "-f=./assets/values-with-delete-on-uninstall-true.yaml", "--set-string", "skeLicense="+skeLicenseToken, "--wait")
@@ -211,7 +212,7 @@ var _ = Describe("ske-operator helm chart", func() {
 					run("kubectl", context, "wait", "kratixes", "kratix", "--for=condition=KratixDeploymentReady", "--timeout=120s")
 				})
 
-				By("uninstalling SKE", func() {
+				By("uninstalling the ske operator", func() {
 					run("pwd")
 					run("helm", "uninstall", "ske-operator", "-n=kratix-platform-system", "--wait")
 
@@ -254,4 +255,16 @@ func r(g Gomega, t time.Duration, args ...string) string {
 	g.ExpectWithOffset(2, err).ShouldNot(HaveOccurred())
 	g.EventuallyWithOffset(2, session, t, interval).Should(gexec.Exit(0))
 	return string(session.Out.Contents())
+}
+
+func deleteCRDs(context string) {
+	run("kubectl", context, "delete", "crd", "bucketstatestores.platform.kratix.io", "--ignore-not-found")
+	run("kubectl", context, "delete", "crd", "destinations.platform.kratix.io", "--ignore-not-found")
+	run("kubectl", context, "delete", "crd", "gitstatestores.platform.kratix.io", "--ignore-not-found")
+	run("kubectl", context, "delete", "crd", "healthrecords.platform.kratix.io", "--ignore-not-found")
+	run("kubectl", context, "delete", "crd", "kratixes.platform.syntasso.io", "--ignore-not-found")
+	run("kubectl", context, "delete", "crd", "promisereleases.platform.kratix.io", "--ignore-not-found")
+	run("kubectl", context, "delete", "crd", "promises.platform.kratix.io", "--ignore-not-found")
+	run("kubectl", context, "delete", "crd", "workplacements.platform.kratix.io", "--ignore-not-found")
+	run("kubectl", context, "delete", "crd", "works.platform.kratix.io", "--ignore-not-found")
 }
