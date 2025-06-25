@@ -12,6 +12,10 @@ global:
     # global.skeOperator.tlsConfig.webhookCACert:
     # global.skeOperator.tlsConfig.webhookTLSKey:
     # global.skeOperator.tlsConfig.webhookTLSCert:
+  # skeDeployment:
+    # WARNING: when skeDeployment.deleteOnUninstall is true, uninstalling this helm chart will delete your SKE platform
+    # only set to true for dev or testing environments
+    # deleteOnUninstall: false
 
 # Your SKE License Key
 skeLicense: "my-ske-license"
