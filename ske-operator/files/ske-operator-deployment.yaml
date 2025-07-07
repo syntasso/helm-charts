@@ -20,53 +20,55 @@ spec:
         control-plane: ske-operator
     spec:
       containers:
-        - args:
-            - --leader-elect
-            - --health-probe-bind-address=:8081
-          command:
-            - /manager
-          image: registry.syntasso.io/syntasso/ske-operator:v0.12.1
-          livenessProbe:
-            httpGet:
-              path: /healthz
-              port: 8081
-            initialDelaySeconds: 15
-            periodSeconds: 20
-          name: manager
-          ports:
-            - containerPort: 9443
-              name: webhook-server
-              protocol: TCP
-          readinessProbe:
-            httpGet:
-              path: /readyz
-              port: 8081
-            initialDelaySeconds: 5
-            periodSeconds: 10
-          resources:
-            limits:
-              cpu: 100m
-              memory: 256Mi
-            requests:
-              cpu: 50m
-              memory: 128Mi
-          securityContext:
-            allowPrivilegeEscalation: false
-            capabilities:
-              drop:
-                - ALL
-          volumeMounts:
-            - mountPath: /tmp/k8s-webhook-server/serving-certs
-              name: cert
-              readOnly: true
+      - args:
+        - --leader-elect
+        - --health-probe-bind-address=:8081
+        command:
+        - /manager
+        image: '{{ .Values.imageRegistry.host }}/{{ .Values.imageRegistry.skeOperatorImage.name
+          }}:{{ .Chart.AppVersion }}'
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8081
+          initialDelaySeconds: 15
+          periodSeconds: 20
+        name: manager
+        ports:
+        - containerPort: 9443
+          name: webhook-server
+          protocol: TCP
+        readinessProbe:
+          httpGet:
+            path: /readyz
+            port: 8081
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        resources:
+          limits:
+            cpu: 100m
+            memory: 256Mi
+          requests:
+            cpu: 50m
+            memory: 128Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+        volumeMounts:
+        - mountPath: /tmp/k8s-webhook-server/serving-certs
+          name: cert
+          readOnly: true
       imagePullSecrets:
-        - name: syntasso-registry
+      - name: '{{ .Values.imageRegistry.imagePullSecret | default "syntasso-registry"
+          }}'
       securityContext:
         runAsNonRoot: true
       serviceAccountName: ske-operator-controller-manager
       terminationGracePeriodSeconds: 10
       volumes:
-        - name: cert
-          secret:
-            defaultMode: 420
-            secretName: ske-operator-webhook-server-cert
+      - name: cert
+        secret:
+          defaultMode: 420
+          secretName: ske-operator-webhook-server-cert

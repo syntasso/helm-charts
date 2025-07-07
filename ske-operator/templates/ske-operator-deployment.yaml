@@ -4,22 +4,24 @@ spec:
     spec:
       containers:
         {{- .container | list | toYaml | nindent 8 }}
-      {{- with .Values.nodeSelector }}
+      {{- with .Values.skeOperator.nodeSelector }}
       nodeSelector:
         {{- . | toYaml | nindent 8 }}
       {{- end }}
-      {{- with .Values.tolerations }}
+      {{- with .Values.skeOperator.tolerations }}
       tolerations:
         {{- . | toYaml | nindent 8 }}
       {{- end }}
-      {{- with .Values.affinity }}
+      {{- with .Values.skeOperator.affinity }}
       affinity:
         {{- . | toYaml | nindent 8 }}
       {{- end }}
+      imagePullSecrets:
+        - name: '{{ .Values.imageRegistry.imagePullSecret | default "syntasso-registry" }}'
 {{- end }}
 
 {{- define "containerPatch" }}
-{{- with .Values.resources }}
+{{- with .Values.skeOperator.resources }}
 resources:
   {{- . | toYaml | nindent 2 }}
 {{- end }}
@@ -28,8 +30,14 @@ resources:
 {{- $manifest := .Files.Get "files/ske-operator-deployment.yaml" | fromYaml }}
 {{- $container := index $manifest.spec.template.spec.containers 0
                     | merge (include "containerPatch" . | fromYaml) }}
+
+{{/* Apply image configuration from kustomization.yaml */}}
+{{- $originalImage := "registry.syntasso.io/syntasso/ske-operator" }}
+{{- $newName := printf "%s/%s" .Values.imageRegistry.host .Values.imageRegistry.skeOperatorImage.name }}
+{{- $newTag := .Chart.AppVersion }}
+{{- $_ := set $container "image" (printf "%s:%s" $newName $newTag) }}
 {{- $_ := set $manifest.spec.template "spec"
-              (omit $manifest.spec.template.spec "containers") }}
+              (omit $manifest.spec.template.spec "containers" "imagePullSecrets") }}
 
 {{- $manifest
       | merge (include "patch" (merge . (dict "container" $container)) | fromYaml)

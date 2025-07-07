@@ -17,19 +17,6 @@ global:
   # only set to true for dev or testing environments
   # deleteOnUninstall: false
 
-# resource limits for the operator deployment
-resources:
-  limits:
-    cpu: 100m
-    memory: 256Mi
-  requests:
-    cpu: 100m
-    memory: 256Mi
-
-nodeSelector: {}
-tolerations: []
-affinity: {}
-
 # Your SKE License Key
 skeLicense: "my-ske-license"
 # Configuration for the Registry and Manifests
@@ -88,11 +75,15 @@ skeOperator:
   # Set if you want to change the resources for the operator container
   resources:
     requests:
-      memory: "128Mi"
-      cpu: "50m"
+      memory: "256Mi"
+      cpu: "100m"
     limits:
       memory: "256Mi"
       cpu: "100m"
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
 skeDeployment:
   # Set to true if you want to deploy SKE
   enabled: true

@@ -1,9 +1,9 @@
 resources:
-- ./templates/ske-operator-distribution.yaml
+  - ./ske-operator-deployment.yaml
 images:
-- name: registry.syntasso.io/syntasso/ske-operator
-  newName: "{{ .Values.imageRegistry.host }}/{{ .Values.imageRegistry.skeOperatorImage.name }}"
-  newTag: "{{ .Chart.AppVersion }}"
+  - name: registry.syntasso.io/syntasso/ske-operator
+    newName: "{{ .Values.imageRegistry.host }}/{{ .Values.imageRegistry.skeOperatorImage.name }}"
+    newTag: "{{ .Chart.AppVersion }}"
 patches:
   - target:
       kind: Deployment

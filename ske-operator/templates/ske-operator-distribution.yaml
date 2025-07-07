@@ -16,37 +16,37 @@ metadata:
   name: ske-operator-leader-election-role
   namespace: kratix-platform-system
 rules:
-- apiGroups:
-  - ""
-  resources:
-  - configmaps
-  verbs:
-  - get
-  - list
-  - watch
-  - create
-  - update
-  - patch
-  - delete
-- apiGroups:
-  - coordination.k8s.io
-  resources:
-  - leases
-  verbs:
-  - get
-  - list
-  - watch
-  - create
-  - update
-  - patch
-  - delete
-- apiGroups:
-  - ""
-  resources:
-  - events
-  verbs:
-  - create
-  - patch
+  - apiGroups:
+      - ""
+    resources:
+      - configmaps
+    verbs:
+      - get
+      - list
+      - watch
+      - create
+      - update
+      - patch
+      - delete
+  - apiGroups:
+      - coordination.k8s.io
+    resources:
+      - leases
+    verbs:
+      - get
+      - list
+      - watch
+      - create
+      - update
+      - patch
+      - delete
+  - apiGroups:
+      - ""
+    resources:
+      - events
+    verbs:
+      - create
+      - patch
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
@@ -56,24 +56,24 @@ metadata:
     app.kubernetes.io/name: ske-operator
   name: ske-operator-kratix-editor-role
 rules:
-- apiGroups:
-  - platform.syntasso.io
-  resources:
-  - kratixes
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
-- apiGroups:
-  - platform.syntasso.io
-  resources:
-  - kratixes/status
-  verbs:
-  - get
+  - apiGroups:
+      - platform.syntasso.io
+    resources:
+      - kratixes
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - platform.syntasso.io
+    resources:
+      - kratixes/status
+    verbs:
+      - get
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
@@ -83,202 +83,202 @@ metadata:
     app.kubernetes.io/name: ske-operator
   name: ske-operator-kratix-viewer-role
 rules:
-- apiGroups:
-  - platform.syntasso.io
-  resources:
-  - kratixes
-  verbs:
-  - get
-  - list
-  - watch
-- apiGroups:
-  - platform.syntasso.io
-  resources:
-  - kratixes/status
-  verbs:
-  - get
+  - apiGroups:
+      - platform.syntasso.io
+    resources:
+      - kratixes
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - platform.syntasso.io
+    resources:
+      - kratixes/status
+    verbs:
+      - get
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   name: ske-operator-manager-role
 rules:
-- apiGroups:
-  - ""
-  resources:
-  - configmaps
-  - events
-  - namespaces
-  - serviceaccounts
-  - services
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
-- apiGroups:
-  - ""
-  resources:
-  - secrets
-  verbs:
-  - get
-  - list
-  - watch
-- apiGroups:
-  - admissionregistration.k8s.io
-  resources:
-  - mutatingwebhookconfigurations
-  - validatingwebhookconfigurations
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
-- apiGroups:
-  - apiextensions.k8s.io
-  resources:
-  - customresourcedefinitions
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
-- apiGroups:
-  - apps
-  resources:
-  - deployments
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
-- apiGroups:
-  - batch
-  resources:
-  - jobs
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
-- apiGroups:
-  - cert-manager.io
-  resources:
-  - certificates
-  - issuers
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
-- apiGroups:
-  - platform.kratix.io
-  resources:
-  - '*'
-  verbs:
-  - '*'
-- apiGroups:
-  - platform.kratix.io
-  resources:
-  - promises
-  verbs:
-  - get
-  - list
-- apiGroups:
-  - platform.kratix.io
-  resources:
-  - promises/status
-  verbs:
-  - get
-- apiGroups:
-  - platform.syntasso.io
-  resources:
-  - kratixes
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
-- apiGroups:
-  - platform.syntasso.io
-  resources:
-  - kratixes/finalizers
-  verbs:
-  - update
-- apiGroups:
-  - platform.syntasso.io
-  resources:
-  - kratixes/status
-  verbs:
-  - get
-  - patch
-  - update
-- apiGroups:
-  - rbac.authorization.k8s.io
-  resources:
-  - clusterrolebindings
-  - clusterroles
-  - rolebindings
-  - roles
-  verbs:
-  - bind
-  - create
-  - delete
-  - escalate
-  - get
-  - list
-  - patch
-  - update
-  - watch
+  - apiGroups:
+      - ""
+    resources:
+      - configmaps
+      - events
+      - namespaces
+      - serviceaccounts
+      - services
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - ""
+    resources:
+      - secrets
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - admissionregistration.k8s.io
+    resources:
+      - mutatingwebhookconfigurations
+      - validatingwebhookconfigurations
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - apiextensions.k8s.io
+    resources:
+      - customresourcedefinitions
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - apps
+    resources:
+      - deployments
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - batch
+    resources:
+      - jobs
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - cert-manager.io
+    resources:
+      - certificates
+      - issuers
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - platform.kratix.io
+    resources:
+      - '*'
+    verbs:
+      - '*'
+  - apiGroups:
+      - platform.kratix.io
+    resources:
+      - promises
+    verbs:
+      - get
+      - list
+  - apiGroups:
+      - platform.kratix.io
+    resources:
+      - promises/status
+    verbs:
+      - get
+  - apiGroups:
+      - platform.syntasso.io
+    resources:
+      - kratixes
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - platform.syntasso.io
+    resources:
+      - kratixes/finalizers
+    verbs:
+      - update
+  - apiGroups:
+      - platform.syntasso.io
+    resources:
+      - kratixes/status
+    verbs:
+      - get
+      - patch
+      - update
+  - apiGroups:
+      - rbac.authorization.k8s.io
+    resources:
+      - clusterrolebindings
+      - clusterroles
+      - rolebindings
+      - roles
+    verbs:
+      - bind
+      - create
+      - delete
+      - escalate
+      - get
+      - list
+      - patch
+      - update
+      - watch
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   name: ske-operator-metrics-auth-role
 rules:
-- apiGroups:
-  - authentication.k8s.io
-  resources:
-  - tokenreviews
-  verbs:
-  - create
-- apiGroups:
-  - authorization.k8s.io
-  resources:
-  - subjectaccessreviews
-  verbs:
-  - create
+  - apiGroups:
+      - authentication.k8s.io
+    resources:
+      - tokenreviews
+    verbs:
+      - create
+  - apiGroups:
+      - authorization.k8s.io
+    resources:
+      - subjectaccessreviews
+    verbs:
+      - create
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   name: ske-operator-metrics-reader
 rules:
-- nonResourceURLs:
-  - /metrics
-  verbs:
-  - get
+  - nonResourceURLs:
+      - /metrics
+    verbs:
+      - get
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
@@ -293,9 +293,9 @@ roleRef:
   kind: Role
   name: ske-operator-leader-election-role
 subjects:
-- kind: ServiceAccount
-  name: ske-operator-controller-manager
-  namespace: kratix-platform-system
+  - kind: ServiceAccount
+    name: ske-operator-controller-manager
+    namespace: kratix-platform-system
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -309,9 +309,9 @@ roleRef:
   kind: ClusterRole
   name: ske-operator-manager-role
 subjects:
-- kind: ServiceAccount
-  name: ske-operator-controller-manager
-  namespace: kratix-platform-system
+  - kind: ServiceAccount
+    name: ske-operator-controller-manager
+    namespace: kratix-platform-system
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -322,9 +322,9 @@ roleRef:
   kind: ClusterRole
   name: ske-operator-metrics-auth-role
 subjects:
-- kind: ServiceAccount
-  name: ske-operator-controller-manager
-  namespace: kratix-platform-system
+  - kind: ServiceAccount
+    name: ske-operator-controller-manager
+    namespace: kratix-platform-system
 ---
 apiVersion: v1
 kind: Service
@@ -336,8 +336,8 @@ metadata:
   namespace: kratix-platform-system
 spec:
   ports:
-  - port: 443
-    protocol: TCP
-    targetPort: 9443
+    - port: 443
+      protocol: TCP
+      targetPort: 9443
   selector:
     control-plane: ske-operator

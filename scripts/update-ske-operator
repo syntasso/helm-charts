@@ -90,15 +90,17 @@ function main(){
     and .kind != "Issuer"
     and .kind != "ValidatingWebhookConfiguration"
     and .kind != "Deployment")' ${MANIFEST_NAME} > "${CHART_DIST_COMMON}"
+
+  yq 'select(.kind == "Deployment")' ${MANIFEST_NAME} > $root/ske-operator/ske-operator-deployment.yaml
+
   generate_resources_without_certmanager
   generate_resources_with_certmanager
 
-  # extract the deployment into its own file, to be patched with resources
-  yq 'select(.kind == "Deployment")' ${MANIFEST_NAME} > $root/ske-operator/files/ske-operator-deployment.yaml
-
   # generate the kustomize manifest
-  kubectl kustomize $root/ske-operator > $root/ske-operator/manifests.yaml
-  mv $root/ske-operator/manifests.yaml "${CHART_DIST_COMMON}"
+  kubectl kustomize $root/ske-operator > $root/ske-operator/kustomized-deployment.yaml
+  # extract the deployment into its own file, to be patched with resources
+  mv $root/ske-operator/kustomized-deployment.yaml $root/ske-operator/files/ske-operator-deployment.yaml
+  rm $root/ske-operator/ske-operator-deployment.yaml
 
   # Bump current chart version (always a minor bump)
   current_chart_version="$(yq -r '.version' ske-operator/Chart.yaml)"
