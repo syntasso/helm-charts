@@ -83,16 +83,18 @@ function main(){
 
   export latest_version=${latest_release#"ske-operator-"}
 
-
   CHART_DIST_COMMON=$root/ske-operator/templates/ske-operator-distribution.yaml
   yq 'select(.kind != "CustomResourceDefinition"
     and .kind != "Namespace"
     and .kind != "Certificate"
     and .kind != "Issuer"
-    and .kind != "ValidatingWebhookConfiguration")' ${MANIFEST_NAME} > "${CHART_DIST_COMMON}"
+    and .kind != "ValidatingWebhookConfiguration"
+    and .kind != "Deployment")' ${MANIFEST_NAME} > "${CHART_DIST_COMMON}"
   generate_resources_without_certmanager
   generate_resources_with_certmanager
 
+  # extract the deployment into its own file, to be patch with resources
+  yq 'select(.kind == "Deployment")' ${MANIFEST_NAME} > $root/ske-operator/files/ske-operator-deployment.yaml
 
   # generate the kustomize manifest
   kubectl kustomize $root/ske-operator > $root/ske-operator/manifests.yaml
