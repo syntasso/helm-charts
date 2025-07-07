@@ -93,7 +93,7 @@ function main(){
   generate_resources_without_certmanager
   generate_resources_with_certmanager
 
-  # extract the deployment into its own file, to be patch with resources
+  # extract the deployment into its own file, to be patched with resources
   yq 'select(.kind == "Deployment")' ${MANIFEST_NAME} > $root/ske-operator/files/ske-operator-deployment.yaml
 
   # generate the kustomize manifest
