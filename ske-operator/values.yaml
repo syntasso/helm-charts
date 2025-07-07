@@ -39,7 +39,7 @@ imageRegistry:
     name: "syntasso/ske-platform-pipeline-adapter"
   skePipelineUtilityImage:
     name: "syntasso/kratix-pipeline-utility"
-    version: "v0.0.1"
+    version: "v0.0.3"
 # Syntasso Enterprise manifests are available in the S3 bucket below
 # If you are using a custom bucket, update the values accordingly
 releaseStorage:
