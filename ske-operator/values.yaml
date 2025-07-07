@@ -13,9 +13,22 @@ global:
     # global.skeOperator.tlsConfig.webhookTLSKey:
     # global.skeOperator.tlsConfig.webhookTLSCert:
   # skeDeployment:
-    # WARNING: when skeDeployment.deleteOnUninstall is true, uninstalling this helm chart will delete your SKE platform
-    # only set to true for dev or testing environments
-    # deleteOnUninstall: false
+  # WARNING: when skeDeployment.deleteOnUninstall is true, uninstalling this helm chart will delete your SKE platform
+  # only set to true for dev or testing environments
+  # deleteOnUninstall: false
+
+# resource limits for the operator deployment
+resources:
+  limits:
+    cpu: 100m
+    memory: 256Mi
+  requests:
+    cpu: 100m
+    memory: 256Mi
+
+nodeSelector: {}
+tolerations: []
+affinity: {}
 
 # Your SKE License Key
 skeLicense: "my-ske-license"

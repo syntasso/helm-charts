@@ -33,4 +33,12 @@ spec:
             items:
               - key: ske-deployment
                 path: ske-deployment.yaml
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- . | toYaml | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- . | toYaml | nindent 8 }}
+      {{- end }}
 {{- end -}}
