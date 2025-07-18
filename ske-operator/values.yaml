@@ -89,6 +89,14 @@ skeDeployment:
   enabled: true
   # The version to deploy
   version: "latest"
+  deploymentConfig:
+    resources:
+      limits:
+        memory: "100Mi"
+        cpu: "100m"
+      requests:
+        memory: "100Mi"
+        cpu: "100m"
   tlsConfig:
     certManager:
       disabled: false
