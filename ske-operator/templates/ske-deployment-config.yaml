@@ -13,6 +13,11 @@ data:
       name: kratix
     spec:
       version: {{ .version | default "latest" }}
+      {{- with .deploymentConfig.resources }}
+      deploymentConfig:
+        resources:
+{{- toYaml . | nindent 10 }}
+      {{- end }}
       tlsConfig:
         {{- if ( .tlsConfig.certManager.disabled | default false ) }}
         certSecretName: custom-kratix-platform-serving-cert
