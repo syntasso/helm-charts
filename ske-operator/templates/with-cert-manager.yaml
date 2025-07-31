@@ -16,9 +16,15 @@ spec:
     - ske-operator-webhook-service.kratix-platform-system.svc
     - ske-operator-webhook-service.kratix-platform-system.svc.cluster.local
   issuerRef:
+  {{- if .Values.global.skeOperator.tlsConfig.certManager.issuerRef }}
+    kind: {{ .Values.global.skeOperator.tlsConfig.certManager.issuerRef.kind }}
+    name: {{ .Values.global.skeOperator.tlsConfig.certManager.issuerRef.name }}
+  {{- else }}
     kind: Issuer
     name: ske-operator-selfsigned-issuer
+  {{- end }}
   secretName: ske-operator-webhook-server-cert
+{{- if not .Values.global.skeOperator.tlsConfig.certManager.issuerRef }}
 ---
 apiVersion: cert-manager.io/v1
 kind: Issuer
@@ -30,6 +36,7 @@ metadata:
   namespace: kratix-platform-system
 spec:
   selfSigned: {}
+{{- end }}
 ---
 apiVersion: admissionregistration.k8s.io/v1
 kind: ValidatingWebhookConfiguration

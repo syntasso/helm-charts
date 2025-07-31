@@ -231,6 +231,14 @@ var _ = Describe("ske-operator helm chart", func() {
 			})
 		})
 	})
+
+	When("user provides a custom cert-manager issuer", func() {
+		It("the secret template sets the resource-policy to 'keep'", func() {
+			template := run("helm", "template", "ske-operator", "../ske-operator/", "-s=templates/with-cert-manager.yaml", "-f=./assets/values-with-certmanager-custom-issuer.yaml")
+			Expect(template).To(MatchRegexp(`issuerRef:\s+kind:\s+ClusterIssuer\s+name:\s+custom-issuer`))
+			Expect(template).NotTo(MatchRegexp(`apiVersion:\s+cert-manager.io/v1\s+kind:\s+Issuer\s+`))
+		})
+	})
 })
 
 func runLongTimeout(args ...string) string {
