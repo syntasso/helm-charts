@@ -37,7 +37,7 @@ spec:
                 configMapKeyRef:
                   key: PIPELINE_ADAPTER_IMG
                   name: kratix-platform-pipeline-adapter-config
-          image: syntasso.docker.scarf.sh/syntasso/kratix-platform@sha256:03210cc43005a1ac0821f797a0738fed65799b59b9c4aa6e6162dadb454093f1
+          image: syntasso.docker.scarf.sh/syntasso/kratix-platform@sha256:fe02e4515575f0e1afb56017c9747973495ba82b1d51da63292a72186e0dd7b4
           livenessProbe:
             httpGet:
               path: /healthz
