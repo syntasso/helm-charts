@@ -60,13 +60,13 @@ type: Opaque
 stringData: {{ toYaml .Values.releaseStorage.bucket.secret.values | nindent 2 }}
 {{ end }}
 
-{{ if and (.Values.releaseStorage) (.Values.releaseStorage.caCertSecret) (.Values.releaseStorage.caCertSecret.values) }}
+{{ if and (.Values.releaseStorage) (.Values.releaseStorage.customCaCert) (.Values.releaseStorage.customCaCert.values) }}
 ---
 apiVersion: v1
 kind: Secret
 metadata:
-  name: {{ .Values.releaseStorage.caCertSecret.name | default "ske-release-storage-custom-ca" }}
+  name: {{ .Values.releaseStorage.customCaCert.name | default "ske-release-storage-custom-ca" }}
   namespace: kratix-platform-system
 type: Opaque
-stringData: {{ toYaml .Values.releaseStorage.caCertSecret.values | nindent 2 }}
+stringData: {{ toYaml .Values.releaseStorage.customCaCert.values | nindent 2 }}
 {{ end }}

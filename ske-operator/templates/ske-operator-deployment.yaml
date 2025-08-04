@@ -31,13 +31,13 @@ resources:
 {{- $container := index $manifest.spec.template.spec.containers 0
                     | merge (include "containerPatch" . | fromYaml) }}
 
-{{- if and (.Values.releaseStorage) (.Values.releaseStorage.caCertSecret) (.Values.releaseStorage.caCertSecret.name) }}
-{{- $caMountPath := "/etc/ssl/certs/release-storage-ca" }}
+{{- if and (.Values.releaseStorage) (.Values.releaseStorage.customCaCert) (.Values.releaseStorage.customCaCert.name) }}
+{{- $caMountPath := "/tmp/certs/release-storage-ca" }}
 {{- $caVolumeMount := dict "name" "release-storage-ca" "mountPath" $caMountPath "readOnly" true }}
 {{- $_ := set $container "volumeMounts" (append ($container.volumeMounts | default (list)) $caVolumeMount) }}
-{{- $caEnv := dict "name" "SSL_CERT_FILE" "value" (printf "%s/ca.crt" $caMountPath) }}
+{{- $caEnv := dict "name" "SSL_CERT_FILE" "value" (printf "%s/caCert" $caMountPath) }}
 {{- $_ := set $container "env" (append ($container.env | default (list)) $caEnv) }}
-{{- $caVolume := dict "name" "release-storage-ca" "secret" (dict "secretName" .Values.releaseStorage.caCertSecret.name) }}
+{{- $caVolume := dict "name" "release-storage-ca" "secret" (dict "secretName" .Values.releaseStorage.customCaCert.name) }}
 {{- $_ := set $manifest.spec.template.spec "volumes" (append ($manifest.spec.template.spec.volumes | default (list)) $caVolume) }}
 {{- end }}
 
