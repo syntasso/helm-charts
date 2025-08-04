@@ -71,6 +71,16 @@ releaseStorage:
     #   values:
     #     accessKeyID: "my-access"
     #     secretAccessKey: "my-secret"
+
+  # Optionally provide a CA certificate for accessing the release storage
+  # endpoints. The referenced secret must contain a key named `ca.crt`.
+  # caCertSecret:
+  #   name: "my-ca-secret" # Secret in the same namespace as the operator
+  #   values:
+  #     ca.crt: |-
+  #       -----BEGIN CERTIFICATE-----
+  #       ...
+  #       -----END CERTIFICATE-----
 skeOperator:
   # Set if you want to change the resources for the operator container
   resources:
