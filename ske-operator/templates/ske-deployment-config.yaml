@@ -25,5 +25,14 @@ data:
         {{- end }}
         certManager:
           disabled: {{ .tlsConfig.certManager.disabled | default false }}
+{{- if not .tlsConfig.certManager.disabled }}
+  {{- with .tlsConfig.certManager.issuerRef }}
+    {{- if and .name .kind }}
+          issuerRef:
+            kind: {{ .kind }}
+            name: {{ .name }}
+    {{- end }}
+  {{- end }}
+{{- end }}
 {{- end }}
 {{- end }}
