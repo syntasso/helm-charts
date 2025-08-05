@@ -71,6 +71,16 @@ releaseStorage:
     #   values:
     #     accessKeyID: "my-access"
     #     secretAccessKey: "my-secret"
+
+  # If you are mirroring SKE release bucket, you might need to provide a custom CA certificate
+  # for accessing the release storage endpoints.
+  # customCaCert:
+  #   name: "ske-release-storage-custom-ca" # Secret name; default to ske-release-storage-custom-ca if not set
+  #   values:
+  #     caCert: |-
+  #       -----BEGIN CERTIFICATE-----
+  #       ...
+  #       -----END CERTIFICATE-----
 skeOperator:
   # Set if you want to change the resources for the operator container
   resources:
