@@ -108,6 +108,19 @@ spec:
                         disabled:
                           description: Disabled indicates whether the Operator should create cert-manager resources
                           type: boolean
+                        issuerRef:
+                          description: IssuerRef is the reference to the custom cert-manager issuer
+                          properties:
+                            kind:
+                              description: Kind is the type of the custom issuer, ClusterIssuer or Issuer
+                              type: string
+                            name:
+                              description: Name is the name of the custom issuer
+                              type: string
+                          required:
+                            - kind
+                            - name
+                          type: object
                       required:
                         - disabled
                       type: object
