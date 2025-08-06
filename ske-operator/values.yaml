@@ -8,7 +8,11 @@ global:
     tlsConfig:
       certManager:
         disabled: false
-    # if certManager.disabled is set to false, the following values are required
+      # if custom certificate issuer is used, the following values are required
+      # issuerRef:
+      #   kind: ClusterIssuer
+      #   name: custom-selfsigned-issuer
+    # if certManager.disabled is set to true, the following values are required
     # global.skeOperator.tlsConfig.webhookCACert:
     # global.skeOperator.tlsConfig.webhookTLSKey:
     # global.skeOperator.tlsConfig.webhookTLSCert:
@@ -110,6 +114,10 @@ skeDeployment:
   tlsConfig:
     certManager:
       disabled: false
+      # if custom certificate issuer is used, the following values are required
+      # issuerRef:
+      #   name: "custom-selfsigned-issuer"
+      #   kind: "ClusterIssuer"
     # if certManager.disabled is set to false, the following values are required within the tlsConfig
     # webhookCACert:
     # webhookTLSKey:

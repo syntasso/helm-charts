@@ -38,13 +38,6 @@ EOF
 
 function generate_resources_with_certmanager(){
   CHART_CRDS_WITH_CERT_MANAGER=$root/ske-operator/charts/ske-operator-crds/templates/crds-with-cert-manager.yaml
-  CHART_DIST_WITH_CERT_MANAGER=$root/ske-operator/templates/with-cert-manager.yaml
-
-  echo "{{ if not .Values.global.skeOperator.tlsConfig.certManager.disabled }}" > "${CHART_DIST_WITH_CERT_MANAGER}"
-  yq 'select(.kind == "Certificate"
-    or .kind == "Issuer"
-    or .kind == "ValidatingWebhookConfiguration")' ${MANIFEST_NAME} >> "${CHART_DIST_WITH_CERT_MANAGER}"
-  echo "{{ end }}" >> "${CHART_DIST_WITH_CERT_MANAGER}"
 
   echo "{{ if not .Values.global.skeOperator.tlsConfig.certManager.disabled }}" > "${CHART_CRDS_WITH_CERT_MANAGER}"
   yq 'select(.kind == "CustomResourceDefinition")' ${MANIFEST_NAME} >> "${CHART_CRDS_WITH_CERT_MANAGER}"
