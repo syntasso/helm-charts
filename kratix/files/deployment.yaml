@@ -37,7 +37,7 @@ spec:
                 configMapKeyRef:
                   key: PIPELINE_ADAPTER_IMG
                   name: kratix-platform-pipeline-adapter-config
-          image: syntasso.docker.scarf.sh/syntasso/kratix-platform@sha256:6c466da0ea29bd93e28976427618fbeecdd95375b23a033187eb811e47fac31a
+          image: syntasso.docker.scarf.sh/syntasso/kratix-platform@sha256:4bd753906fd85c3e049fcf0d95a0379254098c11905d0618ffb394b8b6d6e850
           livenessProbe:
             httpGet:
               path: /healthz
@@ -58,10 +58,10 @@ spec:
           resources:
             limits:
               cpu: 100m
-              memory: 100Mi
+              memory: 256Mi
             requests:
               cpu: 100m
-              memory: 100Mi
+              memory: 256Mi
           securityContext:
             allowPrivilegeEscalation: false
             capabilities:
