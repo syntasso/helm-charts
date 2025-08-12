@@ -106,10 +106,10 @@ skeDeployment:
   deploymentConfig:
     resources:
       limits:
-        memory: "100Mi"
+        memory: "256Mi"
         cpu: "100m"
       requests:
-        memory: "100Mi"
+        memory: "256Mi"
         cpu: "100m"
   tlsConfig:
     certManager:
