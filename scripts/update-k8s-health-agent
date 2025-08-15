@@ -5,11 +5,13 @@ set -euxo pipefail
 function main(){
   root=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )/.." &> /dev/null && pwd )
 
-  MANIFEST_NAME="k8s-health-agent.yaml"
-  CHART_CRDS=$root/k8s-health-agent/crds/platform_kratix_io_crds.yaml
-  CHART_DISTRIBUTION=$root/k8s-health-agent/templates/distribution.yaml
+  k8s_agent_dir=$root/k8s-health-agent
+  mkdir -p ${k8s_agent_dir}/files
 
-  root=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )/.." &> /dev/null && pwd )
+  MANIFEST_NAME="k8s-health-agent.yaml"
+  CHART_CRDS=${k8s_agent_dir}/crds/platform_kratix_io_crds.yaml
+  CHART_DISTRIBUTION=${k8s_agent_dir}/templates/distribution.yaml
+  DEPLOYMENT_FILE=${k8s_agent_dir}/files/k8s-health-agent-deployment.yaml
 
   # Download the latest release manifest
   latest_release="$(gh release list --repo=syntasso/enterprise-kratix --exclude-pre-releases --order desc --json tagName --jq "[ .[] | select(.tagName | match(\"k8s-health-agent\")) ][0].tagName")"
@@ -21,10 +23,13 @@ function main(){
   gh release download --repo=syntasso/enterprise-kratix "$latest_release" --pattern "${MANIFEST_NAME}"
 
   yq 'select(.kind == "CustomResourceDefinition")' ${MANIFEST_NAME} > ${CHART_CRDS}
-  yq 'select(.kind != "CustomResourceDefinition" and .kind != "ConfigMap")' ${MANIFEST_NAME} > ${CHART_DISTRIBUTION}
+  yq 'select(.kind == "Deployment")' ${MANIFEST_NAME} > ${DEPLOYMENT_FILE}
+  yq 'select(.kind != "CustomResourceDefinition"
+    and .kind != "ConfigMap"
+    and .kind != "Deployment")' ${MANIFEST_NAME} > ${CHART_DISTRIBUTION}
 
   # ensure to clean up the downloaded file
-  trap "rm k8s-health-agent.yaml" EXIT
+  trap "rm ${MANIFEST_NAME}" EXIT
 
   export latest_version=${latest_release#"k8s-health-agent-"}
 

@@ -4,12 +4,29 @@ skeLicense: "my-ske-license"
 # Update these values if you are using a custom registry or bucket
 # If using Syntasso Enterprise defaults, no changes are required
 imageRegistry:
-  # imagePullSecret:
   # The host registry to pull the images from Syntasso Enterprise images are hosted on registry.syntasso.io
   # If you are using a custom registry, update this value to your registry host
   host: "registry.syntasso.io"
   # The name of the image pull secret to use. Update this if you are using a custom image pull secret
-  # imagePullSecret: "my-secret"
-  k8sHealthAgentImage:
+  imagePullSecret: "syntasso-registry"
+
+  healthAgentImage:
     # The name of the k8s-health-agent use. Update this if you are using a custom image name for the agent
     name: "syntasso/k8s-health-agent"
+  
+  # DEPRECATED: This field is kept for backwards compatibility and will be removed in a future version.
+  # Please use `imageRegistry.healthAgentImage.name` instead.
+  k8sHealthAgentImage:
+    name: "syntasso/k8s-health-agent"
+
+healthAgent:
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "100m"
+    limits:
+      memory: "256Mi"
+      cpu: "100m"
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
