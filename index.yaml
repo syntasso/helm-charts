@@ -3,6 +3,16 @@ entries:
   k8s-health-agent:
   - apiVersion: v2
     appVersion: v0.4.0
+    created: "2025-08-19T20:09:39.952931129Z"
+    description: A Helm Chart for deploying the K8s Health Agent
+    digest: 8527326b6f294c95825dd93b8d46487e7ab59689e3ea0b758703d28ac771b095
+    name: k8s-health-agent
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/k8s-health-agent-0.13.0/k8s-health-agent-0.13.0.tgz
+    version: 0.13.0
+  - apiVersion: v2
+    appVersion: v0.4.0
     created: "2025-08-19T10:02:28.999091366Z"
     description: A Helm Chart for deploying the K8s Health Agent
     digest: b339e9c135b07e6b63fe5ea82e6af462efd803b2c7647797703ba35c919e4726
@@ -873,4 +883,4 @@ entries:
     urls:
     - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.8.0/ske-operator-0.8.0.tgz
     version: 0.8.0
-generated: "2025-08-19T18:57:22.064102277Z"
+generated: "2025-08-19T20:09:39.953158982Z"
