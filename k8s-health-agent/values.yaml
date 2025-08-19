@@ -13,7 +13,11 @@ imageRegistry:
   healthAgentImage:
     # The name of the k8s-health-agent use. Update this if you are using a custom image name for the agent
     name: "syntasso/k8s-health-agent"
-  
+
+  healthAgentAdapterImage:
+    # The name of the k8s-health-agent use. Update this if you are using a custom image name for the agent
+    name: "syntasso/health-check-adapter"
+
   # DEPRECATED: This field is kept for backwards compatibility and will be removed in a future version.
   # Please use `imageRegistry.healthAgentImage.name` instead.
   k8sHealthAgentImage:
