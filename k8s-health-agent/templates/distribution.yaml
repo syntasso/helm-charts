@@ -2,8 +2,11 @@ apiVersion: v1
 kind: Namespace
 metadata:
   labels:
+    app.kubernetes.io/component: k8s-health-agent-manager
+    app.kubernetes.io/instance: k8s-health-agent
     app.kubernetes.io/managed-by: kustomize
     app.kubernetes.io/name: k8s-health-agent
+    app.kubernetes.io/part-of: ske-platform
     control-plane: controller-manager
   name: k8s-health-agent-system
 ---
@@ -11,8 +14,11 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   labels:
+    app.kubernetes.io/component: k8s-health-agent-manager
+    app.kubernetes.io/instance: k8s-health-agent
     app.kubernetes.io/managed-by: kustomize
     app.kubernetes.io/name: k8s-health-agent
+    app.kubernetes.io/part-of: ske-platform
   name: k8s-health-agent-controller-manager
   namespace: k8s-health-agent-system
 ---
@@ -20,8 +26,11 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   labels:
+    app.kubernetes.io/component: k8s-health-agent-manager
+    app.kubernetes.io/instance: k8s-health-agent
     app.kubernetes.io/managed-by: kustomize
     app.kubernetes.io/name: k8s-health-agent
+    app.kubernetes.io/part-of: ske-platform
   name: k8s-health-agent-leader-election-role
   namespace: k8s-health-agent-system
 rules:
@@ -61,8 +70,11 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   labels:
+    app.kubernetes.io/component: k8s-health-agent-manager
+    app.kubernetes.io/instance: k8s-health-agent
     app.kubernetes.io/managed-by: kustomize
     app.kubernetes.io/name: k8s-health-agent
+    app.kubernetes.io/part-of: ske-platform
   name: k8s-health-agent-healthdefinition-editor-role
 rules:
   - apiGroups:
@@ -88,8 +100,11 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   labels:
+    app.kubernetes.io/component: k8s-health-agent-manager
+    app.kubernetes.io/instance: k8s-health-agent
     app.kubernetes.io/managed-by: kustomize
     app.kubernetes.io/name: k8s-health-agent
+    app.kubernetes.io/part-of: ske-platform
   name: k8s-health-agent-healthdefinition-viewer-role
 rules:
   - apiGroups:
@@ -111,8 +126,11 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   labels:
+    app.kubernetes.io/component: k8s-health-agent-manager
+    app.kubernetes.io/instance: k8s-health-agent
     app.kubernetes.io/managed-by: kustomize
     app.kubernetes.io/name: k8s-health-agent
+    app.kubernetes.io/part-of: ske-platform
   name: k8s-health-agent-healthstate-editor-role
 rules:
   - apiGroups:
@@ -138,8 +156,11 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   labels:
+    app.kubernetes.io/component: k8s-health-agent-manager
+    app.kubernetes.io/instance: k8s-health-agent
     app.kubernetes.io/managed-by: kustomize
     app.kubernetes.io/name: k8s-health-agent
+    app.kubernetes.io/part-of: ske-platform
   name: k8s-health-agent-healthstate-viewer-role
 rules:
   - apiGroups:
@@ -160,6 +181,10 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
+  labels:
+    app.kubernetes.io/component: k8s-health-agent-manager
+    app.kubernetes.io/instance: k8s-health-agent
+    app.kubernetes.io/part-of: ske-platform
   name: k8s-health-agent-manager-role
 rules:
   - apiGroups:
@@ -267,6 +292,10 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
+  labels:
+    app.kubernetes.io/component: k8s-health-agent-manager
+    app.kubernetes.io/instance: k8s-health-agent
+    app.kubernetes.io/part-of: ske-platform
   name: k8s-health-agent-metrics-auth-role
 rules:
   - apiGroups:
@@ -285,6 +314,10 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
+  labels:
+    app.kubernetes.io/component: k8s-health-agent-manager
+    app.kubernetes.io/instance: k8s-health-agent
+    app.kubernetes.io/part-of: ske-platform
   name: k8s-health-agent-metrics-reader
 rules:
   - nonResourceURLs:
@@ -296,8 +329,11 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   labels:
+    app.kubernetes.io/component: k8s-health-agent-manager
+    app.kubernetes.io/instance: k8s-health-agent
     app.kubernetes.io/managed-by: kustomize
     app.kubernetes.io/name: k8s-health-agent
+    app.kubernetes.io/part-of: ske-platform
   name: k8s-health-agent-leader-election-rolebinding
   namespace: k8s-health-agent-system
 roleRef:
@@ -313,8 +349,11 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   labels:
+    app.kubernetes.io/component: k8s-health-agent-manager
+    app.kubernetes.io/instance: k8s-health-agent
     app.kubernetes.io/managed-by: kustomize
     app.kubernetes.io/name: k8s-health-agent
+    app.kubernetes.io/part-of: ske-platform
   name: k8s-health-agent-manager-rolebinding
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -328,6 +367,10 @@ subjects:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
+  labels:
+    app.kubernetes.io/component: k8s-health-agent-manager
+    app.kubernetes.io/instance: k8s-health-agent
+    app.kubernetes.io/part-of: ske-platform
   name: k8s-health-agent-metrics-auth-rolebinding
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -342,8 +385,11 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
+    app.kubernetes.io/component: k8s-health-agent-manager
+    app.kubernetes.io/instance: k8s-health-agent
     app.kubernetes.io/managed-by: kustomize
     app.kubernetes.io/name: k8s-health-agent
+    app.kubernetes.io/part-of: ske-platform
     control-plane: controller-manager
   name: k8s-health-agent-controller-manager-metrics-service
   namespace: k8s-health-agent-system
@@ -354,4 +400,7 @@ spec:
       protocol: TCP
       targetPort: 8443
   selector:
+    app.kubernetes.io/component: k8s-health-agent-manager
+    app.kubernetes.io/instance: k8s-health-agent
+    app.kubernetes.io/part-of: ske-platform
     control-plane: controller-manager

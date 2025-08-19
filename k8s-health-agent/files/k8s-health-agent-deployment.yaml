@@ -2,8 +2,11 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
+    app.kubernetes.io/component: k8s-health-agent-manager
+    app.kubernetes.io/instance: k8s-health-agent
     app.kubernetes.io/managed-by: kustomize
     app.kubernetes.io/name: k8s-health-agent
+    app.kubernetes.io/part-of: ske-platform
     control-plane: controller-manager
   name: k8s-health-agent-controller-manager
   namespace: k8s-health-agent-system
@@ -11,12 +14,18 @@ spec:
   replicas: 1
   selector:
     matchLabels:
+      app.kubernetes.io/component: k8s-health-agent-manager
+      app.kubernetes.io/instance: k8s-health-agent
+      app.kubernetes.io/part-of: ske-platform
       control-plane: controller-manager
   template:
     metadata:
       annotations:
         kubectl.kubernetes.io/default-container: manager
       labels:
+        app.kubernetes.io/component: k8s-health-agent-manager
+        app.kubernetes.io/instance: k8s-health-agent
+        app.kubernetes.io/part-of: ske-platform
         control-plane: controller-manager
     spec:
       containers:
@@ -32,7 +41,11 @@ spec:
                 configMapKeyRef:
                   key: HEALTH_CHECK_ADAPTER_IMG
                   name: k8s-health-agent-config
-          image: registry.syntasso.io/syntasso/k8s-health-agent:v0.3.3
+            - name: SUCCESSFUL_JOBS_HISTORY_LIMIT
+              value: "3"
+            - name: FAILED_JOBS_HISTORY_LIMIT
+              value: "1"
+          image: registry.syntasso.io/syntasso/k8s-health-agent:v0.4.0
           imagePullPolicy: IfNotPresent
           livenessProbe:
             httpGet:
@@ -50,10 +63,10 @@ spec:
           resources:
             limits:
               cpu: 500m
-              memory: 128Mi
+              memory: 256Mi
             requests:
-              cpu: 10m
-              memory: 64Mi
+              cpu: 100m
+              memory: 128Mi
           securityContext:
             allowPrivilegeEscalation: false
             capabilities:
