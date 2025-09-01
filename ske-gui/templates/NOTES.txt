@@ -1,0 +1,23 @@
+Thank you for installing {{ include "ske-gui.name" . }}!
+
+NAMESPACE
+=========
+This chart is intended to run in the "kratix-platform-system" namespace.
+Install with:
+  helm upgrade --install {{ .Release.Name }} {{ .Chart.Name }} \
+    --namespace kratix-platform-system --create-namespace
+
+ACCESS
+======
+This chart exposes a ClusterIP Service by default. To access it locally:
+  kubectl -n kratix-platform-system port-forward svc/{{ include "ske-gui.fullname" . }} 8080:80
+
+Then open http://localhost:8080
+
+LOGIN TOKEN
+===========
+To retrieve a token for your ServiceAccount, use the following command:
+
+  kubectl -n kratix-platform-system create token {{ include "ske-gui.serviceAccountName" . }}
+
+This command requires Kubernetes v1.24+ and appropriate RBAC permissions.

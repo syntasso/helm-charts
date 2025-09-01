@@ -1,0 +1,48 @@
+# Your SKE License Key
+skeLicense: "my-ske-license"
+# Configuration for the Registry and Manifests
+# Update these values if you are using a custom registry or bucket
+# If using Syntasso Enterprise defaults, no changes are required
+imageRegistry:
+  # The host registry to pull the images from Syntasso Enterprise images are hosted on registry.syntasso.io
+  # If you are using a custom registry, update this value to your registry host
+  host: "registry.syntasso.io"
+  imageName: "syntasso/ske-gui"
+  imageVersion: "v0.0.1"
+  # The name of the image pull secret to use. Update this if you are using a custom image pull secret
+  imagePullSecret: "syntasso-registry"
+  # imagePullPolicy: IfNotPresent
+
+# Service account to use for the SKE GUI
+serviceAccount:
+  create: true
+  name: "ske-gui-admin"
+
+# RBAC (ClusterRoleBinding) to grant admin permissions to the service account
+rbac:
+  create: true
+
+# Service configuration
+service:
+  type: ClusterIP
+  port: 80
+
+# Deployment resource configuration
+resources:
+  requests:
+    memory: "256Mi"
+    cpu: "100m"
+  limits:
+    memory: "256Mi"
+    cpu: "100m"
+nodeSelector: {}
+tolerations: []
+affinity: {}
+
+# Ingress configuration
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  hosts: []
+  tls: []
