@@ -4,7 +4,7 @@ NAMESPACE
 =========
 This chart is intended to run in the "kratix-platform-system" namespace.
 Install with:
-  helm upgrade --install {{ .Release.Name }} {{ .Chart.Name }} \
+  helm install {{ .Release.Name }} {{ .Chart.Name }} \
     --namespace kratix-platform-system --create-namespace
 
 ACCESS
