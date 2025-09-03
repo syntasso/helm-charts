@@ -1,0 +1,335 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: backstage-controller
+    control-plane: kratix-backstage-controller-manager
+  name: backstage-controller-controller-manager
+  namespace: kratix-platform-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: backstage-controller
+    control-plane: kratix-backstage-controller-manager
+  name: backstage-controller-leader-election-role
+  namespace: kratix-platform-system
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - configmaps
+    verbs:
+      - get
+      - list
+      - watch
+      - create
+      - update
+      - patch
+      - delete
+  - apiGroups:
+      - coordination.k8s.io
+    resources:
+      - leases
+    verbs:
+      - get
+      - list
+      - watch
+      - create
+      - update
+      - patch
+      - delete
+  - apiGroups:
+      - ""
+    resources:
+      - events
+    verbs:
+      - create
+      - patch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: backstage-controller
+    control-plane: kratix-backstage-controller-manager
+  name: backstage-controller-backstageentitycustomization-admin-role
+rules:
+  - apiGroups:
+      - platform.kratix.io
+    resources:
+      - backstageentitycustomizations
+    verbs:
+      - '*'
+  - apiGroups:
+      - platform.kratix.io
+    resources:
+      - backstageentitycustomizations/status
+    verbs:
+      - get
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: backstage-controller
+    control-plane: kratix-backstage-controller-manager
+  name: backstage-controller-backstageentitycustomization-editor-role
+rules:
+  - apiGroups:
+      - platform.kratix.io
+    resources:
+      - backstageentitycustomizations
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - platform.kratix.io
+    resources:
+      - backstageentitycustomizations/status
+    verbs:
+      - get
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: backstage-controller
+    control-plane: kratix-backstage-controller-manager
+  name: backstage-controller-backstageentitycustomization-viewer-role
+rules:
+  - apiGroups:
+      - platform.kratix.io
+    resources:
+      - backstageentitycustomizations
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - platform.kratix.io
+    resources:
+      - backstageentitycustomizations/status
+    verbs:
+      - get
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    control-plane: kratix-backstage-controller-manager
+  name: backstage-controller-manager-role
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - configmaps
+    verbs:
+      - create
+      - delete
+      - list
+      - update
+      - watch
+  - apiGroups:
+      - ""
+    resources:
+      - events
+    verbs:
+      - create
+      - patch
+  - apiGroups:
+      - ""
+    resources:
+      - serviceaccounts
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - update
+      - watch
+  - apiGroups:
+      - batch
+    resources:
+      - jobs
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - platform.kratix.io
+    resources:
+      - backstageentitycustomizations
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - platform.kratix.io
+    resources:
+      - promises
+      - works
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - platform.kratix.io
+    resources:
+      - promises/finalizers
+    verbs:
+      - update
+  - apiGroups:
+      - platform.kratix.io
+    resources:
+      - promises/status
+    verbs:
+      - get
+      - patch
+      - update
+  - apiGroups:
+      - rbac.authorization.k8s.io
+    resources:
+      - clusterrolebindings
+      - rolebindings
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - update
+      - watch
+  - apiGroups:
+      - rbac.authorization.k8s.io
+    resources:
+      - clusterroles
+      - roles
+    verbs:
+      - bind
+      - create
+      - delete
+      - escalate
+      - get
+      - list
+      - update
+      - watch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    control-plane: kratix-backstage-controller-manager
+  name: backstage-controller-metrics-auth-role
+rules:
+  - apiGroups:
+      - authentication.k8s.io
+    resources:
+      - tokenreviews
+    verbs:
+      - create
+  - apiGroups:
+      - authorization.k8s.io
+    resources:
+      - subjectaccessreviews
+    verbs:
+      - create
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    control-plane: kratix-backstage-controller-manager
+  name: backstage-controller-metrics-reader
+rules:
+  - nonResourceURLs:
+      - /metrics
+    verbs:
+      - get
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: backstage-controller
+    control-plane: kratix-backstage-controller-manager
+  name: backstage-controller-leader-election-rolebinding
+  namespace: kratix-platform-system
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: backstage-controller-leader-election-role
+subjects:
+  - kind: ServiceAccount
+    name: backstage-controller-controller-manager
+    namespace: kratix-platform-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: backstage-controller
+    control-plane: kratix-backstage-controller-manager
+  name: backstage-controller-manager-rolebinding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: backstage-controller-manager-role
+subjects:
+  - kind: ServiceAccount
+    name: backstage-controller-controller-manager
+    namespace: kratix-platform-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+    control-plane: kratix-backstage-controller-manager
+  name: backstage-controller-metrics-auth-rolebinding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: backstage-controller-metrics-auth-role
+subjects:
+  - kind: ServiceAccount
+    name: backstage-controller-controller-manager
+    namespace: kratix-platform-system
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: backstage-controller
+    control-plane: kratix-backstage-controller-manager
+  name: backstage-controller-controller-manager-metrics-service
+  namespace: kratix-platform-system
+spec:
+  ports:
+    - name: https
+      port: 8443
+      protocol: TCP
+      targetPort: 8443
+  selector:
+    app.kubernetes.io/name: backstage-controller
+    control-plane: kratix-backstage-controller-manager

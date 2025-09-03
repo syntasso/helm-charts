@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+
+set -euxo pipefail
+
+function main(){
+  root=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )/.." &> /dev/null && pwd )
+
+  backstage_controller_dir=$root/backstage-controller
+  mkdir -p ${backstage_controller_dir}/files
+
+  MANIFEST_NAME="backstage-controller.yaml"
+  CHART_CRDS=${backstage_controller_dir}/crds/platform_kratix_io_crds.yaml
+  CHART_DISTRIBUTION=${backstage_controller_dir}/templates/distribution.yaml
+  DEPLOYMENT_FILE=${backstage_controller_dir}/files/backstage-controller-deployment.yaml
+  CONFIGMAP_FILE=${backstage_controller_dir}/templates/configmap.yaml
+
+  # Download the latest release manifest
+  latest_release="$(gh release list --repo=syntasso/enterprise-kratix --exclude-pre-releases --order desc --json tagName --jq "[ .[] | select(.tagName | match(\"backstage-controller\")) ][0].tagName")"
+  if [ -z "$latest_release" ]; then
+    echo "No release found for $COMPONENT"
+    exit 1
+  fi
+
+  gh release download --repo=syntasso/enterprise-kratix "$latest_release" --pattern "${MANIFEST_NAME}"
+
+  yq 'select(.kind == "CustomResourceDefinition")' ${MANIFEST_NAME} > ${CHART_CRDS}
+  yq 'select(.kind == "Deployment")' ${MANIFEST_NAME} > ${DEPLOYMENT_FILE}
+  yq 'select(.kind == "ConfigMap")' ${MANIFEST_NAME} > ${CONFIGMAP_FILE}
+  yq 'select(.kind != "CustomResourceDefinition"
+    and .kind != "ConfigMap"
+    and .kind != "Namespace"
+    and .kind != "Deployment")' ${MANIFEST_NAME} > ${CHART_DISTRIBUTION}
+
+  export SKE_BACKSTAGE_GENERATOR_IMG="$(yq -r '.data.SKE_BACKSTAGE_GENERATOR_IMG | sub("^.*:","")' "${CONFIGMAP_FILE}")"
+
+  yq -i '
+    .data.SKE_BACKSTAGE_GENERATOR_IMG =
+      "{{ .Values.imageRegistry.host }}/{{ .Values.imageRegistry.skeBackstageGeneratorImage.name }}:" + strenv(SKE_BACKSTAGE_GENERATOR_IMG)
+  ' "${CONFIGMAP_FILE}"
+
+  # ensure to clean up the downloaded file
+  trap "rm ${MANIFEST_NAME}" EXIT
+
+  export latest_version=${latest_release#"backstage-controller-"}
+
+  # Bump current chart version (always a minor bump)
+  current_chart_version="$(yq -r '.version' backstage-controller/Chart.yaml)"
+  export new_chart_version="$(echo $current_chart_version | awk -F. '{$2 = $2 + 1;} 1' | sed 's/ /./g')"
+  yq -i '.appVersion = strenv(latest_version) | .version = env(new_chart_version)' backstage-controller/Chart.yaml
+}
+
+main
