@@ -1,0 +1,21 @@
+# Your SKE License Key
+skeLicense: "my-ske-license"
+# Configuration for the Registry and Manifests
+# Update these values if you are using a custom registry
+imageRegistry:
+  host: "registry.syntasso.io"
+  imagePullSecret: "syntasso-registry"
+  controllerImage:
+    name: "syntasso/backstage-controller"
+
+controller:
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "100m"
+    limits:
+      memory: "256Mi"
+      cpu: "100m"
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
