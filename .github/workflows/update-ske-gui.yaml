@@ -1,4 +1,4 @@
-name: Update SKE Operator
+name: Update SKE GUI
 
 on:
   push:
