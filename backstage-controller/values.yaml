@@ -1,5 +1,3 @@
-# Your SKE License Key
-skeLicense: "my-ske-license"
 # Configuration for the image registry
 # Update these values if you are using a private image registry
 imageRegistry:
