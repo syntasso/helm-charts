@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+set -euxo pipefail
+
+function main(){
+  root=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )/.." &> /dev/null && pwd )
+
+  ske_gui_dir=$root/ske-gui
+  mkdir -p ${ske_gui_dir}/files
+
+  MANIFEST_NAME="ske-gui.yaml"
+  CHART_CRDS=${ske_gui_dir}/crds/platform_kratix_io_crds.yaml
+  CHART_DISTRIBUTION=${ske_gui_dir}/templates/distribution.yaml
+  DEPLOYMENT_FILE=${ske_gui_dir}/files/ske-gui-deployment.yaml
+
+  # Download the latest release manifest
+  latest_release="$(gh release list --repo=syntasso/enterprise-kratix --exclude-pre-releases --order desc --json tagName --jq "[ .[] | select(.tagName | match(\"ske-gui\")) ][0].tagName")"
+  if [ -z "$latest_release" ]; then
+    echo "No release found for ske gui"
+    exit 1
+  fi
+
+  export latest_version=${latest_release#"ske-gui-"}
+
+  # Bump current chart version (always a minor bump)
+  current_chart_version="$(yq -r '.version' ske-gui/Chart.yaml)"
+  export new_chart_version="$(echo $current_chart_version | awk -F. '{$2 = $2 + 1;} 1' | sed 's/ /./g')"
+  yq -i '.appVersion = strenv(latest_version) | .version = env(new_chart_version)' ske-gui/Chart.yaml
+  yq -i '.imageRegistry.imageVersion = strenv(latest_version)' ske-gui/values.yaml
+}
+
+main

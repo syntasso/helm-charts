@@ -1,0 +1,52 @@
+name: Release SKE GUI Charts
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ['main']
+    paths: ['ske-gui/Chart.yaml']
+
+env:
+  CR_TOKEN: "${{ secrets.CR_TOKEN }}"
+
+jobs:
+  release:
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          token: "${{ secrets.CR_TOKEN }}"
+
+      - name: Configure Git
+        run: |
+          git config user.name "syntassodev"
+          git config user.email "kratix@syntasso.io"
+
+      - name: Install Helm
+        uses: azure/setup-helm@v3
+
+      - name: Run chart-releaser
+        uses: helm/chart-releaser-action@v1.6.0
+        with:
+          charts_dir: .
+          pages_branch: gh-pages
+          skip_existing: true
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: eu-west-2
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+      - name: Upload Charts to Releases Bucket
+        run: |
+          VERSION=$(grep '^version:' ske-gui/Chart.yaml | awk '{print $2}' | head -n 1)
+          bucket_path="s3://syntasso-enterprise-releases/ske-gui-helm-chart/${VERSION}/"
+          echo "Uploading ske-gui-${VERSION}.tgz to ${bucket_path}"
+          aws s3 cp .cr-release-packages/ske-gui-${VERSION}.tgz ${bucket_path}
+
