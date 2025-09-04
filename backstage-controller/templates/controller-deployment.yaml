@@ -1,0 +1,44 @@
+{{- define "patch" }}
+spec:
+  template:
+    spec:
+      containers:
+        {{- .container | list | toYaml | nindent 8 }}
+      {{- with .Values.backstageController.nodeSelector }}
+      nodeSelector:
+        {{- . | toYaml | nindent 8 }}
+      {{- end }}
+      {{- with .Values.backstageController.tolerations }}
+      tolerations:
+        {{- . | toYaml | nindent 8 }}
+      {{- end }}
+      {{- with .Values.backstageController.affinity }}
+      affinity:
+        {{- . | toYaml | nindent 8 }}
+      {{- end }}
+      imagePullSecrets:
+        - name: '{{ .Values.imageRegistry.imagePullSecret | default "syntasso-registry" }}'
+{{- end }}
+
+{{- define "containerPatch" }}
+{{- with .Values.backstageController.resources }}
+resources:
+  {{- . | toYaml | nindent 2 }}
+{{- end }}
+{{- end }}
+
+{{- $manifest := .Files.Get "files/backstage-controller-deployment.yaml" | fromYaml }}
+{{- $container := index $manifest.spec.template.spec.containers 0
+                    | merge (include "containerPatch" . | fromYaml) }}
+
+{{/* Apply image configuration from kustomization.yaml */}}
+{{- $originalImage := "registry.syntasso.io/syntasso/backstage-controller" }}
+{{- $newName := printf "%s/%s" .Values.imageRegistry.host (coalesce .Values.imageRegistry.backstageControllerImage.name .Values.imageRegistry.skeBackstageGeneratorImage.name) }}
+{{- $newTag := .Chart.AppVersion }}
+{{- $_ := set $container "image" (printf "%s:%s" $newName $newTag) }}
+{{- $_ := set $manifest.spec.template "spec"
+              (omit $manifest.spec.template.spec "containers" "imagePullSecrets") }}
+
+{{- $manifest
+      | merge (include "patch" (merge . (dict "container" $container)) | fromYaml)
+      | toYaml }}
