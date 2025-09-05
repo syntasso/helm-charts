@@ -464,6 +464,16 @@ entries:
   ske-gui:
   - apiVersion: v2
     appVersion: v0.3.0
+    created: "2025-09-05T10:37:36.770799063Z"
+    description: Syntasso SKE GUI Helm chart
+    digest: 163f04b85c37c5b4437d16817d879b2a0f8864d0ec99cb3433baccad3388c341
+    name: ske-gui
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/ske-gui-0.3.0/ske-gui-0.3.0.tgz
+    version: 0.3.0
+  - apiVersion: v2
+    appVersion: v0.3.0
     created: "2025-09-04T15:19:54.971151379Z"
     description: Syntasso SKE GUI Helm chart
     digest: 19f46c8764a54c0f7bb7d0e44063975b50fdba26795756ed3a9265b037130f4d
@@ -935,4 +945,4 @@ entries:
     urls:
     - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.8.0/ske-operator-0.8.0.tgz
     version: 0.8.0
-generated: "2025-09-04T15:19:54.971325846Z"
+generated: "2025-09-05T10:37:36.771045655Z"
