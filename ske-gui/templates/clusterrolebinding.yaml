@@ -2,7 +2,7 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: {{ include "ske-gui.fullname" . }}-admin
+  name: ske-gui-admin
   labels:
     {{- include "ske-gui.labels" . | nindent 4 }}
 roleRef:

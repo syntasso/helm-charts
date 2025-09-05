@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "ske-gui.fullname" . }}
+  name: ske-gui
   namespace: kratix-platform-system
   labels:
     {{- include "ske-gui.labels" . | nindent 4 }}

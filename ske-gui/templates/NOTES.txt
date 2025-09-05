@@ -10,7 +10,7 @@ Install with:
 ACCESS
 ======
 This chart exposes a ClusterIP Service by default. To access it locally:
-  kubectl -n kratix-platform-system port-forward svc/{{ include "ske-gui.fullname" . }} 8080:80
+  kubectl -n kratix-platform-system port-forward svc/ske-gui 8080:80
 
 Then open http://localhost:8080
 

@@ -2,7 +2,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ include "ske-gui.fullname" . }}
+  name: ske-gui
   labels:
     {{- include "ske-gui.labels" . | nindent 4 }}
   {{- with .Values.ingress.annotations }}
@@ -23,7 +23,7 @@ spec:
             pathType: {{ .type }}
             backend:
               service:
-                name: {{ include "ske-gui.fullname" $ }}
+                name: ske-gui
                 port:
                   number: {{ $.Values.service.port }}
           {{- end }}
