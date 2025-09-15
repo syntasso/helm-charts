@@ -35,9 +35,19 @@ affinity: {}
 # Ingress configuration
 ingress:
   enabled: false # Set to true to enable ingress controller resource
-  className: ""
+  # -- Additional labels to add to the Ingress resource
+  labels: {}
+  ingressClassName: ""
   annotations: {}
-  # hosts must be set if ingress is enabled.
-  # Please refer to https://kubernetes.io/docs/reference/kubernetes-api/service-resources/ingress-v1/#IngressSpec for more information
+  # -- Hostname(s) for the Ingress resource
+  # Please refer to https://kubernetes.io/docs/reference/kubernetes-api/service-resources/ingress-v1/#IngressSpec for more information.
   hosts: []
+  # - host: chart-example.local
+  #   paths:
+  #   - path: /
+  #     type: ImplementationSpecific
+  # -- Ingress TLS configuration
   tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
