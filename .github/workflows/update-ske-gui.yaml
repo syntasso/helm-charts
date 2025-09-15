@@ -29,33 +29,6 @@ jobs:
           git config user.name "syntassodev"
           git config user.email "kratix@syntasso.io"
 
-      - name: Set up Go
-        uses: actions/setup-go@v4
-        with:
-          go-version: 1.21
-
-      - name: Set up kubectl
-        uses: azure/setup-kubectl@v3
-        with:
-          version: 'latest'
-
-      - name: Set up Kind
-        uses: helm/kind-action@v1
-        with:
-          version: 'v0.20.0' # Use the desired version of Kind
-          cluster_name: "platform"
-
-      - name: Set up Helm
-        uses: azure/setup-helm@v3
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Install Ginkgo CLI
-        run: |
-          go install github.com/onsi/ginkgo/v2/ginkgo@latest
-        env:
-          PATH: ${{ env.PATH }}:/home/runner/go/bin
-
       - name: Start tmate ssh debugging session
         uses: mxschmitt/action-tmate@v3
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.ssh_session }}
