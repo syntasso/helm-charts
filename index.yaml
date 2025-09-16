@@ -176,6 +176,23 @@ entries:
   kratix-destination:
   - apiVersion: v2
     appVersion: 0.0.1
+    created: "2025-09-16T14:20:50.044484897Z"
+    dependencies:
+    - condition: installFlux
+      name: flux2
+      repository: ""
+      version: 2.5.1
+    deprecated: true
+    description: A Helm chart for installing flux and configuring it to pull down
+      from Kratix
+    digest: 85d84429d73687113d6c85a461df580036d18cfabaeb737c15e5c200cb7e2de4
+    name: kratix-destination
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/kratix-destination-0.0.2/kratix-destination-0.0.2.tgz
+    version: 0.0.2
+  - apiVersion: v2
+    appVersion: 0.0.1
     created: "2023-12-27T15:58:57.248139082Z"
     dependencies:
     - condition: installFlux
@@ -975,4 +992,4 @@ entries:
     urls:
     - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.8.0/ske-operator-0.8.0.tgz
     version: 0.8.0
-generated: "2025-09-16T11:51:53.687191674Z"
+generated: "2025-09-16T14:20:50.044628716Z"
