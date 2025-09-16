@@ -1,4 +1,6 @@
-# Kratix Worker
+# Kratix Destination (DEPRECATED)
+
+> This Helm Chart has been deprecated and is no longer maintained
 
 This chart is for installing [Flux](https://github.com/fluxcd/flux2) (optional) and configuring
 it with the necessary Flux resources to pull down the resources Kratix writes to

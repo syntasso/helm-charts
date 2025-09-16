@@ -42,21 +42,6 @@ It is suggested to register a Git repository or public cloud bucket, however
 for a quick start, you can install and configure a local MinIO or other
 cluster storage.
 
-### `kratix-destination`
-
-Kratix maintains a decoupled architecture which means that it does not
-ever communicate with destination infrastructure directly. It is up to the
-platform team to decide how to apply the Kratix documents once scheduled
-to the correct state store.
-
-In other words, Kratix does not take an opinion
-on how your platform reconciles work to additional infrastructure.
-However, we do provide this chart as a way to quickly install the CNCF
-GitOps project [Flux](https://fluxcd.io/) and use the same state store
-configuration options as used in the `kratix` chart.
-
-For configuration options, see the [chart README](./kratix-destination/README.md).
-
 ## SKE Operator
 
 The SKE Operator chart deploys the Syntasso Kratix Enterprise Operator. This operator
