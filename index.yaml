@@ -2,6 +2,16 @@ apiVersion: v1
 entries:
   backstage-controller:
   - apiVersion: v2
+    appVersion: v0.3.1
+    created: "2025-09-16T11:51:53.687025933Z"
+    description: A Helm chart for deploying the Backstage Controller
+    digest: 72afb32f6362f74b46d8a377c2e52c294fd5e1f16c553689d2658eefe63ee90f
+    name: backstage-controller
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/backstage-controller-0.3.0/backstage-controller-0.3.0.tgz
+    version: 0.3.0
+  - apiVersion: v2
     appVersion: v0.3.0
     created: "2025-09-04T12:02:58.505246694Z"
     description: A Helm chart for deploying the Backstage Controller
@@ -965,4 +975,4 @@ entries:
     urls:
     - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.8.0/ske-operator-0.8.0.tgz
     version: 0.8.0
-generated: "2025-09-15T15:28:59.365041111Z"
+generated: "2025-09-16T11:51:53.687191674Z"
