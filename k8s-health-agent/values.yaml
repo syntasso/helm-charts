@@ -8,7 +8,7 @@ imageRegistry:
   # If you are using a custom registry, update this value to your registry host
   host: "registry.syntasso.io"
   # The name of the image pull secret to use. Update this if you are using a custom image pull secret
-  imagePullSecret: "syntasso-registry"
+  # imagePullSecret: <your secret name>
 
   healthAgentImage:
     # The name of the k8s-health-agent use. Update this if you are using a custom image name for the agent
