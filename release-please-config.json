@@ -1,13 +1,48 @@
 {
   "packages": {
     "backstage-controller": {
+      "package-name": "backstage-controller",
       "component": "backstage-controller",
+      "include-component-in-tag": true,
+      "separate-pull-requests": true,
       "changelog-path": "CHANGELOG.md",
       "release-type": "helm",
       "bump-minor-pre-major": true,
       "bump-patch-for-minor-pre-major": false,
       "draft": false,
-      "prerelease": false
+      "prerelease": false,
+      "changelog-sections": [
+        {
+          "type": "feat",
+          "section": "Features",
+          "hidden": false
+        },
+        {
+          "type": "fix",
+          "section": "Bug Fixes",
+          "hidden": false
+        },
+        {
+          "type": "perf",
+          "section": "Performance Improvements",
+          "hidden": false
+        },
+        {
+          "type": "revert",
+          "section": "Reverts",
+          "hidden": false
+        },
+        {
+          "type": "chore",
+          "section": "Chores",
+          "hidden": false
+        },
+        {
+          "type": "build",
+          "section": "Build System",
+          "hidden": false
+        }
+      ]
     }
   },
   "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json"
