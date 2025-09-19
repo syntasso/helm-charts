@@ -1,0 +1,197 @@
+name: Test Helm Chart
+run-name: ${{ inputs.helm_chart_name }} Chart (ref ${{ github.ref }})
+
+on:
+  push:
+    tags:
+      - '*-v*'
+    branches-ignore:
+      - 'release-please--branches--main--components--*'
+    paths:
+      - 'tests/**'
+      - ske-operator/**
+  workflow_dispatch:
+    inputs:
+      ssh_session:
+        type: boolean
+        description: "Whether to run the tests with tmate debugging"
+        default: false
+      helm_chart_name:
+        type: choice
+        options:
+          - kratix
+          - ske-operator
+          - ske-gui
+          - backstage-controller
+          - k8s-health-agent
+        description: "The name of the helm chart to run the tests on"
+        required: true
+      merge_release_pr:
+        type: boolean
+        description: "Whether to merge the release please PR after the tests"
+        default: false
+      chart_tag:
+        type: string
+        description: "The tag of the helm chart to run the tests on"
+        required: true
+
+jobs:
+  run-helm-tests:
+    if: github.ref != 'refs/tags/*'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.CR_TOKEN }}
+
+      - name: Configure Git
+        run: |
+          git config user.name "syntassodev"
+          git config user.email "kratix@syntasso.io"
+
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: 'latest'
+
+      - name: Set up Helm
+        uses: azure/setup-helm@v3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Go
+        if: ${{ github.event_name == 'push' || inputs.helm_chart_name == 'ske-operator' }}
+        uses: actions/setup-go@v4
+        with:
+          go-version: 1.21
+
+      - name: Set up Kind
+        if: ${{ github.event_name == 'push' || inputs.helm_chart_name == 'ske-operator' }}
+        uses: helm/kind-action@v1
+        with:
+          version: 'v0.20.0' # Use the desired version of Kind
+          cluster_name: "platform"
+
+      - name: Install Ginkgo CLI
+        if: ${{ github.event_name == 'push' || inputs.helm_chart_name == 'ske-operator' }}
+        run: |
+          go install github.com/onsi/ginkgo/v2/ginkgo@latest
+        env:
+          PATH: ${{ env.PATH }}:/home/runner/go/bin
+
+      - name: Start tmate ssh debugging session
+        uses: mxschmitt/action-tmate@v3
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.ssh_session }}
+        with:
+          limit-access-to-actor: true
+          detached: true
+
+      - name: Update Chart
+        run: |
+          if [ -f ./scripts/update-${{ inputs.helm_chart_name }} ]; then
+            ./scripts/update-${{ inputs.helm_chart_name }}
+          else
+            echo "No update script found for ${{ inputs.helm_chart_name }}"
+            exit 0
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.CR_TOKEN }}
+          SKE_LICENSE_TOKEN: ${{ secrets.SKE_LICENSE_TOKEN }}
+          CHART_NAME: ${{ inputs.helm_chart_name }}
+
+      - name: Run Tests (ske-operator only)
+        if: ${{ github.event_name == 'push' || inputs.helm_chart_name == 'ske-operator' }}
+        run: |
+          ginkgo -r tests/
+        env:
+          GH_TOKEN: ${{ secrets.CR_TOKEN }}
+          SKE_LICENSE_TOKEN: ${{ secrets.SKE_LICENSE_TOKEN }}
+          CHART_NAME: ${{ inputs.helm_chart_name }}
+          RUN_TESTS: ${{ github.event_name == 'push' || inputs.helm_chart_name == 'ske-operator' }}
+  
+      - name: Create pending releases
+        if: github.ref == 'refs/heads/main'
+        env:
+          TOKEN: ${{ secrets.RELEASE_PLEASE_TOKEN }}
+          CHART_NAME: ${{ inputs.helm_chart_name }}
+        run: |
+          release-please \
+            --token=$TOKEN \
+            --repo-url=syntasso/helm-charts \
+            --path ${CHART_NAME} \
+            github-release
+
+      - name: Update Release PR
+        if: github.ref == 'refs/heads/main'
+        env:
+          TOKEN: ${{ secrets.RELEASE_PLEASE_TOKEN }}
+          CHART_NAME: ${{ inputs.helm_chart_name }}
+        run: |
+          release-please \
+            --token=$TOKEN \
+            --repo-url=syntasso/helm-charts \
+            --path ${CHART_NAME} \
+            release-pr
+      - name: Commit updated Chart YAML to Release Please branch
+        run: |
+          git switch --create release-please--branches--main--components--${CHART_NAME}
+          git add .
+          git commit --amend --no-edit --force-with-lease
+          git push
+
+      - name: Merge Release PR
+        if: github.ref == 'refs/heads/main' && inputs.merge_release_pr
+        env:
+          CHART_NAME: ${{ inputs.helm_chart_name }}
+        run: |
+          gh pr merge --auto --merge release-please--branches--main--components--${CHART_NAME}
+  
+  release-chart:
+    if: github.ref == 'refs/tags/*'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.CR_TOKEN }}
+      - name: Determine Chart to release
+        run: |
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            echo "CHART_TAG=${{ github.event.inputs.chart_tag }}" >> $GITHUB_ENV
+          else
+            echo "CHART_TAG=${{ github.ref_name }}" >> $GITHUB_ENV
+          fi
+          echo "CHART_NAME=$(echo ${CHART_TAG} | awk -F'-v' '{ print $1 }')" >> $GITHUB_ENV
+          echo "CHART_VERSION=v$(echo ${CHART_TAG} | awk -F'-v' '{ print $2 }')" >> $GITHUB_ENV
+      
+      - name: Configure Git
+        run: |
+          git config user.name "syntassodev"
+          git config user.email "kratix@syntasso.io"
+
+      - name: Install Helm
+        uses: azure/setup-helm@v3
+
+      - name: Run chart-releaser
+        uses: helm/chart-releaser-action@v1.6.0
+        with:
+          charts_dir: ${CHART_NAME}
+          pages_branch: gh-pages
+          skip_existing: true
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: eu-west-2
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+      - name: Upload Charts to Releases Bucket
+        run: |
+          VERSION=$(grep '^version:' backstage-controller/Chart.yaml | awk '{print $2}' | head -n 1)
+          bucket_path="s3://syntasso-enterprise-releases/backstage-controller-helm-chart/${VERSION}/"
+          echo "Uploading backstage-controller-${VERSION}.tgz to ${bucket_path}"
+          aws s3 cp .cr-release-packages/backstage-controller-${VERSION}.tgz ${bucket_path}
