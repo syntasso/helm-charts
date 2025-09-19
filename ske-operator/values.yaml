@@ -98,7 +98,7 @@ skeOperator:
 skeDeployment:
   # Set to true if you want to deploy SKE
   enabled: true
-  # The version to deploy
+  # The version of ske to deploy
   version: "latest"
   deploymentConfig:
     resources:
