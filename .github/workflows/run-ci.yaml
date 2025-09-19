@@ -146,7 +146,7 @@ jobs:
           git stash -u
           git fetch origin release-please--branches--main--components--${CHART_NAME}
           git switch --create release-please--branches--main--components--${CHART_NAME}
-          git pull origin release-please--branches--main--components--${CHART_NAME}
+          git pull origin release-please--branches--main--components--${CHART_NAME} --rebase
           git stash pop
           git add .
           git commit --amend --no-edit
