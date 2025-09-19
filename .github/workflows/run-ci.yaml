@@ -1,4 +1,5 @@
-name: Run Helm tests
+name: Test Helm Chart
+run-name: ${{ inputs.helm_chart_name }} Chart (ref ${{ github.ref }})
 
 on:
   push:
