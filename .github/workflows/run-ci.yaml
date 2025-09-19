@@ -14,7 +14,7 @@ on:
     inputs:
       ssh_session:
         type: boolean
-        description: "Whether to run the tests with tmate debugging"
+        description: "Debugging with tmate"
         default: false
       helm_chart_name:
         type: choice
@@ -24,16 +24,16 @@ on:
           - ske-gui
           - backstage-controller
           - k8s-health-agent
-        description: "The name of the helm chart to run the tests on"
+        description: "Target helm chart"
         required: true
       merge_release_pr:
         type: boolean
-        description: "Whether to merge the release please PR after the tests"
+        description: "Release on success?"
         default: false
       chart_tag:
         type: string
         description: "The tag of the helm chart to run the tests on"
-        required: true
+        required: false
 
 jobs:
   run-helm-tests:
