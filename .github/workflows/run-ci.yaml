@@ -32,7 +32,7 @@ on:
         default: false
       chart_tag:
         type: string
-        description: "The tag of the helm chart to run the tests on"
+        description: "Tag to Release (optional)"
         required: false
 
 jobs:
@@ -153,7 +153,7 @@ jobs:
           gh pr merge --auto --merge release-please--branches--main--components--${CHART_NAME}
   
   release-chart:
-    if: github.ref == 'refs/tags/*'
+    if: github.ref == 'refs/tags/*' || inputs.chart_tag != ''
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
