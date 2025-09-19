@@ -139,6 +139,9 @@ jobs:
             --path ${CHART_NAME} \
             release-pr
       - name: Update chart.yaml in release please branch
+        env:
+          TOKEN: ${{ secrets.RELEASE_PLEASE_TOKEN }}
+          CHART_NAME: ${{ inputs.helm_chart_name }}
         run: |
           git switch --create release-please--branches--main--components--${CHART_NAME}
           git add .
