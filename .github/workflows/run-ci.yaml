@@ -138,12 +138,12 @@ jobs:
             --repo-url=syntasso/helm-charts \
             --path ${CHART_NAME} \
             release-pr
-      - name: Commit updated Chart YAML to Release Please branch
+      - name: Update chart.yaml in release please branch
         run: |
           git switch --create release-please--branches--main--components--${CHART_NAME}
           git add .
-          git commit --amend --no-edit --force-with-lease
-          git push
+          git commit --amend --no-edit
+          git push --force-with-lease
 
       - name: Merge Release PR
         if: github.ref == 'refs/heads/main' && inputs.merge_release_pr
