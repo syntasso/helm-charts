@@ -110,7 +110,11 @@ jobs:
           SKE_LICENSE_TOKEN: ${{ secrets.SKE_LICENSE_TOKEN }}
           CHART_NAME: ${{ inputs.helm_chart_name }}
           RUN_TESTS: ${{ github.event_name == 'push' || inputs.helm_chart_name == 'ske-operator' }}
-  
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - run: npm install -g release-please
       - name: Create pending releases
         if: github.ref == 'refs/heads/main'
         env:
