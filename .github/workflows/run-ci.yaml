@@ -124,11 +124,13 @@ jobs:
           TOKEN: ${{ secrets.RELEASE_PLEASE_TOKEN }}
           CHART_NAME: ${{ inputs.helm_chart_name }}
         run: |
+          if [ -n ${CHART_NAME} ]; then
           release-please \
             --token=$TOKEN \
-            --repo-url=syntasso/helm-charts \
-            --path ${CHART_NAME} \
-            release-pr
+              --repo-url=syntasso/helm-charts \
+              --path ${CHART_NAME} \
+              release-pr
+          fi
       - name: Update appVersion
         if: github.ref == 'refs/heads/main' && inputs.update_chart_app
         env:
