@@ -15,7 +15,7 @@ spec:
       restartPolicy: Never
       containers:
         - name: deploy-ske
-          image: {{ .Values.imageRegistry.host }}/{{ .Values.imageRegistry.skePipelineUtilityImage.name }}:{{ .Values.imageRegistry.skePipelineUtilityImage.version }}
+          image: {{ .Values.imageRegistry.host }}/{{ .Values.imageRegistry.skeOperatorImage.name }}:{{ .Chart.AppVersion }}
           command: ["/bin/sh", "-c"]
           args:
             - |
