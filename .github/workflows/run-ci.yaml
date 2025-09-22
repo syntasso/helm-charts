@@ -30,6 +30,10 @@ on:
         type: boolean
         description: "Release on success?"
         default: false
+      update_chart_app:
+        type: boolean
+        description: "Update chart appVersion"
+        default: false
       chart_tag:
         type: string
         description: "Tag to Release (optional)"
@@ -88,19 +92,6 @@ jobs:
           limit-access-to-actor: true
           detached: true
 
-      - name: Update Chart
-        run: |
-          if [ -f ./scripts/update-${{ inputs.helm_chart_name }} ]; then
-            ./scripts/update-${{ inputs.helm_chart_name }}
-          else
-            echo "No update script found for ${{ inputs.helm_chart_name }}"
-            exit 0
-          fi
-        env:
-          GH_TOKEN: ${{ secrets.CR_TOKEN }}
-          SKE_LICENSE_TOKEN: ${{ secrets.SKE_LICENSE_TOKEN }}
-          CHART_NAME: ${{ inputs.helm_chart_name }}
-
       - name: Run Tests (ske-operator only)
         if: ${{ github.event_name == 'push' || inputs.helm_chart_name == 'ske-operator' }}
         run: |
@@ -138,26 +129,43 @@ jobs:
             --repo-url=syntasso/helm-charts \
             --path ${CHART_NAME} \
             release-pr
-      - name: Update chart.yaml in release please branch
+      - name: Update appVersion
+        if: github.ref == 'refs/heads/main' && inputs.update_chart_app
         env:
           TOKEN: ${{ secrets.RELEASE_PLEASE_TOKEN }}
           CHART_NAME: ${{ inputs.helm_chart_name }}
+          GH_TOKEN: ${{ secrets.CR_TOKEN }}
+          SKE_LICENSE_TOKEN: ${{ secrets.SKE_LICENSE_TOKEN }}
         run: |
-          git stash -u
-          git fetch origin release-please--branches--main--components--${CHART_NAME}
-          git switch --create release-please--branches--main--components--${CHART_NAME}
-          git pull origin release-please--branches--main--components--${CHART_NAME} --rebase
-          git stash pop
+          echo "Looking for update script i scripts/update-${{ inputs.helm_chart_name }}..."
+          if [ -f ./scripts/update-${{ inputs.helm_chart_name }} ]; then
+            ./scripts/update-${{ inputs.helm_chart_name }}
+          else
+            echo "No update script found for ${{ inputs.helm_chart_name }}"
+            exit 1
+          fi
+
           git add .
-          git commit --amend --no-edit
-          git push --force-with-lease
+
+          message="feat(${CHART_NAME}): update appVersion"
+          if [ "${{ inputs.merge_release_pr }}" == "true" ]; then
+            message=$(echo "${message}\n\nautorelease")
+          fi
+
+          git commit -m "${message}"
+          git push origin main
 
       - name: Merge Release PR
-        if: github.ref == 'refs/heads/main' && inputs.merge_release_pr
         env:
           CHART_NAME: ${{ inputs.helm_chart_name }}
         run: |
-          gh pr merge --auto --merge release-please--branches--main--components--${CHART_NAME}
+          ## Check if latest commit has autorelease in the message
+          if git log -1 --pretty=%B | grep -q "autorelease"; then
+            echo "Latest commit has autorelease in the message, merging release PR"
+            gh pr merge --auto --merge release-please--branches--main--components--${CHART_NAME}
+          else
+            echo "Latest commit does not have autorelease in the message, skipping merge"
+          fi
   
   release-chart:
     if: github.ref == 'refs/tags/*' || inputs.chart_tag != ''
