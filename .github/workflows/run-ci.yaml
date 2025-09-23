@@ -321,12 +321,18 @@ jobs:
       - name: Determine Chart to release
         run: |
           if [ "${GITHUB_EVENT_NAME}" == "workflow_dispatch" ]; then
-            echo "CHART_TAG=${CHART_TAG}" >> $GITHUB_ENV
+            if [ -z "${CHART_TAG}" ]; then
+              echo "ERROR: chart_tag input is required for workflow_dispatch"
+              exit 1
+            fi
+            echo "Using provided chart_tag: ${CHART_TAG}"
+            echo "CHART_NAME=$(echo ${CHART_TAG} | awk -F'-v' '{ print $1 }')" >> $GITHUB_ENV
+            echo "CHART_VERSION=v$(echo ${CHART_TAG} | awk -F'-v' '{ print $2 }')" >> $GITHUB_ENV
           else
-            echo "CHART_TAG=${GITHUB_REF_NAME}" >> $GITHUB_ENV
+            echo "Using git ref name: ${GITHUB_REF_NAME}"
+            echo "CHART_NAME=$(echo ${GITHUB_REF_NAME} | awk -F'-v' '{ print $1 }')" >> $GITHUB_ENV
+            echo "CHART_VERSION=v$(echo ${GITHUB_REF_NAME} | awk -F'-v' '{ print $2 }')" >> $GITHUB_ENV
           fi
-          echo "CHART_NAME=$(echo ${CHART_TAG} | awk -F'-v' '{ print $1 }')" >> $GITHUB_ENV
-          echo "CHART_VERSION=v$(echo ${CHART_TAG} | awk -F'-v' '{ print $2 }')" >> $GITHUB_ENV
 
       - name: Configure Git
         run: |
