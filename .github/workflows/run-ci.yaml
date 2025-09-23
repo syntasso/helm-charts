@@ -165,7 +165,7 @@ jobs:
           ## Check if latest commit has autorelease in the message
           if git log -1 --pretty=%B | grep -q "autorelease"; then
             echo "Latest commit has autorelease in the message, merging release PR"
-            gh pr merge --auto --merge release-please--branches--main--components--${CHART_NAME}
+            gh pr merge --admin --merge release-please--branches--main--components--${CHART_NAME}
           else
             echo "Latest commit does not have autorelease in the message, skipping merge"
           fi
