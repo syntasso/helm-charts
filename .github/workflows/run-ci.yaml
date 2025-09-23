@@ -21,7 +21,6 @@ on:
       helm_chart_name:
         type: choice
         options:
-          - kratix
           - ske-operator
           - ske-gui
           - backstage-controller
