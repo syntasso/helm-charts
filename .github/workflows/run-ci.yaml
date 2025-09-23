@@ -10,6 +10,7 @@ on:
     paths:
       - 'tests/**'
       - ske-operator/**
+      - ske-gui/**
   workflow_dispatch:
     inputs:
       ssh_session:
@@ -26,7 +27,6 @@ on:
           - k8s-health-agent
         description: "Target helm chart"
         required: true
-        default: ske-operator
       merge_release_pr:
         type: boolean
         description: "Release on success?"
@@ -113,12 +113,23 @@ jobs:
           TOKEN: ${{ secrets.RELEASE_PLEASE_TOKEN }}
           CHART_NAME: ${{ inputs.helm_chart_name }}
         run: |
-          release-please \
-            --token=$TOKEN \
-            --repo-url=syntasso/helm-charts \
-            --path ${CHART_NAME} \
-            github-release
-
+          if [ -z ${CHART_NAME} ]; then
+            # get all charts from release-please-manifest.json
+            charts=$(cat .release-please-manifest.json | jq -r 'keys[]')
+            for chart in $charts; do
+              release-please \
+                --token=$TOKEN \
+                --repo-url=syntasso/helm-charts \
+                --path ${chart} \
+                github-release
+            done
+          else
+            release-please \
+              --token=$TOKEN \
+              --repo-url=syntasso/helm-charts \
+              --path ${CHART_NAME} \
+              github-release
+          fi
       - name: Update Release PR
         if: github.ref == 'refs/heads/main'
         env:
@@ -126,11 +137,11 @@ jobs:
           CHART_NAME: ${{ inputs.helm_chart_name }}
         run: |
           if [ -n ${CHART_NAME} ]; then
-          release-please \
-            --token=$TOKEN \
-              --repo-url=syntasso/helm-charts \
-              --path ${CHART_NAME} \
-              release-pr
+            release-please \
+              --token=$TOKEN \
+                --repo-url=syntasso/helm-charts \
+                --path ${CHART_NAME} \
+                release-pr
           fi
       - name: Update appVersion
         if: github.ref == 'refs/heads/main' && inputs.update_chart_app
@@ -159,8 +170,7 @@ jobs:
           git push origin main
 
       - name: Merge Release PR
-        # the merge release pr step is executed on the next run of the job
-        if: ! inputs.merge_release_pr
+        if: ${{ ! inputs.update_chart_app }}
         env:
           CHART_NAME: ${{ inputs.helm_chart_name }}
           GH_TOKEN: ${{ secrets.CR_TOKEN }}
@@ -172,7 +182,7 @@ jobs:
           else
             echo "Latest commit does not have autorelease in the message, skipping merge"
           fi
-  
+
   release-chart:
     if: github.ref == 'refs/tags/*' || inputs.chart_tag != ''
     runs-on: ubuntu-latest
@@ -191,7 +201,7 @@ jobs:
           fi
           echo "CHART_NAME=$(echo ${CHART_TAG} | awk -F'-v' '{ print $1 }')" >> $GITHUB_ENV
           echo "CHART_VERSION=v$(echo ${CHART_TAG} | awk -F'-v' '{ print $2 }')" >> $GITHUB_ENV
-      
+
       - name: Configure Git
         run: |
           git config user.name "syntassodev"
