@@ -11,6 +11,7 @@ on:
       - 'tests/**'
       - ske-operator/**
       - ske-gui/**
+      - backstage-controller/**
   workflow_dispatch:
     inputs:
       ssh_session:
@@ -44,17 +45,16 @@ jobs:
   test:
     if: ${{ !startsWith(github.ref, 'refs/tags/') && (github.event_name == 'push' || inputs.helm_chart_name == 'ske-operator') }}
     runs-on: ubuntu-latest
+    env:
+      GITHUB_EVENT_NAME: ${{ github.event_name }}
+      GITHUB_REF: ${{ github.ref }}
+      CHART_NAME: ${{ inputs.helm_chart_name }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
           token: ${{ secrets.CR_TOKEN }}
-
-      - name: Configure Git
-        run: |
-          git config user.name "syntassodev"
-          git config user.email "kratix@syntasso.io"
 
       - name: Set up kubectl
         uses: azure/setup-kubectl@v3
@@ -66,18 +66,30 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Check for changes
+        uses: dorny/paths-filter@v2
+        id: changes
+        with:
+          filters: |
+            ske-operator:
+              - 'ske-operator/**'
+              - 'tests/**'
+
       - name: Set up Go
+        if: ${{ steps.changes.outputs.ske-operator == 'true' || inputs.helm_chart_name == 'ske-operator' }}
         uses: actions/setup-go@v4
         with:
           go-version: 1.21
 
       - name: Set up Kind
+        if: ${{ steps.changes.outputs.ske-operator == 'true' || inputs.helm_chart_name == 'ske-operator' }}
         uses: helm/kind-action@v1
         with:
           version: 'v0.20.0'
           cluster_name: "platform"
 
       - name: Install Ginkgo CLI
+        if: ${{ steps.changes.outputs.ske-operator == 'true' || inputs.helm_chart_name == 'ske-operator' }}
         run: |
           go install github.com/onsi/ginkgo/v2/ginkgo@latest
         env:
@@ -91,18 +103,22 @@ jobs:
           detached: true
 
       - name: Run Tests
+        if: ${{ steps.changes.outputs.ske-operator == 'true' || inputs.helm_chart_name == 'ske-operator' }}
         run: |
           ginkgo -r tests/
         env:
           GH_TOKEN: ${{ secrets.CR_TOKEN }}
           SKE_LICENSE_TOKEN: ${{ secrets.SKE_LICENSE_TOKEN }}
-          CHART_NAME: ${{ inputs.helm_chart_name }}
           RUN_TESTS: true
 
   update-and-release:
     if: ${{ !startsWith(github.ref, 'refs/tags/') && (needs.test.result == 'success' || needs.test.result == 'skipped') }}
     runs-on: ubuntu-latest
     needs: [test]
+    env:
+      GITHUB_EVENT_NAME: ${{ github.event_name }}
+      GITHUB_REF: ${{ github.ref }}
+      CHART_NAME: ${{ inputs.helm_chart_name }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -115,6 +131,31 @@ jobs:
           git config user.name "syntassodev"
           git config user.email "kratix@syntasso.io"
 
+      - name: Check for changes
+        uses: dorny/paths-filter@v2
+        id: changes
+        with:
+          filters: |
+            ske-operator:
+              - 'ske-operator/**'
+              - 'tests/**'
+            ske-gui:
+              - 'ske-gui/**'
+            kratix:
+              - 'kratix/**'
+            backstage-controller:
+              - 'backstage-controller/**'
+            k8s-health-agent:
+              - 'k8s-health-agent/**'
+
+      - name: Set chart change flags
+        run: |
+          echo "SKE_OPERATOR_CHANGED=${{ steps.changes.outputs.ske-operator }}" >> $GITHUB_ENV
+          echo "SKE_GUI_CHANGED=${{ steps.changes.outputs.ske-gui }}" >> $GITHUB_ENV
+          echo "KRATIX_CHANGED=${{ steps.changes.outputs.kratix }}" >> $GITHUB_ENV
+          echo "BACKSTAGE_CONTROLLER_CHANGED=${{ steps.changes.outputs.backstage-controller }}" >> $GITHUB_ENV
+          echo "K8S_HEALTH_AGENT_CHANGED=${{ steps.changes.outputs.k8s-health-agent }}" >> $GITHUB_ENV
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
@@ -124,12 +165,11 @@ jobs:
         run: npm install -g release-please
 
       - name: Create pending releases
-        if: github.ref == 'refs/heads/main'
+        if: ${{ github.ref == 'refs/heads/main' }}
         env:
           TOKEN: ${{ secrets.RELEASE_PLEASE_TOKEN }}
-          CHART_NAME: ${{ inputs.helm_chart_name }}
         run: |
-          if [ -z ${CHART_NAME} ]; then
+          if [ -z "${CHART_NAME}" ]; then
             # get all charts from release-please-manifest.json
             charts=$(cat .release-please-manifest.json | jq -r 'keys[]')
             for chart in $charts; do
@@ -148,32 +188,75 @@ jobs:
           fi
 
       - name: Update Release PR
-        if: github.ref == 'refs/heads/main'
+        if: ${{ github.ref == 'refs/heads/main' }}
         env:
           TOKEN: ${{ secrets.RELEASE_PLEASE_TOKEN }}
-          CHART_NAME: ${{ inputs.helm_chart_name }}
         run: |
-          if [ -n ${CHART_NAME} ]; then
+          if [ "${GITHUB_EVENT_NAME}" == "workflow_dispatch" ] && [ -n "${CHART_NAME}" ]; then
+            # For manual dispatch, use the provided chart name
+            echo "Updating release PR for manually specified chart: ${CHART_NAME}"
             release-please \
               --token=$TOKEN \
               --repo-url=syntasso/helm-charts \
               --path ${CHART_NAME} \
               release-pr
+          else
+            # For push events, check which charts were affected by changes
+            affected_charts=()
+
+            # Define chart mappings: env_var_name -> chart_name
+            declare -A chart_mappings=(
+              ["SKE_OPERATOR_CHANGED"]="ske-operator"
+              ["SKE_GUI_CHANGED"]="ske-gui"
+              ["KRATIX_CHANGED"]="kratix"
+              ["BACKSTAGE_CONTROLLER_CHANGED"]="backstage-controller"
+              ["K8S_HEALTH_AGENT_CHANGED"]="k8s-health-agent"
+            )
+
+            # Check each chart using environment variables
+            for env_var in "${!chart_mappings[@]}"; do
+              if [ "${!env_var}" == "true" ]; then
+                affected_charts+=("${chart_mappings[$env_var]}")
+              fi
+            done
+
+            # If no charts were affected, exit
+            if [ ${#affected_charts[@]} -eq 0 ]; then
+              echo "No charts were affected by changes, skipping update release PR..."
+              exit 0
+            fi
+
+            # Echo all affected charts at once
+            echo "Charts affected by changes: ${affected_charts[*]}"
+
+            # Update release PR for each affected chart
+            for chart in "${affected_charts[@]}"; do
+              echo "Updating release PR for $chart..."
+              release-please \
+                --token=$TOKEN \
+                --repo-url=syntasso/helm-charts \
+                --path ${chart} \
+                release-pr
+            done
           fi
 
       - name: Update appVersion
-        if: github.ref == 'refs/heads/main' && inputs.update_chart_app
+        if: ${{ github.ref == 'refs/heads/main' && inputs.update_chart_app }}
         env:
           TOKEN: ${{ secrets.RELEASE_PLEASE_TOKEN }}
-          CHART_NAME: ${{ inputs.helm_chart_name }}
           GH_TOKEN: ${{ secrets.CR_TOKEN }}
           SKE_LICENSE_TOKEN: ${{ secrets.SKE_LICENSE_TOKEN }}
         run: |
-          echo "Looking for update script in scripts/update-${{ inputs.helm_chart_name }}..."
-          if [ -f ./scripts/update-${{ inputs.helm_chart_name }} ]; then
-            ./scripts/update-${{ inputs.helm_chart_name }}
+          if [ -z "${CHART_NAME}" ]; then
+            echo "No chart name provided, skipping update appVersion..."
+            exit 0
+          fi
+
+          echo "Looking for update script in scripts/update-${CHART_NAME}..."
+          if [ -f ./scripts/update-${CHART_NAME} ]; then
+            ./scripts/update-${CHART_NAME}
           else
-            echo "No update script found for ${{ inputs.helm_chart_name }}"
+            echo "No update script found for ${CHART_NAME}"
             exit 1
           fi
 
@@ -190,9 +273,13 @@ jobs:
       - name: Merge Release PR
         if: ${{ !inputs.update_chart_app }}
         env:
-          CHART_NAME: ${{ inputs.helm_chart_name }}
           GH_TOKEN: ${{ secrets.CR_TOKEN }}
         run: |
+          if [ -z "${CHART_NAME}" ]; then
+            echo "No chart name provided, skipping merge release PR..."
+            exit 0
+          fi
+
           ## Check if latest commit has autorelease in the message
           if git log -1 --pretty=%B | grep -q "autorelease"; then
             echo "Latest commit has autorelease in the message, merging release PR"
@@ -204,6 +291,11 @@ jobs:
   publish-charts:
     if: ${{ startsWith(github.ref, 'refs/tags/') || inputs.chart_tag != '' }}
     runs-on: ubuntu-latest
+    env:
+      GITHUB_EVENT_NAME: ${{ github.event_name }}
+      GITHUB_REF: ${{ github.ref }}
+      GITHUB_REF_NAME: ${{ github.ref_name }}
+      CHART_TAG: ${{ inputs.chart_tag }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -213,10 +305,10 @@ jobs:
 
       - name: Determine Chart to release
         run: |
-          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
-            echo "CHART_TAG=${{ github.event.inputs.chart_tag }}" >> $GITHUB_ENV
+          if [ "${GITHUB_EVENT_NAME}" == "workflow_dispatch" ]; then
+            echo "CHART_TAG=${CHART_TAG}" >> $GITHUB_ENV
           else
-            echo "CHART_TAG=${{ github.ref_name }}" >> $GITHUB_ENV
+            echo "CHART_TAG=${GITHUB_REF_NAME}" >> $GITHUB_ENV
           fi
           echo "CHART_NAME=$(echo ${CHART_TAG} | awk -F'-v' '{ print $1 }')" >> $GITHUB_ENV
           echo "CHART_VERSION=v$(echo ${CHART_TAG} | awk -F'-v' '{ print $2 }')" >> $GITHUB_ENV
