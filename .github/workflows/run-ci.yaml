@@ -160,6 +160,7 @@ jobs:
       - name: Merge Release PR
         env:
           CHART_NAME: ${{ inputs.helm_chart_name }}
+          GH_TOKEN: ${{ secrets.CR_TOKEN }}
         run: |
           ## Check if latest commit has autorelease in the message
           if git log -1 --pretty=%B | grep -q "autorelease"; then
