@@ -151,7 +151,7 @@ jobs:
 
           message="feat(${CHART_NAME}): update appVersion"
           if [ "${{ inputs.merge_release_pr }}" == "true" ]; then
-            message=$(echo "${message}\n\nautorelease")
+            message=$(echo "${message} (autorelease)")
           fi
 
           git commit -m "${message}"
