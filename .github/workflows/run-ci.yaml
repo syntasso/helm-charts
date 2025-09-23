@@ -41,8 +41,8 @@ on:
         required: false
 
 jobs:
-  run-helm-tests:
-    if: ${{ !startsWith(github.ref, 'refs/tags/') }}
+  test:
+    if: ${{ !startsWith(github.ref, 'refs/tags/') && (github.event_name == 'push' || inputs.helm_chart_name == 'ske-operator') }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -67,20 +67,17 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Go
-        if: ${{ github.event_name == 'push' || inputs.helm_chart_name == 'ske-operator' }}
         uses: actions/setup-go@v4
         with:
           go-version: 1.21
 
       - name: Set up Kind
-        if: ${{ github.event_name == 'push' || inputs.helm_chart_name == 'ske-operator' }}
         uses: helm/kind-action@v1
         with:
-          version: 'v0.20.0' # Use the desired version of Kind
+          version: 'v0.20.0'
           cluster_name: "platform"
 
       - name: Install Ginkgo CLI
-        if: ${{ github.event_name == 'push' || inputs.helm_chart_name == 'ske-operator' }}
         run: |
           go install github.com/onsi/ginkgo/v2/ginkgo@latest
         env:
@@ -93,20 +90,39 @@ jobs:
           limit-access-to-actor: true
           detached: true
 
-      - name: Run Tests (ske-operator only)
-        if: ${{ github.event_name == 'push' || inputs.helm_chart_name == 'ske-operator' }}
+      - name: Run Tests
         run: |
           ginkgo -r tests/
         env:
           GH_TOKEN: ${{ secrets.CR_TOKEN }}
           SKE_LICENSE_TOKEN: ${{ secrets.SKE_LICENSE_TOKEN }}
           CHART_NAME: ${{ inputs.helm_chart_name }}
-          RUN_TESTS: ${{ github.event_name == 'push' || inputs.helm_chart_name == 'ske-operator' }}
+          RUN_TESTS: true
 
-      - uses: actions/setup-node@v4
+  update-and-release:
+    if: ${{ !startsWith(github.ref, 'refs/tags/') && (needs.test.result == 'success' || needs.test.result == 'skipped') }}
+    runs-on: ubuntu-latest
+    needs: [test]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.CR_TOKEN }}
+
+      - name: Configure Git
+        run: |
+          git config user.name "syntassodev"
+          git config user.email "kratix@syntasso.io"
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: 18
-      - run: npm install -g release-please
+
+      - name: Install release-please
+        run: npm install -g release-please
+
       - name: Create pending releases
         if: github.ref == 'refs/heads/main'
         env:
@@ -130,6 +146,7 @@ jobs:
               --path ${CHART_NAME} \
               github-release
           fi
+
       - name: Update Release PR
         if: github.ref == 'refs/heads/main'
         env:
@@ -139,22 +156,11 @@ jobs:
           if [ -n ${CHART_NAME} ]; then
             release-please \
               --token=$TOKEN \
-                --repo-url=syntasso/helm-charts \
-                --path ${CHART_NAME} \
-                release-pr
+              --repo-url=syntasso/helm-charts \
+              --path ${CHART_NAME} \
+              release-pr
           fi
-      - name: Merge Release PR
-        env:
-          CHART_NAME: ${{ inputs.helm_chart_name }}
-          GH_TOKEN: ${{ secrets.CR_TOKEN }}
-        run: |
-          ## Check if latest commit has autorelease in the message
-          if git log -1 --pretty=%B | grep -q "autorelease"; then
-            echo "Latest commit has autorelease in the message, merging release PR"
-            gh pr merge --admin --merge release-please--branches--main--components--${CHART_NAME}
-          else
-            echo "Latest commit does not have autorelease in the message, skipping merge"
-          fi
+
       - name: Update appVersion
         if: github.ref == 'refs/heads/main' && inputs.update_chart_app
         env:
@@ -163,7 +169,7 @@ jobs:
           GH_TOKEN: ${{ secrets.CR_TOKEN }}
           SKE_LICENSE_TOKEN: ${{ secrets.SKE_LICENSE_TOKEN }}
         run: |
-          echo "Looking for update script i scripts/update-${{ inputs.helm_chart_name }}..."
+          echo "Looking for update script in scripts/update-${{ inputs.helm_chart_name }}..."
           if [ -f ./scripts/update-${{ inputs.helm_chart_name }} ]; then
             ./scripts/update-${{ inputs.helm_chart_name }}
           else
@@ -181,8 +187,21 @@ jobs:
           git commit -m "${message}"
           git push origin main
 
+      - name: Merge Release PR
+        if: ${{ !inputs.update_chart_app }}
+        env:
+          CHART_NAME: ${{ inputs.helm_chart_name }}
+          GH_TOKEN: ${{ secrets.CR_TOKEN }}
+        run: |
+          ## Check if latest commit has autorelease in the message
+          if git log -1 --pretty=%B | grep -q "autorelease"; then
+            echo "Latest commit has autorelease in the message, merging release PR"
+            gh pr merge --admin --merge release-please--branches--main--components--${CHART_NAME}
+          else
+            echo "Latest commit does not have autorelease in the message, skipping merge"
+          fi
 
-  release-chart:
+  publish-charts:
     if: ${{ startsWith(github.ref, 'refs/tags/') || inputs.chart_tag != '' }}
     runs-on: ubuntu-latest
     steps:
@@ -191,6 +210,7 @@ jobs:
         with:
           fetch-depth: 0
           token: ${{ secrets.CR_TOKEN }}
+
       - name: Determine Chart to release
         run: |
           if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
@@ -225,7 +245,7 @@ jobs:
 
       - name: Upload Charts to Releases Bucket
         run: |
-          VERSION=$(grep '^version:' backstage-controller/Chart.yaml | awk '{print $2}' | head -n 1)
-          bucket_path="s3://syntasso-enterprise-releases/backstage-controller-helm-chart/${VERSION}/"
-          echo "Uploading backstage-controller-${VERSION}.tgz to ${bucket_path}"
-          aws s3 cp .cr-release-packages/backstage-controller-${VERSION}.tgz ${bucket_path}
+          VERSION=$(grep '^version:' ${CHART_NAME}/Chart.yaml | awk '{print $2}' | head -n 1)
+          bucket_path="s3://syntasso-enterprise-releases/${CHART_NAME}-helm-chart/${VERSION}/"
+          echo "Uploading ${CHART_NAME}-${VERSION}.tgz to ${bucket_path}"
+          aws s3 cp .cr-release-packages/${CHART_NAME}-${VERSION}.tgz ${bucket_path}
