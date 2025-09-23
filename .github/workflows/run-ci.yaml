@@ -158,6 +158,8 @@ jobs:
           git push origin main
 
       - name: Merge Release PR
+        # the merge release pr step is executed on the next run of the job
+        if: ! inputs.merge_release_pr
         env:
           CHART_NAME: ${{ inputs.helm_chart_name }}
           GH_TOKEN: ${{ secrets.CR_TOKEN }}
