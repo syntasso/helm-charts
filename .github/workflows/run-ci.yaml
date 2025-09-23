@@ -277,15 +277,28 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.CR_TOKEN }}
         run: |
-          if [ -z "${CHART_NAME}" ]; then
-            echo "No chart name provided, skipping merge release PR..."
-            exit 0
+          if [ "${GITHUB_EVENT_NAME}" == "workflow_dispatch" ]; then
+            if [ -z "${CHART_NAME}" ]; then
+              echo "No chart name provided for workflow dispatch, skipping merge release PR..."
+              exit 0
+            fi
+            target_chart="${CHART_NAME}"
+          else
+            commit_message=$(git log -1 --pretty=%B)
+            echo "Latest commit message: ${commit_message}"
+
+            if echo "${commit_message}" | grep -q "feat("; then
+              target_chart=$(echo "${commit_message}" | sed -n 's/.*feat(\([^)]*\)):.*/\1/p')
+              echo "Extracted chart name from commit: ${target_chart}"
+            else
+              echo "No chart name found in commit message, skipping merge release PR..."
+              exit 0
+            fi
           fi
 
-          ## Check if latest commit has autorelease in the message
           if git log -1 --pretty=%B | grep -q "autorelease"; then
-            echo "Latest commit has autorelease in the message, merging release PR"
-            gh pr merge --admin --merge release-please--branches--main--components--${CHART_NAME}
+            echo "Latest commit has autorelease in the message, merging release PR for ${target_chart}"
+            gh pr merge --admin --merge release-please--branches--main--components--${target_chart}
           else
             echo "Latest commit does not have autorelease in the message, skipping merge"
           fi
