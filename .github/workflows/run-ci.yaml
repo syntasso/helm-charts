@@ -26,6 +26,7 @@ on:
           - k8s-health-agent
         description: "Target helm chart"
         required: true
+        default: ske-operator
       merge_release_pr:
         type: boolean
         description: "Release on success?"
