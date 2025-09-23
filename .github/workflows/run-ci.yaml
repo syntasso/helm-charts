@@ -361,4 +361,8 @@ jobs:
           VERSION=$(grep '^version:' ${CHART_NAME}/Chart.yaml | awk '{print $2}' | head -n 1)
           bucket_path="s3://syntasso-enterprise-releases/${CHART_NAME}-helm-chart/${VERSION}/"
           echo "Uploading ${CHART_NAME}-${VERSION}.tgz to ${bucket_path}"
-          aws s3 cp .cr-release-packages/${CHART_NAME}-${VERSION}.tgz ${bucket_path}
+          if [ -f .cr-release-packages/${CHART_NAME}-${VERSION}.tgz ]; then
+            aws s3 cp .cr-release-packages/${CHART_NAME}-${VERSION}.tgz ${bucket_path}
+          else
+            echo "No new package created, skipping upload"
+          fi
