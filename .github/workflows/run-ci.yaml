@@ -366,3 +366,15 @@ jobs:
           else
             echo "No new package created, skipping upload"
           fi
+
+      - name: Trigger CircleCI step (ske-operator only)
+        env:
+          CCI_TOKEN: ${{ secrets.CCI_TOKEN }}
+          CCI_TARGET_SLUG: ${{ secrets.CCI_TARGET_SLUG }}
+        run: |
+          if [ "${CHART_NAME}" == "ske-operator" ]; then
+            curl -H "Circle-Token: ${CCI_TOKEN}" \
+              -H 'content-type: application/json' \
+              -d '{"parameters":{"ske_helm_chart_new_release":true}}' \
+              https://circleci.com/api/v2/project/${CCI_TARGET_SLUG}/pipeline
+          fi
