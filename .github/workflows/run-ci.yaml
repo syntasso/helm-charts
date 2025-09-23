@@ -43,7 +43,7 @@ on:
 
 jobs:
   test:
-    if: ${{ !startsWith(github.ref, 'refs/tags/') && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') }}
+    if: ${{ !startsWith(github.ref, 'refs/tags/') && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && inputs.chart_tag == '' }}
     runs-on: ubuntu-latest
     env:
       GITHUB_EVENT_NAME: ${{ github.event_name }}
