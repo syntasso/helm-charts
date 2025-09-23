@@ -42,7 +42,7 @@ on:
 
 jobs:
   run-helm-tests:
-    if: github.ref != 'refs/tags/*'
+    if: ${{ !startsWith(github.ref, 'refs/tags/') }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -143,6 +143,18 @@ jobs:
                 --path ${CHART_NAME} \
                 release-pr
           fi
+      - name: Merge Release PR
+        env:
+          CHART_NAME: ${{ inputs.helm_chart_name }}
+          GH_TOKEN: ${{ secrets.CR_TOKEN }}
+        run: |
+          ## Check if latest commit has autorelease in the message
+          if git log -1 --pretty=%B | grep -q "autorelease"; then
+            echo "Latest commit has autorelease in the message, merging release PR"
+            gh pr merge --admin --merge release-please--branches--main--components--${CHART_NAME}
+          else
+            echo "Latest commit does not have autorelease in the message, skipping merge"
+          fi
       - name: Update appVersion
         if: github.ref == 'refs/heads/main' && inputs.update_chart_app
         env:
@@ -169,22 +181,9 @@ jobs:
           git commit -m "${message}"
           git push origin main
 
-      - name: Merge Release PR
-        if: ${{ ! inputs.update_chart_app }}
-        env:
-          CHART_NAME: ${{ inputs.helm_chart_name }}
-          GH_TOKEN: ${{ secrets.CR_TOKEN }}
-        run: |
-          ## Check if latest commit has autorelease in the message
-          if git log -1 --pretty=%B | grep -q "autorelease"; then
-            echo "Latest commit has autorelease in the message, merging release PR"
-            gh pr merge --admin --merge release-please--branches--main--components--${CHART_NAME}
-          else
-            echo "Latest commit does not have autorelease in the message, skipping merge"
-          fi
 
   release-chart:
-    if: github.ref == 'refs/tags/*' || inputs.chart_tag != ''
+    if: ${{ startsWith(github.ref, 'refs/tags/') || inputs.chart_tag != '' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
