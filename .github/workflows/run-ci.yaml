@@ -335,10 +335,18 @@ jobs:
       - name: Install Helm
         uses: azure/setup-helm@v3
 
+      - name: Prepare chart for release
+        run: |
+          # Create a temporary directory with only the chart we want to release
+          mkdir -p temp-charts
+          cp -r ${CHART_NAME} temp-charts/
+          echo "Prepared chart directory:"
+          ls -la temp-charts/
+
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.6.0
         with:
-          charts_dir: ${CHART_NAME}/.
+          charts_dir: temp-charts
           pages_branch: gh-pages
           skip_existing: true
 
