@@ -8,10 +8,11 @@ on:
     branches-ignore:
       - 'release-please--branches--main--components--*'
     paths:
-      - 'tests/**'
+      - tests/**
       - ske-operator/**
       - ske-gui/**
       - backstage-controller/**
+      - k8s-health-agent/**
   workflow_dispatch:
     inputs:
       ssh_session:
@@ -171,7 +172,6 @@ jobs:
           TOKEN: ${{ secrets.RELEASE_PLEASE_TOKEN }}
         run: |
           if [ -z "${CHART_NAME}" ]; then
-            # get all charts from release-please-manifest.json
             charts=$(cat .release-please-manifest.json | jq -r 'keys[]')
             for chart in $charts; do
               release-please \
@@ -194,7 +194,6 @@ jobs:
           TOKEN: ${{ secrets.RELEASE_PLEASE_TOKEN }}
         run: |
           if [ "${GITHUB_EVENT_NAME}" == "workflow_dispatch" ] && [ -n "${CHART_NAME}" ]; then
-            # For manual dispatch, use the provided chart name
             echo "Updating release PR for manually specified chart: ${CHART_NAME}"
             release-please \
               --token=$TOKEN \
@@ -202,10 +201,8 @@ jobs:
               --path ${CHART_NAME} \
               release-pr
           else
-            # For push events, check which charts were affected by changes
             affected_charts=()
 
-            # Define chart mappings: env_var_name -> chart_name
             declare -A chart_mappings=(
               ["SKE_OPERATOR_CHANGED"]="ske-operator"
               ["SKE_GUI_CHANGED"]="ske-gui"
@@ -214,23 +211,19 @@ jobs:
               ["K8S_HEALTH_AGENT_CHANGED"]="k8s-health-agent"
             )
 
-            # Check each chart using environment variables
             for env_var in "${!chart_mappings[@]}"; do
               if [ "${!env_var}" == "true" ]; then
                 affected_charts+=("${chart_mappings[$env_var]}")
               fi
             done
 
-            # If no charts were affected, exit
             if [ ${#affected_charts[@]} -eq 0 ]; then
               echo "No charts were affected by changes, skipping update release PR..."
               exit 0
             fi
 
-            # Echo all affected charts at once
             echo "Charts affected by changes: ${affected_charts[*]}"
 
-            # Update release PR for each affected chart
             for chart in "${affected_charts[@]}"; do
               echo "Updating release PR for $chart..."
               release-please \
