@@ -335,20 +335,29 @@ jobs:
       - name: Install Helm
         uses: azure/setup-helm@v3
 
-      - name: Prepare chart for release
+      - name: Create chart-releaser config
         run: |
-          # Create a temporary directory with only the chart we want to release
-          mkdir -p temp-charts
-          cp -r ${CHART_NAME} temp-charts/
-          echo "Prepared chart directory:"
-          ls -la temp-charts/
+          cat > .cr.yaml << EOF
+          charts:
+            - name: ${CHART_NAME}
+              path: ${CHART_NAME}
+          pages:
+            branch: gh-pages
+          upload:
+            skip_existing: true
+          EOF
+          echo "Created .cr.yaml:"
+          cat .cr.yaml
+          echo "Chart.yaml contents:"
+          cat ${CHART_NAME}/Chart.yaml
 
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.6.0
         with:
-          charts_dir: temp-charts
+          charts_dir: .
           pages_branch: gh-pages
           skip_existing: true
+          config: .cr.yaml
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
