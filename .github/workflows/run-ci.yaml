@@ -338,7 +338,7 @@ jobs:
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.6.0
         with:
-          charts_dir: ${CHART_NAME}
+          charts_dir: .
           pages_branch: gh-pages
           skip_existing: true
 
