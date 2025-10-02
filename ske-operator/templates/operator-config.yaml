@@ -35,7 +35,7 @@ data:
       host: {{ .host }}
       pullSecret: {{ .imagePullSecret | default "syntasso-registry" }}
       platformImage: {{ .skePlatformImage.name }}
-      pipelineImage: {{ .skePlatformPipelineAdapterImage.name }}
+      pipelineImage: {{ .skePlatformImage.name }}
     {{- end }}
 
 {{ if and (.Values.releaseStorage) (.Values.releaseStorage.git) (.Values.releaseStorage.git.secret) (.Values.releaseStorage.git.secret.values) }}
