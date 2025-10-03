@@ -38,6 +38,10 @@ imageRegistry:
   skePlatformImage:
     # The name of the SKE Platform image
     name: "syntasso/ske-platform"
+  skePlatformPipelineAdapterImage:
+    # DEPRECATED: This field is no longer needed for SKE v0.37.0 and above
+    # The name of the SKE-Platform Pipeline Adapter image
+    name: "syntasso/ske-platform-pipeline-adapter"
 # Syntasso Enterprise manifests are available in the S3 bucket below
 # If you are using a custom bucket, update the values accordingly
 releaseStorage:
