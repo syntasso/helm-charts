@@ -3,6 +3,16 @@ entries:
   backstage-controller:
   - apiVersion: v2
     appVersion: v0.4.0
+    created: "2025-10-07T10:47:52.78487948Z"
+    description: A Helm chart for deploying the Backstage Controller
+    digest: 9150e25ce3aed885222d8c7eaf0c6012077d766320a9392b6c6b6cab4132862d
+    name: backstage-controller
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/backstage-controller-0.4.1/backstage-controller-0.4.1.tgz
+    version: 0.4.1
+  - apiVersion: v2
+    appVersion: v0.4.0
     created: "2025-10-07T10:11:27.026114816Z"
     description: A Helm chart for deploying the Backstage Controller
     digest: 43541415a92b9fdd361b9a4aa7ef3e1598c4572711138905472bf066499a8c47
@@ -572,6 +582,20 @@ entries:
     version: 0.1.0
   ske-operator:
   - apiVersion: v2
+    appVersion: v0.17.0
+    created: "2025-10-07T10:47:52.902528756Z"
+    dependencies:
+    - name: ske-operator-crds
+      repository: ""
+      version: 0.47.1
+    description: A Helm Chart for deploying the SKE-Operator
+    digest: 5290a19099e6ecc2cf5b95edfd4c0ca99dbcbfea8b3929fa45e35a1ccda81eda
+    name: ske-operator
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.47.1/ske-operator-0.47.1.tgz
+    version: 0.47.1
+  - apiVersion: v2
     appVersion: v0.16.1
     created: "2025-09-24T14:26:25.11942335Z"
     dependencies:
@@ -1051,4 +1075,4 @@ entries:
     urls:
     - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.8.0/ske-operator-0.8.0.tgz
     version: 0.8.0
-generated: "2025-10-07T10:11:27.1406123Z"
+generated: "2025-10-07T10:47:52.902959482Z"
