@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.1](https://github.com/syntasso/helm-charts/compare/backstage-controller-0.4.0...backstage-controller-v0.4.1) (2025-10-07)
+
+
+### Chores
+
+* backstage controller image now contains generator binary ([0334c67](https://github.com/syntasso/helm-charts/commit/0334c67ef33def022f41df8bbdecca940b8de3c2))
+
 ## [0.4.0](https://github.com/syntasso/helm-charts/compare/backstage-controller-v0.3.1...backstage-controller-v0.4.0) (2025-10-07)
 
 
