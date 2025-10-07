@@ -27,7 +27,7 @@ spec:
             - --leader-elect
             - --health-probe-bind-address=:8081
           command:
-            - /manager
+            - /backstage-controller
           env:
             - name: PIPELINE_ADAPTER_IMG
               valueFrom:
@@ -39,7 +39,7 @@ spec:
                 configMapKeyRef:
                   key: SKE_BACKSTAGE_GENERATOR_IMG
                   name: backstage-controller-config
-          image: registry.syntasso.io/syntasso/backstage-controller:v0.3.1
+          image: registry.syntasso.io/syntasso/backstage-controller:v0.4.0
           livenessProbe:
             httpGet:
               path: /healthz
