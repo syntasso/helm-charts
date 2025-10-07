@@ -6,7 +6,8 @@ imageRegistry:
   backstageControllerImage:
     name: "syntasso/backstage-controller"
   skeBackstageGeneratorImage:
-    name: "syntasso/ske-backstage-generator"
+    name: "syntasso/backstage-controller"
+  skeBackstageGeneratorImageVersion: "v0.4.0"
 
 # Configuration for the backstage-controller deployment
 backstageController:
