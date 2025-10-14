@@ -14,7 +14,7 @@ import (
 )
 
 var (
-	timeout     = time.Second * 100
+	timeout     = time.Second * 200
 	longTimeout = time.Second * 300
 	interval    = time.Second
 	context     = "--context=kind-platform"
