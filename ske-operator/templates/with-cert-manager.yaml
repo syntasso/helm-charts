@@ -15,6 +15,12 @@ spec:
   dnsNames:
     - ske-operator-webhook-service.kratix-platform-system.svc
     - ske-operator-webhook-service.kratix-platform-system.svc.cluster.local
+  privateKey:
+  {{- if .Values.global.skeOperator.tlsConfig.certManager.privateKey }}
+    rotationPolicy: {{ .Values.global.skeOperator.tlsConfig.certManager.privateKey.rotationPolicy }}
+  {{- else }}
+    rotationPolicy: Always
+  {{- end }}
   issuerRef:
   {{- if .Values.global.skeOperator.tlsConfig.certManager.issuerRef }}
     kind: {{ .Values.global.skeOperator.tlsConfig.certManager.issuerRef.kind }}
