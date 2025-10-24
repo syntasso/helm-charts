@@ -51,3 +51,10 @@ ingress:
   #  - secretName: chart-example-tls
   #    hosts:
   #      - chart-example.local
+# SKE GUI OIDC configuration, add the following values if you are using OIDC
+# oidc:
+#  issuerUrl:
+#  clientId:
+#  clientSecret:
+## SKE GUI requests the profile and email scopes by default. More scopes can be added by using the following value.
+#  scopes: profile,email
