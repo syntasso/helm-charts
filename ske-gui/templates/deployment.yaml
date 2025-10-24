@@ -35,6 +35,19 @@ spec:
               value: "headlamp"
             - name: HEADLAMP_CONFIG_SERVICE_VERSION
               value: "latest"
+            {{- if .Values.oidc }}
+            - name: HEADLAMP_CONFIG_OIDC_IDP_ISSUER_URL
+              value: {{ .Values.oidc.issuerUrl | quote }}
+            - name: HEADLAMP_CONFIG_OIDC_CLIENT_ID
+              value: {{ .Values.oidc.clientId | quote }}
+            - name: HEADLAMP_CONFIG_OIDC_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: headlamp-oidc-secret
+                  key: client-secret
+            - name: HEADLAMP_CONFIG_OIDC_SCOPES
+              value: {{ .Values.oidc.scopes | default "profile,email" }}
+            {{- end }}
           ports:
             - name: http
               containerPort: 4466
