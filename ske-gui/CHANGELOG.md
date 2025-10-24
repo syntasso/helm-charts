@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.0](https://github.com/syntasso/helm-charts/compare/ske-gui-v0.5.0...ske-gui-v0.6.0) (2025-10-24)
+
+
+### Features
+
+* add oidc configuration to ske-gui chart  ([#86](https://github.com/syntasso/helm-charts/issues/86)) ([b773bb4](https://github.com/syntasso/helm-charts/commit/b773bb4529f567dc7ff202c6acec9a5cb250fd46))
+
 ## [0.5.0](https://github.com/syntasso/helm-charts/compare/ske-gui-0.4.0...ske-gui-v0.5.0) (2025-09-23)
 
 
