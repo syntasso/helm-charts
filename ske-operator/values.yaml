@@ -8,6 +8,10 @@ global:
     tlsConfig:
       certManager:
         disabled: false
+        # private key rotation policy default to 'Always'
+        # uncomment to set policy to 'Never'
+        # privateKey:
+        #   rotationPolicy: Never
       # if custom certificate issuer is used, the following values are required
       # issuerRef:
       #   kind: ClusterIssuer
