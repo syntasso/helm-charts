@@ -5,3 +5,4 @@ metadata:
   namespace: k8s-health-agent-system
 data:
   HEALTH_CHECK_ADAPTER_IMG: '{{ .Values.imageRegistry.host }}/{{ .Values.imageRegistry.healthAgentAdapterImage.name }}:{{ .Chart.AppVersion }}'
+  IMAGE_PULL_SECRET: '{{ .Values.imageRegistry.imagePullSecret | default "syntasso-registry" }}'
