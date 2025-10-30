@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.49.0](https://github.com/syntasso/helm-charts/compare/ske-operator-0.48.0...ske-operator-v0.49.0) (2025-10-30)
+
+
+### Features
+
+* allow cert rotation policy to be configured and set default ([#85](https://github.com/syntasso/helm-charts/issues/85)) ([3541880](https://github.com/syntasso/helm-charts/commit/354188064b27b6c8d82edc91c8cdae67d7cdbfc3))
+
 ## [0.48.0](https://github.com/syntasso/helm-charts/compare/ske-operator-0.47.0...ske-operator-v0.48.0) (2025-10-14)
 
 
