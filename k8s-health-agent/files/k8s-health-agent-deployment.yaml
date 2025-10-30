@@ -41,11 +41,17 @@ spec:
                 configMapKeyRef:
                   key: HEALTH_CHECK_ADAPTER_IMG
                   name: k8s-health-agent-config
+            - name: IMAGE_PULL_SECRET
+              valueFrom:
+                configMapKeyRef:
+                  key: IMAGE_PULL_SECRET
+                  name: k8s-health-agent-config
+                  optional: true
             - name: SUCCESSFUL_JOBS_HISTORY_LIMIT
               value: "3"
             - name: FAILED_JOBS_HISTORY_LIMIT
               value: "1"
-          image: registry.syntasso.io/syntasso/k8s-health-agent:v0.4.1
+          image: registry.syntasso.io/syntasso/k8s-health-agent:v0.5.0
           imagePullPolicy: IfNotPresent
           livenessProbe:
             httpGet:
