@@ -1,1109 +1,1136 @@
 apiVersion: v1
 entries:
   backstage-controller:
-    - apiVersion: v2
-      appVersion: v0.4.0
-      created: "2025-10-07T10:47:52.78487948Z"
-      description: A Helm chart for deploying the Backstage Controller
-      digest: 9150e25ce3aed885222d8c7eaf0c6012077d766320a9392b6c6b6cab4132862d
-      name: backstage-controller
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/backstage-controller-0.4.1/backstage-controller-0.4.1.tgz
-      version: 0.4.1
-    - apiVersion: v2
-      appVersion: v0.4.0
-      created: "2025-10-07T10:11:27.026114816Z"
-      description: A Helm chart for deploying the Backstage Controller
-      digest: 43541415a92b9fdd361b9a4aa7ef3e1598c4572711138905472bf066499a8c47
-      name: backstage-controller
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/backstage-controller-0.4.0/backstage-controller-0.4.0.tgz
-      version: 0.4.0
-    - apiVersion: v2
-      appVersion: v0.3.1
-      created: "2025-09-16T11:51:53.687025933Z"
-      description: A Helm chart for deploying the Backstage Controller
-      digest: 72afb32f6362f74b46d8a377c2e52c294fd5e1f16c553689d2658eefe63ee90f
-      name: backstage-controller
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/backstage-controller-0.3.0/backstage-controller-0.3.0.tgz
-      version: 0.3.0
-    - apiVersion: v2
-      appVersion: v0.3.0
-      created: "2025-09-04T12:02:58.505246694Z"
-      description: A Helm chart for deploying the Backstage Controller
-      digest: 4a40ad3443d185cecd5aa33ca7eb06f27a93d8ff1a36e5826ed82ca612b950e0
-      name: backstage-controller
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/backstage-controller-0.2.0/backstage-controller-0.2.0.tgz
-      version: 0.2.0
+  - apiVersion: v2
+    appVersion: v0.4.0
+    created: "2025-10-07T10:47:52.78487948Z"
+    description: A Helm chart for deploying the Backstage Controller
+    digest: 9150e25ce3aed885222d8c7eaf0c6012077d766320a9392b6c6b6cab4132862d
+    name: backstage-controller
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/backstage-controller-0.4.1/backstage-controller-0.4.1.tgz
+    version: 0.4.1
+  - apiVersion: v2
+    appVersion: v0.4.0
+    created: "2025-10-07T10:11:27.026114816Z"
+    description: A Helm chart for deploying the Backstage Controller
+    digest: 43541415a92b9fdd361b9a4aa7ef3e1598c4572711138905472bf066499a8c47
+    name: backstage-controller
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/backstage-controller-0.4.0/backstage-controller-0.4.0.tgz
+    version: 0.4.0
+  - apiVersion: v2
+    appVersion: v0.3.1
+    created: "2025-09-16T11:51:53.687025933Z"
+    description: A Helm chart for deploying the Backstage Controller
+    digest: 72afb32f6362f74b46d8a377c2e52c294fd5e1f16c553689d2658eefe63ee90f
+    name: backstage-controller
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/backstage-controller-0.3.0/backstage-controller-0.3.0.tgz
+    version: 0.3.0
+  - apiVersion: v2
+    appVersion: v0.3.0
+    created: "2025-09-04T12:02:58.505246694Z"
+    description: A Helm chart for deploying the Backstage Controller
+    digest: 4a40ad3443d185cecd5aa33ca7eb06f27a93d8ff1a36e5826ed82ca612b950e0
+    name: backstage-controller
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/backstage-controller-0.2.0/backstage-controller-0.2.0.tgz
+    version: 0.2.0
   k8s-health-agent:
-    - apiVersion: v2
-      appVersion: v0.4.1
-      created: "2025-10-28T10:54:31.634090219Z"
-      description: A Helm Chart for deploying the K8s Health Agent
-      digest: 6af04e455e03d9adfe06013814c955f2d8df4f0fcf5d284d8cd897d652ab15ad
-      name: k8s-health-agent
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/k8s-health-agent-0.14.0/k8s-health-agent-0.14.0.tgz
-      version: 0.14.0
-    - apiVersion: v2
-      appVersion: v0.4.0
-      created: "2025-08-19T20:09:39.952931129Z"
-      description: A Helm Chart for deploying the K8s Health Agent
-      digest: 8527326b6f294c95825dd93b8d46487e7ab59689e3ea0b758703d28ac771b095
-      name: k8s-health-agent
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/k8s-health-agent-0.13.0/k8s-health-agent-0.13.0.tgz
-      version: 0.13.0
-    - apiVersion: v2
-      appVersion: v0.4.0
-      created: "2025-08-19T10:02:28.999091366Z"
-      description: A Helm Chart for deploying the K8s Health Agent
-      digest: b339e9c135b07e6b63fe5ea82e6af462efd803b2c7647797703ba35c919e4726
-      name: k8s-health-agent
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/k8s-health-agent-0.12.0/k8s-health-agent-0.12.0.tgz
-      version: 0.12.0
-    - apiVersion: v2
-      appVersion: v0.3.3
-      created: "2025-06-23T15:18:20.246494548Z"
-      description: A Helm Chart for deploying the K8s Health Agent
-      digest: 015c334b495d6b023fafd2abd8f8bf5f8ec3ad503a5abc549b3d95e3e7b38ecd
-      name: k8s-health-agent
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/k8s-health-agent-0.11.0/k8s-health-agent-0.11.0.tgz
-      version: 0.11.0
-    - apiVersion: v2
-      appVersion: v0.3.2
-      created: "2025-06-11T13:40:10.862066948Z"
-      description: A Helm Chart for deploying the K8s Health Agent
-      digest: ed84dece238ed67f3103f3f4f9b7ee4a6a53084274149920b6dceae758ebba06
-      name: k8s-health-agent
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/k8s-health-agent-0.10.0/k8s-health-agent-0.10.0.tgz
-      version: 0.10.0
-    - apiVersion: v2
-      appVersion: v0.3.1
-      created: "2025-05-07T16:32:58.324762395Z"
-      description: A Helm Chart for deploying the K8s Health Agent
-      digest: b28268687fffdcb058bce87b37497accac29f3d29c63d657e8442f48cc9bf85b
-      name: k8s-health-agent
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/k8s-health-agent-0.9.0/k8s-health-agent-0.9.0.tgz
-      version: 0.9.0
-    - apiVersion: v2
-      appVersion: v0.3.0
-      created: "2025-04-24T08:04:19.152999053Z"
-      description: A Helm Chart for deploying the K8s Health Agent
-      digest: ea94814e64fe4ce182a16c35da3b8474f3397afa7b366f4bff7220f5e81543ac
-      name: k8s-health-agent
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/k8s-health-agent-0.8.0/k8s-health-agent-0.8.0.tgz
-      version: 0.8.0
-    - apiVersion: v2
-      appVersion: v0.2.1
-      created: "2025-04-16T14:20:01.661131068Z"
-      description: A Helm Chart for deploying the K8s Health Agent
-      digest: b6da1a99bc1b04788713aff26845dc34957c0d1f6a11cd8612dd72644cf5fa0d
-      name: k8s-health-agent
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/k8s-health-agent-0.7.0/k8s-health-agent-0.7.0.tgz
-      version: 0.7.0
-    - apiVersion: v2
-      appVersion: v0.2.0
-      created: "2025-01-29T09:20:19.263385849Z"
-      description: A Helm Chart for deploying the K8s Health Agent
-      digest: bc23039d33d8308b3b753b7e38adf93e7a4403de9cfe01acb810d39e2a10b223
-      name: k8s-health-agent
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/k8s-health-agent-0.6.0/k8s-health-agent-0.6.0.tgz
-      version: 0.6.0
-    - apiVersion: v2
-      appVersion: v0.2.0
-      created: "2025-01-29T09:11:41.619048965Z"
-      description: A Helm Chart for deploying the K8s Health Agent
-      digest: 1298f0c7465dc16a9f1f7077a5de1d2b5d9c8c1dbe165576ca49723d82c095de
-      name: k8s-health-agent
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/k8s-health-agent-0.5.0/k8s-health-agent-0.5.0.tgz
-      version: 0.5.0
-    - apiVersion: v2
-      appVersion: v0.2.0
-      created: "2025-01-28T15:17:05.790701125Z"
-      description: A Helm Chart for deploying the K8s Health Agent
-      digest: 184f1eb23d2d7889b4da9843d471a1ecd106e3072cdeb591051728650f68f357
-      name: k8s-health-agent
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/k8s-health-agent-0.4.0/k8s-health-agent-0.4.0.tgz
-      version: 0.4.0
-    - apiVersion: v2
-      appVersion: v0.2.0
-      created: "2025-01-28T14:52:40.452367834Z"
-      description: A Helm Chart for deploying the K8s Health Agent
-      digest: 15da90490e8dbdeb231faecc554f588a721931dc3454dedb15b7f8aec39eb1bc
-      name: k8s-health-agent
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/k8s-health-agent-0.3.0/k8s-health-agent-0.3.0.tgz
-      version: 0.3.0
-    - apiVersion: v1
-      appVersion: v0.2.0
-      created: "2025-01-28T12:45:14.946616113Z"
-      description: A Helm Chart for deploying the K8s Health Agent
-      digest: 5252b15700f565169346672129ae4effa849204e9a06e3f963559e656a6d1a9e
-      name: k8s-health-agent
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/k8s-health-agent-0.2.0/k8s-health-agent-0.2.0.tgz
-      version: 0.2.0
-    - apiVersion: v2
-      appVersion: v0.2.0
-      created: "2025-01-28T12:49:53.738875523Z"
-      description: A Helm Chart for deploying the K8s Health Agent
-      digest: 78c89a4aec8ba29fdfe182216d17ab814372481aae4a170bd1e7266044c57466
-      name: k8s-health-agent
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/k8s-health-agent-0.1.0/k8s-health-agent-0.1.0.tgz
-      version: 0.1.0
-    - apiVersion: v1
-      appVersion: v0.2.0
-      created: "2025-01-28T11:30:04.604732196Z"
-      description: A Helm Chart for deploying the K8s Health Agent
-      digest: ab0579b1e4a36186aa72de4ca39338c1a6f0f8db6b03e0766d3ebe193a3a1ddc
-      name: k8s-health-agent
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/k8s-health-agent-0.0.0/k8s-health-agent-0.0.0.tgz
-      version: 0.0.0
+  - apiVersion: v2
+    appVersion: v0.5.0
+    created: "2025-10-30T11:04:14.166375135Z"
+    description: A Helm Chart for deploying the K8s Health Agent
+    digest: 92a4f4b52be51e409dc75d4da4933525bd790714266d929dfd98d7823ada39d9
+    name: k8s-health-agent
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/k8s-health-agent-0.15.0/k8s-health-agent-0.15.0.tgz
+    version: 0.15.0
+  - apiVersion: v2
+    appVersion: v0.4.1
+    created: "2025-10-28T10:54:31.634090219Z"
+    description: A Helm Chart for deploying the K8s Health Agent
+    digest: 6af04e455e03d9adfe06013814c955f2d8df4f0fcf5d284d8cd897d652ab15ad
+    name: k8s-health-agent
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/k8s-health-agent-0.14.0/k8s-health-agent-0.14.0.tgz
+    version: 0.14.0
+  - apiVersion: v2
+    appVersion: v0.4.0
+    created: "2025-08-19T20:09:39.952931129Z"
+    description: A Helm Chart for deploying the K8s Health Agent
+    digest: 8527326b6f294c95825dd93b8d46487e7ab59689e3ea0b758703d28ac771b095
+    name: k8s-health-agent
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/k8s-health-agent-0.13.0/k8s-health-agent-0.13.0.tgz
+    version: 0.13.0
+  - apiVersion: v2
+    appVersion: v0.4.0
+    created: "2025-08-19T10:02:28.999091366Z"
+    description: A Helm Chart for deploying the K8s Health Agent
+    digest: b339e9c135b07e6b63fe5ea82e6af462efd803b2c7647797703ba35c919e4726
+    name: k8s-health-agent
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/k8s-health-agent-0.12.0/k8s-health-agent-0.12.0.tgz
+    version: 0.12.0
+  - apiVersion: v2
+    appVersion: v0.3.3
+    created: "2025-06-23T15:18:20.246494548Z"
+    description: A Helm Chart for deploying the K8s Health Agent
+    digest: 015c334b495d6b023fafd2abd8f8bf5f8ec3ad503a5abc549b3d95e3e7b38ecd
+    name: k8s-health-agent
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/k8s-health-agent-0.11.0/k8s-health-agent-0.11.0.tgz
+    version: 0.11.0
+  - apiVersion: v2
+    appVersion: v0.3.2
+    created: "2025-06-11T13:40:10.862066948Z"
+    description: A Helm Chart for deploying the K8s Health Agent
+    digest: ed84dece238ed67f3103f3f4f9b7ee4a6a53084274149920b6dceae758ebba06
+    name: k8s-health-agent
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/k8s-health-agent-0.10.0/k8s-health-agent-0.10.0.tgz
+    version: 0.10.0
+  - apiVersion: v2
+    appVersion: v0.3.1
+    created: "2025-05-07T16:32:58.324762395Z"
+    description: A Helm Chart for deploying the K8s Health Agent
+    digest: b28268687fffdcb058bce87b37497accac29f3d29c63d657e8442f48cc9bf85b
+    name: k8s-health-agent
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/k8s-health-agent-0.9.0/k8s-health-agent-0.9.0.tgz
+    version: 0.9.0
+  - apiVersion: v2
+    appVersion: v0.3.0
+    created: "2025-04-24T08:04:19.152999053Z"
+    description: A Helm Chart for deploying the K8s Health Agent
+    digest: ea94814e64fe4ce182a16c35da3b8474f3397afa7b366f4bff7220f5e81543ac
+    name: k8s-health-agent
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/k8s-health-agent-0.8.0/k8s-health-agent-0.8.0.tgz
+    version: 0.8.0
+  - apiVersion: v2
+    appVersion: v0.2.1
+    created: "2025-04-16T14:20:01.661131068Z"
+    description: A Helm Chart for deploying the K8s Health Agent
+    digest: b6da1a99bc1b04788713aff26845dc34957c0d1f6a11cd8612dd72644cf5fa0d
+    name: k8s-health-agent
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/k8s-health-agent-0.7.0/k8s-health-agent-0.7.0.tgz
+    version: 0.7.0
+  - apiVersion: v2
+    appVersion: v0.2.0
+    created: "2025-01-29T09:20:19.263385849Z"
+    description: A Helm Chart for deploying the K8s Health Agent
+    digest: bc23039d33d8308b3b753b7e38adf93e7a4403de9cfe01acb810d39e2a10b223
+    name: k8s-health-agent
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/k8s-health-agent-0.6.0/k8s-health-agent-0.6.0.tgz
+    version: 0.6.0
+  - apiVersion: v2
+    appVersion: v0.2.0
+    created: "2025-01-29T09:11:41.619048965Z"
+    description: A Helm Chart for deploying the K8s Health Agent
+    digest: 1298f0c7465dc16a9f1f7077a5de1d2b5d9c8c1dbe165576ca49723d82c095de
+    name: k8s-health-agent
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/k8s-health-agent-0.5.0/k8s-health-agent-0.5.0.tgz
+    version: 0.5.0
+  - apiVersion: v2
+    appVersion: v0.2.0
+    created: "2025-01-28T15:17:05.790701125Z"
+    description: A Helm Chart for deploying the K8s Health Agent
+    digest: 184f1eb23d2d7889b4da9843d471a1ecd106e3072cdeb591051728650f68f357
+    name: k8s-health-agent
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/k8s-health-agent-0.4.0/k8s-health-agent-0.4.0.tgz
+    version: 0.4.0
+  - apiVersion: v2
+    appVersion: v0.2.0
+    created: "2025-01-28T14:52:40.452367834Z"
+    description: A Helm Chart for deploying the K8s Health Agent
+    digest: 15da90490e8dbdeb231faecc554f588a721931dc3454dedb15b7f8aec39eb1bc
+    name: k8s-health-agent
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/k8s-health-agent-0.3.0/k8s-health-agent-0.3.0.tgz
+    version: 0.3.0
+  - apiVersion: v1
+    appVersion: v0.2.0
+    created: "2025-01-28T12:45:14.946616113Z"
+    description: A Helm Chart for deploying the K8s Health Agent
+    digest: 5252b15700f565169346672129ae4effa849204e9a06e3f963559e656a6d1a9e
+    name: k8s-health-agent
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/k8s-health-agent-0.2.0/k8s-health-agent-0.2.0.tgz
+    version: 0.2.0
+  - apiVersion: v2
+    appVersion: v0.2.0
+    created: "2025-01-28T12:49:53.738875523Z"
+    description: A Helm Chart for deploying the K8s Health Agent
+    digest: 78c89a4aec8ba29fdfe182216d17ab814372481aae4a170bd1e7266044c57466
+    name: k8s-health-agent
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/k8s-health-agent-0.1.0/k8s-health-agent-0.1.0.tgz
+    version: 0.1.0
+  - apiVersion: v1
+    appVersion: v0.2.0
+    created: "2025-01-28T11:30:04.604732196Z"
+    description: A Helm Chart for deploying the K8s Health Agent
+    digest: ab0579b1e4a36186aa72de4ca39338c1a6f0f8db6b03e0766d3ebe193a3a1ddc
+    name: k8s-health-agent
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/k8s-health-agent-0.0.0/k8s-health-agent-0.0.0.tgz
+    version: 0.0.0
   kratix:
-    - apiVersion: v2
-      appVersion: 1.16.0
-      created: "2025-10-29T10:07:48.146194667Z"
-      description: A Helm chart for installing Kratix (https://kratix.io)
-      digest: 1300dc96ee0af417616faf81e73ff95cb438e5ca16f896d673de35ebbce0ded6
-      name: kratix
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/kratix-v0.0.1/kratix-v0.0.1.tgz
-      version: v0.0.1
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2025-10-29T10:07:48.146194667Z"
+    description: A Helm chart for installing Kratix (https://kratix.io)
+    digest: 1300dc96ee0af417616faf81e73ff95cb438e5ca16f896d673de35ebbce0ded6
+    name: kratix
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/kratix-v0.0.1/kratix-v0.0.1.tgz
+    version: v0.0.1
   kratix-destination:
-    - apiVersion: v2
-      appVersion: 0.0.1
-      created: "2025-09-16T14:20:50.044484897Z"
-      dependencies:
-        - condition: installFlux
-          name: flux2
-          repository: ""
-          version: 2.5.1
-      deprecated: true
-      description: A Helm chart for installing flux and configuring it to pull down from Kratix
-      digest: 85d84429d73687113d6c85a461df580036d18cfabaeb737c15e5c200cb7e2de4
-      name: kratix-destination
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/kratix-destination-0.0.2/kratix-destination-0.0.2.tgz
-      version: 0.0.2
-    - apiVersion: v2
-      appVersion: 0.0.1
-      created: "2023-12-27T15:58:57.248139082Z"
-      dependencies:
-        - condition: installFlux
-          name: flux2
-          repository: ""
-          version: 2.5.1
-      description: A Helm chart for installing flux and configuring it to pull down from Kratix
-      digest: ea229202dd5b1458279549dbbcf088397184c922f055ab452c1fd852a1a1dfa5
-      name: kratix-destination
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/kratix-destination-0.0.1/kratix-destination-0.0.1.tgz
-      version: 0.0.1
+  - apiVersion: v2
+    appVersion: 0.0.1
+    created: "2025-09-16T14:20:50.044484897Z"
+    dependencies:
+    - condition: installFlux
+      name: flux2
+      repository: ""
+      version: 2.5.1
+    deprecated: true
+    description: A Helm chart for installing flux and configuring it to pull down
+      from Kratix
+    digest: 85d84429d73687113d6c85a461df580036d18cfabaeb737c15e5c200cb7e2de4
+    name: kratix-destination
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/kratix-destination-0.0.2/kratix-destination-0.0.2.tgz
+    version: 0.0.2
+  - apiVersion: v2
+    appVersion: 0.0.1
+    created: "2023-12-27T15:58:57.248139082Z"
+    dependencies:
+    - condition: installFlux
+      name: flux2
+      repository: ""
+      version: 2.5.1
+    description: A Helm chart for installing flux and configuring it to pull down
+      from Kratix
+    digest: ea229202dd5b1458279549dbbcf088397184c922f055ab452c1fd852a1a1dfa5
+    name: kratix-destination
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/kratix-destination-0.0.1/kratix-destination-0.0.1.tgz
+    version: 0.0.1
   ske-destination:
-    - apiVersion: v2
-      appVersion: 0.0.1
-      created: "2025-09-16T14:28:49.271277094Z"
-      dependencies:
-        - condition: installFlux
-          name: flux2
-          repository: ""
-          version: 2.5.1
-        - condition: k8sHealthAgent.enabled
-          name: k8s-health-agent
-          repository: https://syntasso.github.io/helm-charts
-          version: 0.13.0
-      deprecated: true
-      description: A Helm chart for installing flux, configuring it to pull down from Kratix and optionally installing SKE features
-      digest: af5e95ad4ed4fde0c9e4dc4acaec3dbdfae52082a4b193ec5a116255a5d5ec92
-      name: ske-destination
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/ske-destination-0.15.0/ske-destination-0.15.0.tgz
-      version: 0.15.0
-    - apiVersion: v2
-      appVersion: 0.0.1
-      created: "2025-08-19T20:10:32.374063745Z"
-      dependencies:
-        - condition: installFlux
-          name: flux2
-          repository: ""
-          version: 2.5.1
-        - condition: k8sHealthAgent.enabled
-          name: k8s-health-agent
-          repository: https://syntasso.github.io/helm-charts
-          version: 0.13.0
-      description: A Helm chart for installing flux, configuring it to pull down from Kratix and optionally installing SKE features
-      digest: 8f67e3b5c9f8e3a40a3ec65877e841137fb231387479b073eb0f8e8348d380a3
-      name: ske-destination
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/ske-destination-0.14.0/ske-destination-0.14.0.tgz
-      version: 0.14.0
-    - apiVersion: v2
-      appVersion: 0.0.1
-      created: "2025-08-19T18:57:22.063900809Z"
-      dependencies:
-        - condition: installFlux
-          name: flux2
-          repository: ""
-          version: 2.5.1
-        - condition: k8sHealthAgent.enabled
-          name: k8s-health-agent
-          repository: https://syntasso.github.io/helm-charts
-          version: 0.12.0
-      description: A Helm chart for installing flux, configuring it to pull down from Kratix and optionally installing SKE features
-      digest: 551468002257d3155dfa6c57f8af4ebbcd7f08ead87ca5688026ff0219372c9c
-      name: ske-destination
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/ske-destination-0.13.0/ske-destination-0.13.0.tgz
+  - apiVersion: v2
+    appVersion: 0.0.1
+    created: "2025-09-16T14:28:49.271277094Z"
+    dependencies:
+    - condition: installFlux
+      name: flux2
+      repository: ""
+      version: 2.5.1
+    - condition: k8sHealthAgent.enabled
+      name: k8s-health-agent
+      repository: https://syntasso.github.io/helm-charts
       version: 0.13.0
-    - apiVersion: v2
-      appVersion: 0.0.1
-      created: "2025-08-19T10:03:20.754593644Z"
-      dependencies:
-        - condition: installFlux
-          name: flux2
-          repository: ""
-          version: 2.5.1
-        - condition: k8sHealthAgent.enabled
-          name: k8s-health-agent
-          repository: https://syntasso.github.io/helm-charts
-          version: 0.12.0
-      description: A Helm chart for installing flux, configuring it to pull down from Kratix and optionally installing SKE features
-      digest: c7c7f016554dd05ab80a57d0be4bcac568a7b8ef42197a32133ed912e4e1157b
-      name: ske-destination
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/ske-destination-0.12.0/ske-destination-0.12.0.tgz
+    deprecated: true
+    description: A Helm chart for installing flux, configuring it to pull down from
+      Kratix and optionally installing SKE features
+    digest: af5e95ad4ed4fde0c9e4dc4acaec3dbdfae52082a4b193ec5a116255a5d5ec92
+    name: ske-destination
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/ske-destination-0.15.0/ske-destination-0.15.0.tgz
+    version: 0.15.0
+  - apiVersion: v2
+    appVersion: 0.0.1
+    created: "2025-08-19T20:10:32.374063745Z"
+    dependencies:
+    - condition: installFlux
+      name: flux2
+      repository: ""
+      version: 2.5.1
+    - condition: k8sHealthAgent.enabled
+      name: k8s-health-agent
+      repository: https://syntasso.github.io/helm-charts
+      version: 0.13.0
+    description: A Helm chart for installing flux, configuring it to pull down from
+      Kratix and optionally installing SKE features
+    digest: 8f67e3b5c9f8e3a40a3ec65877e841137fb231387479b073eb0f8e8348d380a3
+    name: ske-destination
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/ske-destination-0.14.0/ske-destination-0.14.0.tgz
+    version: 0.14.0
+  - apiVersion: v2
+    appVersion: 0.0.1
+    created: "2025-08-19T18:57:22.063900809Z"
+    dependencies:
+    - condition: installFlux
+      name: flux2
+      repository: ""
+      version: 2.5.1
+    - condition: k8sHealthAgent.enabled
+      name: k8s-health-agent
+      repository: https://syntasso.github.io/helm-charts
       version: 0.12.0
-    - apiVersion: v2
-      appVersion: 0.0.1
-      created: "2025-06-23T15:19:16.347523816Z"
-      dependencies:
-        - condition: installFlux
-          name: flux2
-          repository: ""
-          version: 2.5.1
-        - condition: k8sHealthAgent.enabled
-          name: k8s-health-agent
-          repository: https://syntasso.github.io/helm-charts
-          version: 0.11.0
-      description: A Helm chart for installing flux, configuring it to pull down from Kratix and optionally installing SKE features
-      digest: 66ac6851fcdd04a020c7606b9970d9af83c5745390bee10e1407c33879b636bc
-      name: ske-destination
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/ske-destination-0.11.0/ske-destination-0.11.0.tgz
+    description: A Helm chart for installing flux, configuring it to pull down from
+      Kratix and optionally installing SKE features
+    digest: 551468002257d3155dfa6c57f8af4ebbcd7f08ead87ca5688026ff0219372c9c
+    name: ske-destination
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/ske-destination-0.13.0/ske-destination-0.13.0.tgz
+    version: 0.13.0
+  - apiVersion: v2
+    appVersion: 0.0.1
+    created: "2025-08-19T10:03:20.754593644Z"
+    dependencies:
+    - condition: installFlux
+      name: flux2
+      repository: ""
+      version: 2.5.1
+    - condition: k8sHealthAgent.enabled
+      name: k8s-health-agent
+      repository: https://syntasso.github.io/helm-charts
+      version: 0.12.0
+    description: A Helm chart for installing flux, configuring it to pull down from
+      Kratix and optionally installing SKE features
+    digest: c7c7f016554dd05ab80a57d0be4bcac568a7b8ef42197a32133ed912e4e1157b
+    name: ske-destination
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/ske-destination-0.12.0/ske-destination-0.12.0.tgz
+    version: 0.12.0
+  - apiVersion: v2
+    appVersion: 0.0.1
+    created: "2025-06-23T15:19:16.347523816Z"
+    dependencies:
+    - condition: installFlux
+      name: flux2
+      repository: ""
+      version: 2.5.1
+    - condition: k8sHealthAgent.enabled
+      name: k8s-health-agent
+      repository: https://syntasso.github.io/helm-charts
       version: 0.11.0
-    - apiVersion: v2
-      appVersion: 0.0.1
-      created: "2025-06-11T13:41:22.305280431Z"
-      dependencies:
-        - condition: installFlux
-          name: flux2
-          repository: ""
-          version: 2.5.1
-        - condition: k8sHealthAgent.enabled
-          name: k8s-health-agent
-          repository: https://syntasso.github.io/helm-charts
-          version: 0.10.0
-      description: A Helm chart for installing flux, configuring it to pull down from Kratix and optionally installing SKE features
-      digest: 5c26f4d8cafb87ec5512a522ffe6d30ac0c0bb5c235db00199953eb2189f12ff
-      name: ske-destination
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/ske-destination-0.10.0/ske-destination-0.10.0.tgz
+    description: A Helm chart for installing flux, configuring it to pull down from
+      Kratix and optionally installing SKE features
+    digest: 66ac6851fcdd04a020c7606b9970d9af83c5745390bee10e1407c33879b636bc
+    name: ske-destination
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/ske-destination-0.11.0/ske-destination-0.11.0.tgz
+    version: 0.11.0
+  - apiVersion: v2
+    appVersion: 0.0.1
+    created: "2025-06-11T13:41:22.305280431Z"
+    dependencies:
+    - condition: installFlux
+      name: flux2
+      repository: ""
+      version: 2.5.1
+    - condition: k8sHealthAgent.enabled
+      name: k8s-health-agent
+      repository: https://syntasso.github.io/helm-charts
       version: 0.10.0
-    - apiVersion: v2
-      appVersion: 0.0.1
-      created: "2025-05-07T16:33:54.55038715Z"
-      dependencies:
-        - condition: installFlux
-          name: flux2
-          repository: ""
-          version: 2.5.1
-        - condition: k8sHealthAgent.enabled
-          name: k8s-health-agent
-          repository: https://syntasso.github.io/helm-charts
-          version: 0.9.0
-      description: A Helm chart for installing flux, configuring it to pull down from Kratix and optionally installing SKE features
-      digest: c68a6d512a0f7df61cf98207d3dd3f49e37f9fe424b281391dfb810a36021d2f
-      name: ske-destination
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/ske-destination-0.9.0/ske-destination-0.9.0.tgz
+    description: A Helm chart for installing flux, configuring it to pull down from
+      Kratix and optionally installing SKE features
+    digest: 5c26f4d8cafb87ec5512a522ffe6d30ac0c0bb5c235db00199953eb2189f12ff
+    name: ske-destination
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/ske-destination-0.10.0/ske-destination-0.10.0.tgz
+    version: 0.10.0
+  - apiVersion: v2
+    appVersion: 0.0.1
+    created: "2025-05-07T16:33:54.55038715Z"
+    dependencies:
+    - condition: installFlux
+      name: flux2
+      repository: ""
+      version: 2.5.1
+    - condition: k8sHealthAgent.enabled
+      name: k8s-health-agent
+      repository: https://syntasso.github.io/helm-charts
       version: 0.9.0
-    - apiVersion: v2
-      appVersion: 0.0.1
-      created: "2025-04-24T08:05:33.787688754Z"
-      dependencies:
-        - condition: installFlux
-          name: flux2
-          repository: ""
-          version: 2.5.1
-        - condition: k8sHealthAgent.enabled
-          name: k8s-health-agent
-          repository: https://syntasso.github.io/helm-charts
-          version: 0.8.0
-      description: A Helm chart for installing flux, configuring it to pull down from Kratix and optionally installing SKE features
-      digest: 09de9b2a56767b8d7ac03adf9fbce6ab32ddc658cc331e05041370c0884c38bf
-      name: ske-destination
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/ske-destination-0.8.0/ske-destination-0.8.0.tgz
+    description: A Helm chart for installing flux, configuring it to pull down from
+      Kratix and optionally installing SKE features
+    digest: c68a6d512a0f7df61cf98207d3dd3f49e37f9fe424b281391dfb810a36021d2f
+    name: ske-destination
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/ske-destination-0.9.0/ske-destination-0.9.0.tgz
+    version: 0.9.0
+  - apiVersion: v2
+    appVersion: 0.0.1
+    created: "2025-04-24T08:05:33.787688754Z"
+    dependencies:
+    - condition: installFlux
+      name: flux2
+      repository: ""
+      version: 2.5.1
+    - condition: k8sHealthAgent.enabled
+      name: k8s-health-agent
+      repository: https://syntasso.github.io/helm-charts
       version: 0.8.0
-    - apiVersion: v2
-      appVersion: 0.0.1
-      created: "2025-04-16T14:21:18.721520852Z"
-      dependencies:
-        - condition: installFlux
-          name: flux2
-          repository: ""
-          version: 2.5.1
-        - condition: k8sHealthAgent.enabled
-          name: k8s-health-agent
-          repository: https://syntasso.github.io/helm-charts
-          version: 0.7.0
-      description: A Helm chart for installing flux, configuring it to pull down from Kratix and optionally installing SKE features
-      digest: 26fa28d39c6f33ca7f630fd78a89f7311b66a1d36d0e3f5b7edea2510f19c796
-      name: ske-destination
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/ske-destination-0.7.0/ske-destination-0.7.0.tgz
+    description: A Helm chart for installing flux, configuring it to pull down from
+      Kratix and optionally installing SKE features
+    digest: 09de9b2a56767b8d7ac03adf9fbce6ab32ddc658cc331e05041370c0884c38bf
+    name: ske-destination
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/ske-destination-0.8.0/ske-destination-0.8.0.tgz
+    version: 0.8.0
+  - apiVersion: v2
+    appVersion: 0.0.1
+    created: "2025-04-16T14:21:18.721520852Z"
+    dependencies:
+    - condition: installFlux
+      name: flux2
+      repository: ""
+      version: 2.5.1
+    - condition: k8sHealthAgent.enabled
+      name: k8s-health-agent
+      repository: https://syntasso.github.io/helm-charts
       version: 0.7.0
-    - apiVersion: v2
-      appVersion: 0.0.1
-      created: "2025-01-29T09:21:11.170514271Z"
-      dependencies:
-        - condition: installFlux
-          name: flux2
-          repository: ""
-          version: 2.5.1
-        - condition: k8sHealthAgent.enabled
-          name: k8s-health-agent
-          repository: https://syntasso.github.io/helm-charts
-          version: 0.6.0
-      description: A Helm chart for installing flux, configuring it to pull down from Kratix and optionally installing SKE features
-      digest: cdf5a0214117f5f4558e4eb28c75ff82f26089045d51fc390f16cdfde47d41ce
-      name: ske-destination
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/ske-destination-0.6.0/ske-destination-0.6.0.tgz
+    description: A Helm chart for installing flux, configuring it to pull down from
+      Kratix and optionally installing SKE features
+    digest: 26fa28d39c6f33ca7f630fd78a89f7311b66a1d36d0e3f5b7edea2510f19c796
+    name: ske-destination
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/ske-destination-0.7.0/ske-destination-0.7.0.tgz
+    version: 0.7.0
+  - apiVersion: v2
+    appVersion: 0.0.1
+    created: "2025-01-29T09:21:11.170514271Z"
+    dependencies:
+    - condition: installFlux
+      name: flux2
+      repository: ""
+      version: 2.5.1
+    - condition: k8sHealthAgent.enabled
+      name: k8s-health-agent
+      repository: https://syntasso.github.io/helm-charts
       version: 0.6.0
-    - apiVersion: v2
-      appVersion: 0.0.1
-      created: "2025-01-29T09:20:19.361934679Z"
-      dependencies:
-        - condition: installFlux
-          name: flux2
-          repository: ""
-          version: 2.5.1
-        - condition: k8sHealthAgent.enabled
-          name: k8s-health-agent
-          repository: https://syntasso.github.io/helm-charts
-          version: 0.5.0
-      description: A Helm chart for installing flux, configuring it to pull down from Kratix and optionally installing SKE features
-      digest: 46a7797ba43106e8fb568a05a9fb01f94e94cc9b1c81d631e3fd25e491469caa
-      name: ske-destination
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/ske-destination-0.5.0/ske-destination-0.5.0.tgz
+    description: A Helm chart for installing flux, configuring it to pull down from
+      Kratix and optionally installing SKE features
+    digest: cdf5a0214117f5f4558e4eb28c75ff82f26089045d51fc390f16cdfde47d41ce
+    name: ske-destination
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/ske-destination-0.6.0/ske-destination-0.6.0.tgz
+    version: 0.6.0
+  - apiVersion: v2
+    appVersion: 0.0.1
+    created: "2025-01-29T09:20:19.361934679Z"
+    dependencies:
+    - condition: installFlux
+      name: flux2
+      repository: ""
+      version: 2.5.1
+    - condition: k8sHealthAgent.enabled
+      name: k8s-health-agent
+      repository: https://syntasso.github.io/helm-charts
       version: 0.5.0
-    - apiVersion: v2
-      appVersion: 0.0.1
-      created: "2025-01-29T09:11:41.742614242Z"
-      dependencies:
-        - condition: installFlux
-          name: flux2
-          repository: ""
-          version: 2.5.1
-        - condition: k8sHealthAgent.enabled
-          name: k8s-health-agent
-          repository: https://syntasso.github.io/helm-charts
-          version: 0.4.0
-      description: A Helm chart for installing flux, configuring it to pull down from Kratix and optionally installing SKE features
-      digest: f936186399ad1e97f2985a9c3280a6b71e9fb258c04e756aa9602df03299fe42
-      name: ske-destination
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/ske-destination-0.4.0/ske-destination-0.4.0.tgz
+    description: A Helm chart for installing flux, configuring it to pull down from
+      Kratix and optionally installing SKE features
+    digest: 46a7797ba43106e8fb568a05a9fb01f94e94cc9b1c81d631e3fd25e491469caa
+    name: ske-destination
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/ske-destination-0.5.0/ske-destination-0.5.0.tgz
+    version: 0.5.0
+  - apiVersion: v2
+    appVersion: 0.0.1
+    created: "2025-01-29T09:11:41.742614242Z"
+    dependencies:
+    - condition: installFlux
+      name: flux2
+      repository: ""
+      version: 2.5.1
+    - condition: k8sHealthAgent.enabled
+      name: k8s-health-agent
+      repository: https://syntasso.github.io/helm-charts
       version: 0.4.0
-    - apiVersion: v2
-      appVersion: 0.0.1
-      created: "2025-01-28T15:17:05.908201992Z"
-      dependencies:
-        - condition: installFlux
-          name: flux2
-          repository: ""
-          version: 2.5.1
-        - condition: k8sHealthAgent.enabled
-          name: k8s-health-agent
-          repository: https://syntasso.github.io/helm-charts
-          version: 0.3.0
-      description: A Helm chart for installing flux, configuring it to pull down from Kratix and optionally installing SKE features
-      digest: 6a4b68e9d2b490fef93207adcbd4c71b7386d8d4782b1077a710912a3c6cd3a3
-      name: ske-destination
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/ske-destination-0.3.0/ske-destination-0.3.0.tgz
+    description: A Helm chart for installing flux, configuring it to pull down from
+      Kratix and optionally installing SKE features
+    digest: f936186399ad1e97f2985a9c3280a6b71e9fb258c04e756aa9602df03299fe42
+    name: ske-destination
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/ske-destination-0.4.0/ske-destination-0.4.0.tgz
+    version: 0.4.0
+  - apiVersion: v2
+    appVersion: 0.0.1
+    created: "2025-01-28T15:17:05.908201992Z"
+    dependencies:
+    - condition: installFlux
+      name: flux2
+      repository: ""
+      version: 2.5.1
+    - condition: k8sHealthAgent.enabled
+      name: k8s-health-agent
+      repository: https://syntasso.github.io/helm-charts
       version: 0.3.0
-    - apiVersion: v2
-      appVersion: 0.0.1
-      created: "2025-01-28T14:39:14.921171461Z"
-      dependencies:
-        - condition: installFlux
-          name: flux2
-          repository: ""
-          version: 2.5.1
-        - condition: k8sHealthAgent.enabled
-          name: k8s-health-agent
-          repository: https://syntasso.github.io/helm-charts
-          version: 0.1.0
-      description: A Helm chart for installing flux, configuring it to pull down from Kratix and optionally installing SKE features
-      digest: 81584ab2468a79acca33d5b4e3c4c00dad96f349a4df6dc561d6bb819d45570d
-      name: ske-destination
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/ske-destination-0.2.0/ske-destination-0.2.0.tgz
-      version: 0.2.0
-    - apiVersion: v2
-      appVersion: 0.0.1
-      created: "2025-01-28T12:45:15.035412562Z"
-      dependencies:
-        - condition: installFlux
-          name: flux2
-          repository: ""
-          version: 2.5.1
-        - condition: k8sHealthAgent.enabled
-          name: k8s-health-agent
-          repository: https://syntasso.github.io/helm-charts
-          version: 0.0.0
-      description: A Helm chart for installing flux, configuring it to pull down from Kratix and optionally installing SKE features
-      digest: 784bd05660e5bfdd67e476a42659545c710578d08f2018acbe255dbce5458d8b
-      name: ske-destination
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/ske-destination-0.1.0/ske-destination-0.1.0.tgz
+    description: A Helm chart for installing flux, configuring it to pull down from
+      Kratix and optionally installing SKE features
+    digest: 6a4b68e9d2b490fef93207adcbd4c71b7386d8d4782b1077a710912a3c6cd3a3
+    name: ske-destination
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/ske-destination-0.3.0/ske-destination-0.3.0.tgz
+    version: 0.3.0
+  - apiVersion: v2
+    appVersion: 0.0.1
+    created: "2025-01-28T14:39:14.921171461Z"
+    dependencies:
+    - condition: installFlux
+      name: flux2
+      repository: ""
+      version: 2.5.1
+    - condition: k8sHealthAgent.enabled
+      name: k8s-health-agent
+      repository: https://syntasso.github.io/helm-charts
       version: 0.1.0
+    description: A Helm chart for installing flux, configuring it to pull down from
+      Kratix and optionally installing SKE features
+    digest: 81584ab2468a79acca33d5b4e3c4c00dad96f349a4df6dc561d6bb819d45570d
+    name: ske-destination
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/ske-destination-0.2.0/ske-destination-0.2.0.tgz
+    version: 0.2.0
+  - apiVersion: v2
+    appVersion: 0.0.1
+    created: "2025-01-28T12:45:15.035412562Z"
+    dependencies:
+    - condition: installFlux
+      name: flux2
+      repository: ""
+      version: 2.5.1
+    - condition: k8sHealthAgent.enabled
+      name: k8s-health-agent
+      repository: https://syntasso.github.io/helm-charts
+      version: 0.0.0
+    description: A Helm chart for installing flux, configuring it to pull down from
+      Kratix and optionally installing SKE features
+    digest: 784bd05660e5bfdd67e476a42659545c710578d08f2018acbe255dbce5458d8b
+    name: ske-destination
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/ske-destination-0.1.0/ske-destination-0.1.0.tgz
+    version: 0.1.0
   ske-gui:
-    - apiVersion: v2
-      appVersion: v0.4.0
-      created: "2025-10-24T13:30:29.284002586Z"
-      description: Syntasso SKE GUI Helm chart
-      digest: ca2df6f7214c90f4e7d54cabbc9db0ad201a59f221f2100eb3db04aeb7209ad2
-      name: ske-gui
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/ske-gui-0.6.0/ske-gui-0.6.0.tgz
-      version: 0.6.0
-    - apiVersion: v2
-      appVersion: v0.3.0
-      created: "2025-09-15T15:28:59.36482173Z"
-      description: Syntasso SKE GUI Helm chart
-      digest: fc5b495bfb57719e65203f1fbe61cf92b6db0c3c171f3a0af2323f22e20dffbc
-      name: ske-gui
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/ske-gui-0.5.0/ske-gui-0.5.0.tgz
-      version: 0.5.0
-    - apiVersion: v2
-      appVersion: v0.3.0
-      created: "2025-09-15T13:49:09.692939106Z"
-      description: Syntasso SKE GUI Helm chart
-      digest: 7bc29bb03e21fc33d2e277a875bc89cc0a0bf80c8fb3cb9c4c30b5deceff9b4a
-      name: ske-gui
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/ske-gui-0.4.0/ske-gui-0.4.0.tgz
-      version: 0.4.0
-    - apiVersion: v2
-      appVersion: v0.3.0
-      created: "2025-09-05T10:37:36.770799063Z"
-      description: Syntasso SKE GUI Helm chart
-      digest: 163f04b85c37c5b4437d16817d879b2a0f8864d0ec99cb3433baccad3388c341
-      name: ske-gui
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/ske-gui-0.3.0/ske-gui-0.3.0.tgz
-      version: 0.3.0
-    - apiVersion: v2
-      appVersion: v0.3.0
-      created: "2025-09-04T15:19:54.971151379Z"
-      description: Syntasso SKE GUI Helm chart
-      digest: 19f46c8764a54c0f7bb7d0e44063975b50fdba26795756ed3a9265b037130f4d
-      name: ske-gui
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/ske-gui-0.2.0/ske-gui-0.2.0.tgz
-      version: 0.2.0
-    - apiVersion: v2
-      appVersion: dev
-      created: "2025-09-04T12:02:58.632368724Z"
-      description: Syntasso SKE GUI Helm chart
-      digest: 86db2b93380851c19578482f65a6ce8fb0851b57e0292afcd74a251cfd5b323e
-      name: ske-gui
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/ske-gui-0.1.0/ske-gui-0.1.0.tgz
-      version: 0.1.0
+  - apiVersion: v2
+    appVersion: v0.4.0
+    created: "2025-10-24T13:30:29.284002586Z"
+    description: Syntasso SKE GUI Helm chart
+    digest: ca2df6f7214c90f4e7d54cabbc9db0ad201a59f221f2100eb3db04aeb7209ad2
+    name: ske-gui
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/ske-gui-0.6.0/ske-gui-0.6.0.tgz
+    version: 0.6.0
+  - apiVersion: v2
+    appVersion: v0.3.0
+    created: "2025-09-15T15:28:59.36482173Z"
+    description: Syntasso SKE GUI Helm chart
+    digest: fc5b495bfb57719e65203f1fbe61cf92b6db0c3c171f3a0af2323f22e20dffbc
+    name: ske-gui
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/ske-gui-0.5.0/ske-gui-0.5.0.tgz
+    version: 0.5.0
+  - apiVersion: v2
+    appVersion: v0.3.0
+    created: "2025-09-15T13:49:09.692939106Z"
+    description: Syntasso SKE GUI Helm chart
+    digest: 7bc29bb03e21fc33d2e277a875bc89cc0a0bf80c8fb3cb9c4c30b5deceff9b4a
+    name: ske-gui
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/ske-gui-0.4.0/ske-gui-0.4.0.tgz
+    version: 0.4.0
+  - apiVersion: v2
+    appVersion: v0.3.0
+    created: "2025-09-05T10:37:36.770799063Z"
+    description: Syntasso SKE GUI Helm chart
+    digest: 163f04b85c37c5b4437d16817d879b2a0f8864d0ec99cb3433baccad3388c341
+    name: ske-gui
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/ske-gui-0.3.0/ske-gui-0.3.0.tgz
+    version: 0.3.0
+  - apiVersion: v2
+    appVersion: v0.3.0
+    created: "2025-09-04T15:19:54.971151379Z"
+    description: Syntasso SKE GUI Helm chart
+    digest: 19f46c8764a54c0f7bb7d0e44063975b50fdba26795756ed3a9265b037130f4d
+    name: ske-gui
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/ske-gui-0.2.0/ske-gui-0.2.0.tgz
+    version: 0.2.0
+  - apiVersion: v2
+    appVersion: dev
+    created: "2025-09-04T12:02:58.632368724Z"
+    description: Syntasso SKE GUI Helm chart
+    digest: 86db2b93380851c19578482f65a6ce8fb0851b57e0292afcd74a251cfd5b323e
+    name: ske-gui
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/ske-gui-0.1.0/ske-gui-0.1.0.tgz
+    version: 0.1.0
   ske-operator:
-    - apiVersion: v2
-      appVersion: v0.18.1
-      created: "2025-10-15T09:06:37.34507169Z"
-      dependencies:
-        - name: ske-operator-crds
-          repository: ""
-          version: 0.48.0
-      description: A Helm Chart for deploying the SKE-Operator
-      digest: 92b2b444abde2c3e91ff473c8a1bd2f59f34142ce841cbec262d74d3abbc24cf
-      name: ske-operator
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.48.0/ske-operator-0.48.0.tgz
+  - apiVersion: v2
+    appVersion: v0.18.1
+    created: "2025-10-15T09:06:37.34507169Z"
+    dependencies:
+    - name: ske-operator-crds
+      repository: ""
       version: 0.48.0
-    - apiVersion: v2
-      appVersion: v0.17.0
-      created: "2025-10-07T10:47:52.902528756Z"
-      dependencies:
-        - name: ske-operator-crds
-          repository: ""
-          version: 0.47.1
-      description: A Helm Chart for deploying the SKE-Operator
-      digest: 5290a19099e6ecc2cf5b95edfd4c0ca99dbcbfea8b3929fa45e35a1ccda81eda
-      name: ske-operator
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.47.1/ske-operator-0.47.1.tgz
+    description: A Helm Chart for deploying the SKE-Operator
+    digest: 92b2b444abde2c3e91ff473c8a1bd2f59f34142ce841cbec262d74d3abbc24cf
+    name: ske-operator
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.48.0/ske-operator-0.48.0.tgz
+    version: 0.48.0
+  - apiVersion: v2
+    appVersion: v0.17.0
+    created: "2025-10-07T10:47:52.902528756Z"
+    dependencies:
+    - name: ske-operator-crds
+      repository: ""
       version: 0.47.1
-    - apiVersion: v2
-      appVersion: v0.17.0
-      created: "2025-10-07T10:56:21.549512591Z"
-      dependencies:
-        - name: ske-operator-crds
-          repository: ""
-          version: 0.47.1
-      description: A Helm Chart for deploying the SKE-Operator
-      digest: c0ddda700fcfa99e2ceb043933255df6edbb4d5c835934dc05aa2f908d00388e
-      name: ske-operator
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.47.0/ske-operator-0.47.0.tgz
-      version: 0.47.0
-    - apiVersion: v2
-      appVersion: v0.16.1
-      created: "2025-09-24T14:26:25.11942335Z"
-      dependencies:
-        - name: ske-operator-crds
-          repository: ""
-          version: 0.46.0
-      description: A Helm Chart for deploying the SKE-Operator
-      digest: b9356cf9e7705ae8c3b92db4e3113c7628261505725f5ba4a81528c43f5e9ec2
-      name: ske-operator
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.46.1/ske-operator-0.46.1.tgz
-      version: 0.46.1
-    - apiVersion: v2
-      appVersion: v0.16.1
-      created: "2025-09-22T08:47:09.186054235Z"
-      dependencies:
-        - name: ske-operator-crds
-          repository: ""
-          version: 0.46.0
-      description: A Helm Chart for deploying the SKE-Operator
-      digest: 4e491d36efba3b326aaba471cd949ba320051336ede04bd78b6b3f2d1cd49845
-      name: ske-operator
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.46.0/ske-operator-0.46.0.tgz
+    description: A Helm Chart for deploying the SKE-Operator
+    digest: 5290a19099e6ecc2cf5b95edfd4c0ca99dbcbfea8b3929fa45e35a1ccda81eda
+    name: ske-operator
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.47.1/ske-operator-0.47.1.tgz
+    version: 0.47.1
+  - apiVersion: v2
+    appVersion: v0.17.0
+    created: "2025-10-07T10:56:21.549512591Z"
+    dependencies:
+    - name: ske-operator-crds
+      repository: ""
+      version: 0.47.1
+    description: A Helm Chart for deploying the SKE-Operator
+    digest: c0ddda700fcfa99e2ceb043933255df6edbb4d5c835934dc05aa2f908d00388e
+    name: ske-operator
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.47.0/ske-operator-0.47.0.tgz
+    version: 0.47.0
+  - apiVersion: v2
+    appVersion: v0.16.1
+    created: "2025-09-24T14:26:25.11942335Z"
+    dependencies:
+    - name: ske-operator-crds
+      repository: ""
       version: 0.46.0
-    - apiVersion: v2
-      appVersion: v0.15.0
-      created: "2025-08-06T09:09:14.168271831Z"
-      dependencies:
-        - name: ske-operator-crds
-          repository: ""
-          version: 0.45.0
-      description: A Helm Chart for deploying the SKE-Operator
-      digest: 75e4232390ed8262402c8267c7a23f0150e5bc2ff6da9de11157b59cd6f94bdc
-      name: ske-operator
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.45.0/ske-operator-0.45.0.tgz
+    description: A Helm Chart for deploying the SKE-Operator
+    digest: b9356cf9e7705ae8c3b92db4e3113c7628261505725f5ba4a81528c43f5e9ec2
+    name: ske-operator
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.46.1/ske-operator-0.46.1.tgz
+    version: 0.46.1
+  - apiVersion: v2
+    appVersion: v0.16.1
+    created: "2025-09-22T08:47:09.186054235Z"
+    dependencies:
+    - name: ske-operator-crds
+      repository: ""
+      version: 0.46.0
+    description: A Helm Chart for deploying the SKE-Operator
+    digest: 4e491d36efba3b326aaba471cd949ba320051336ede04bd78b6b3f2d1cd49845
+    name: ske-operator
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.46.0/ske-operator-0.46.0.tgz
+    version: 0.46.0
+  - apiVersion: v2
+    appVersion: v0.15.0
+    created: "2025-08-06T09:09:14.168271831Z"
+    dependencies:
+    - name: ske-operator-crds
+      repository: ""
       version: 0.45.0
-    - apiVersion: v2
-      appVersion: v0.14.0
-      created: "2025-07-21T14:19:06.557460345Z"
-      dependencies:
-        - name: ske-operator-crds
-          repository: ""
-          version: 0.44.0
-      description: A Helm Chart for deploying the SKE-Operator
-      digest: 44bcc9cdf3009d843a46aa1fbd02c82ebc93147526a432680423c9166fabae1b
-      name: ske-operator
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.44.0/ske-operator-0.44.0.tgz
+    description: A Helm Chart for deploying the SKE-Operator
+    digest: 75e4232390ed8262402c8267c7a23f0150e5bc2ff6da9de11157b59cd6f94bdc
+    name: ske-operator
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.45.0/ske-operator-0.45.0.tgz
+    version: 0.45.0
+  - apiVersion: v2
+    appVersion: v0.14.0
+    created: "2025-07-21T14:19:06.557460345Z"
+    dependencies:
+    - name: ske-operator-crds
+      repository: ""
       version: 0.44.0
-    - apiVersion: v2
-      appVersion: v0.14.0
-      created: "2025-07-18T11:29:25.633186553Z"
-      dependencies:
-        - name: ske-operator-crds
-          repository: ""
-          version: 0.43.0
-      description: A Helm Chart for deploying the SKE-Operator
-      digest: a8b56e4a41e20ea87eab84dd69ca165c825674a03eca75fafaa85e5e4c85bad5
-      name: ske-operator
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.43.0/ske-operator-0.43.0.tgz
+    description: A Helm Chart for deploying the SKE-Operator
+    digest: 44bcc9cdf3009d843a46aa1fbd02c82ebc93147526a432680423c9166fabae1b
+    name: ske-operator
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.44.0/ske-operator-0.44.0.tgz
+    version: 0.44.0
+  - apiVersion: v2
+    appVersion: v0.14.0
+    created: "2025-07-18T11:29:25.633186553Z"
+    dependencies:
+    - name: ske-operator-crds
+      repository: ""
       version: 0.43.0
-    - apiVersion: v2
-      appVersion: v0.13.0
-      created: "2025-07-11T10:33:47.107920961Z"
-      dependencies:
-        - name: ske-operator-crds
-          repository: ""
-          version: 0.42.0
-      description: A Helm Chart for deploying the SKE-Operator
-      digest: a602bdf0c12bb1161ff00705a8fa73af656c3e96563cb8e69d712a930e41f6dd
-      name: ske-operator
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.42.0/ske-operator-0.42.0.tgz
+    description: A Helm Chart for deploying the SKE-Operator
+    digest: a8b56e4a41e20ea87eab84dd69ca165c825674a03eca75fafaa85e5e4c85bad5
+    name: ske-operator
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.43.0/ske-operator-0.43.0.tgz
+    version: 0.43.0
+  - apiVersion: v2
+    appVersion: v0.13.0
+    created: "2025-07-11T10:33:47.107920961Z"
+    dependencies:
+    - name: ske-operator-crds
+      repository: ""
       version: 0.42.0
-    - apiVersion: v2
-      appVersion: v0.12.1
-      created: "2025-07-07T16:40:42.902617775Z"
-      dependencies:
-        - name: ske-operator-crds
-          repository: ""
-          version: 0.41.0
-      description: A Helm Chart for deploying the SKE-Operator
-      digest: dec54343992f48d8e9177f61e7ecf1255b5c91f4e54535383002ee0d75bd9812
-      name: ske-operator
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.41.0/ske-operator-0.41.0.tgz
+    description: A Helm Chart for deploying the SKE-Operator
+    digest: a602bdf0c12bb1161ff00705a8fa73af656c3e96563cb8e69d712a930e41f6dd
+    name: ske-operator
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.42.0/ske-operator-0.42.0.tgz
+    version: 0.42.0
+  - apiVersion: v2
+    appVersion: v0.12.1
+    created: "2025-07-07T16:40:42.902617775Z"
+    dependencies:
+    - name: ske-operator-crds
+      repository: ""
       version: 0.41.0
-    - apiVersion: v2
-      appVersion: v0.12.1
-      created: "2025-07-07T15:22:34.546495678Z"
-      dependencies:
-        - name: ske-operator-crds
-          repository: ""
-          version: 0.40.0
-      description: A Helm Chart for deploying the SKE-Operator
-      digest: 934b25ce7c80f8589c25cd568d1065e75a359002219bc02f21c34abcb3ad2502
-      name: ske-operator
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.40.0/ske-operator-0.40.0.tgz
+    description: A Helm Chart for deploying the SKE-Operator
+    digest: dec54343992f48d8e9177f61e7ecf1255b5c91f4e54535383002ee0d75bd9812
+    name: ske-operator
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.41.0/ske-operator-0.41.0.tgz
+    version: 0.41.0
+  - apiVersion: v2
+    appVersion: v0.12.1
+    created: "2025-07-07T15:22:34.546495678Z"
+    dependencies:
+    - name: ske-operator-crds
+      repository: ""
       version: 0.40.0
-    - apiVersion: v2
-      appVersion: v0.12.1
-      created: "2025-06-25T10:35:45.88115162Z"
-      dependencies:
-        - name: ske-operator-crds
-          repository: ""
-          version: 0.39.0
-      description: A Helm Chart for deploying the SKE-Operator
-      digest: 658abfe1b96c9c1354a309abc2e55ebcfd4a14f5413c553bb69188e6690c2771
-      name: ske-operator
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.39.0/ske-operator-0.39.0.tgz
+    description: A Helm Chart for deploying the SKE-Operator
+    digest: 934b25ce7c80f8589c25cd568d1065e75a359002219bc02f21c34abcb3ad2502
+    name: ske-operator
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.40.0/ske-operator-0.40.0.tgz
+    version: 0.40.0
+  - apiVersion: v2
+    appVersion: v0.12.1
+    created: "2025-06-25T10:35:45.88115162Z"
+    dependencies:
+    - name: ske-operator-crds
+      repository: ""
       version: 0.39.0
-    - apiVersion: v2
-      appVersion: v0.12.1
-      created: "2025-06-11T13:37:57.912888043Z"
-      dependencies:
-        - name: ske-operator-crds
-          repository: ""
-          version: 0.38.0
-      description: A Helm Chart for deploying the SKE-Operator
-      digest: da4220ddb3412b89b07efd19d857e3eb9ecae4fee81dfb253337c56979af55de
-      name: ske-operator
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.38.0/ske-operator-0.38.0.tgz
+    description: A Helm Chart for deploying the SKE-Operator
+    digest: 658abfe1b96c9c1354a309abc2e55ebcfd4a14f5413c553bb69188e6690c2771
+    name: ske-operator
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.39.0/ske-operator-0.39.0.tgz
+    version: 0.39.0
+  - apiVersion: v2
+    appVersion: v0.12.1
+    created: "2025-06-11T13:37:57.912888043Z"
+    dependencies:
+    - name: ske-operator-crds
+      repository: ""
       version: 0.38.0
-    - apiVersion: v2
-      appVersion: v0.12.0
-      created: "2025-05-12T09:17:40.428732804Z"
-      dependencies:
-        - name: ske-operator-crds
-          repository: ""
-          version: 0.37.0
-      description: A Helm Chart for deploying the SKE-Operator
-      digest: a057ef39726e6b67a8e98785f655a5daadd789595580d9f4999e978650863634
-      name: ske-operator
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.37.0/ske-operator-0.37.0.tgz
+    description: A Helm Chart for deploying the SKE-Operator
+    digest: da4220ddb3412b89b07efd19d857e3eb9ecae4fee81dfb253337c56979af55de
+    name: ske-operator
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.38.0/ske-operator-0.38.0.tgz
+    version: 0.38.0
+  - apiVersion: v2
+    appVersion: v0.12.0
+    created: "2025-05-12T09:17:40.428732804Z"
+    dependencies:
+    - name: ske-operator-crds
+      repository: ""
       version: 0.37.0
-    - apiVersion: v2
-      appVersion: v0.11.0
-      created: "2025-04-16T14:17:59.727719418Z"
-      dependencies:
-        - name: ske-operator-crds
-          repository: ""
-          version: 0.35.0
-      description: A Helm Chart for deploying the SKE-Operator
-      digest: e3ea29ed723cd0addaba8da5c5721e105b6353405441e57c2da5d49a6e22bfa5
-      name: ske-operator
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.35.0/ske-operator-0.35.0.tgz
+    description: A Helm Chart for deploying the SKE-Operator
+    digest: a057ef39726e6b67a8e98785f655a5daadd789595580d9f4999e978650863634
+    name: ske-operator
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.37.0/ske-operator-0.37.0.tgz
+    version: 0.37.0
+  - apiVersion: v2
+    appVersion: v0.11.0
+    created: "2025-04-16T14:17:59.727719418Z"
+    dependencies:
+    - name: ske-operator-crds
+      repository: ""
       version: 0.35.0
-    - apiVersion: v2
-      appVersion: v0.10.1
-      created: "2025-02-20T09:16:50.312947166Z"
-      dependencies:
-        - name: ske-operator-crds
-          repository: ""
-          version: 0.32.0
-      description: A Helm Chart for deploying the SKE-Operator
-      digest: cb7ce114b582bd4f1ee019717089df8bf57f2701c27c1aa6f17d703ec7cd8ab9
-      name: ske-operator
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.34.0/ske-operator-0.34.0.tgz
-      version: 0.34.0
-    - apiVersion: v2
-      appVersion: v0.10.1
-      created: "2025-02-13T11:58:48.370364877Z"
-      dependencies:
-        - name: ske-operator-crds
-          repository: ""
-          version: 0.32.0
-      description: A Helm Chart for deploying the SKE-Operator
-      digest: c54c28364d59fae022e01452dea428f15ad051b29dd0f53f4f1fade307bac8c2
-      name: ske-operator
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.33.0/ske-operator-0.33.0.tgz
-      version: 0.33.0
-    - apiVersion: v2
-      appVersion: v0.10.1
-      created: "2025-02-05T13:28:48.343754029Z"
-      dependencies:
-        - name: ske-operator-crds
-          repository: ""
-          version: 0.32.0
-      description: A Helm Chart for deploying the SKE-Operator
-      digest: 99ec99b9576d046f47b6be125b3456585b3c94d29fc6f73b069c6426dc0acefa
-      name: ske-operator
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.32.0/ske-operator-0.32.0.tgz
+    description: A Helm Chart for deploying the SKE-Operator
+    digest: e3ea29ed723cd0addaba8da5c5721e105b6353405441e57c2da5d49a6e22bfa5
+    name: ske-operator
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.35.0/ske-operator-0.35.0.tgz
+    version: 0.35.0
+  - apiVersion: v2
+    appVersion: v0.10.1
+    created: "2025-02-20T09:16:50.312947166Z"
+    dependencies:
+    - name: ske-operator-crds
+      repository: ""
       version: 0.32.0
-    - apiVersion: v2
-      appVersion: v0.10.0
-      created: "2024-12-20T15:55:07.074907366Z"
-      dependencies:
-        - name: ske-operator-crds
-          repository: ""
-          version: 0.29.0
-      description: A Helm Chart for deploying the SKE-Operator
-      digest: 48e9b931fca10978f2d493d1c62d742e8c4ef7530dfe959dd447e0c8bcbf1ddf
-      name: ske-operator
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.31.0/ske-operator-0.31.0.tgz
-      version: 0.31.0
-    - apiVersion: v2
-      appVersion: v0.9.0
-      created: "2024-12-20T15:03:28.000167969Z"
-      dependencies:
-        - name: ske-operator-crds
-          repository: ""
-          version: 0.29.0
-      description: A Helm Chart for deploying the SKE-Operator
-      digest: 8da89c8efce8c74d83ba4cb6e3e417bc2d3cf8869b080b20aa528608f1fc5937
-      name: ske-operator
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.30.0/ske-operator-0.30.0.tgz
-      version: 0.30.0
-    - apiVersion: v2
-      appVersion: v0.9.0
-      created: "2024-12-12T11:53:46.820105043Z"
-      dependencies:
-        - name: ske-operator-crds
-          repository: ""
-          version: 0.29.0
-      description: A Helm Chart for deploying the SKE-Operator
-      digest: 90d66a1e8462e8e87c58be8557d63313a974a3aa60709e8757176e99ac5366ac
-      name: ske-operator
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.29.0/ske-operator-0.29.0.tgz
+    description: A Helm Chart for deploying the SKE-Operator
+    digest: cb7ce114b582bd4f1ee019717089df8bf57f2701c27c1aa6f17d703ec7cd8ab9
+    name: ske-operator
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.34.0/ske-operator-0.34.0.tgz
+    version: 0.34.0
+  - apiVersion: v2
+    appVersion: v0.10.1
+    created: "2025-02-13T11:58:48.370364877Z"
+    dependencies:
+    - name: ske-operator-crds
+      repository: ""
+      version: 0.32.0
+    description: A Helm Chart for deploying the SKE-Operator
+    digest: c54c28364d59fae022e01452dea428f15ad051b29dd0f53f4f1fade307bac8c2
+    name: ske-operator
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.33.0/ske-operator-0.33.0.tgz
+    version: 0.33.0
+  - apiVersion: v2
+    appVersion: v0.10.1
+    created: "2025-02-05T13:28:48.343754029Z"
+    dependencies:
+    - name: ske-operator-crds
+      repository: ""
+      version: 0.32.0
+    description: A Helm Chart for deploying the SKE-Operator
+    digest: 99ec99b9576d046f47b6be125b3456585b3c94d29fc6f73b069c6426dc0acefa
+    name: ske-operator
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.32.0/ske-operator-0.32.0.tgz
+    version: 0.32.0
+  - apiVersion: v2
+    appVersion: v0.10.0
+    created: "2024-12-20T15:55:07.074907366Z"
+    dependencies:
+    - name: ske-operator-crds
+      repository: ""
       version: 0.29.0
-    - apiVersion: v2
-      appVersion: v0.8.0
-      created: "2024-12-05T15:26:43.466356223Z"
-      dependencies:
-        - name: ske-operator-crds
-          repository: ""
-          version: 0.28.0
-      description: A Helm Chart for deploying the SKE-Operator
-      digest: 004b142019939dd0e6d7f368dd1099e58fd6e56e4fdfde7414668b91ab531376
-      name: ske-operator
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.28.0/ske-operator-0.28.0.tgz
+    description: A Helm Chart for deploying the SKE-Operator
+    digest: 48e9b931fca10978f2d493d1c62d742e8c4ef7530dfe959dd447e0c8bcbf1ddf
+    name: ske-operator
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.31.0/ske-operator-0.31.0.tgz
+    version: 0.31.0
+  - apiVersion: v2
+    appVersion: v0.9.0
+    created: "2024-12-20T15:03:28.000167969Z"
+    dependencies:
+    - name: ske-operator-crds
+      repository: ""
+      version: 0.29.0
+    description: A Helm Chart for deploying the SKE-Operator
+    digest: 8da89c8efce8c74d83ba4cb6e3e417bc2d3cf8869b080b20aa528608f1fc5937
+    name: ske-operator
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.30.0/ske-operator-0.30.0.tgz
+    version: 0.30.0
+  - apiVersion: v2
+    appVersion: v0.9.0
+    created: "2024-12-12T11:53:46.820105043Z"
+    dependencies:
+    - name: ske-operator-crds
+      repository: ""
+      version: 0.29.0
+    description: A Helm Chart for deploying the SKE-Operator
+    digest: 90d66a1e8462e8e87c58be8557d63313a974a3aa60709e8757176e99ac5366ac
+    name: ske-operator
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.29.0/ske-operator-0.29.0.tgz
+    version: 0.29.0
+  - apiVersion: v2
+    appVersion: v0.8.0
+    created: "2024-12-05T15:26:43.466356223Z"
+    dependencies:
+    - name: ske-operator-crds
+      repository: ""
       version: 0.28.0
-    - apiVersion: v2
-      appVersion: v0.7.0
-      created: "2024-11-28T15:23:22.240479017Z"
-      dependencies:
-        - name: ske-operator-crds
-          repository: ""
-          version: 0.27.0
-      description: A Helm Chart for deploying the SKE-Operator
-      digest: f0e276d0f6bc5f78606f1e68b77fdfb87376579b6dd73f216554400a77da4fef
-      name: ske-operator
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.27.0/ske-operator-0.27.0.tgz
+    description: A Helm Chart for deploying the SKE-Operator
+    digest: 004b142019939dd0e6d7f368dd1099e58fd6e56e4fdfde7414668b91ab531376
+    name: ske-operator
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.28.0/ske-operator-0.28.0.tgz
+    version: 0.28.0
+  - apiVersion: v2
+    appVersion: v0.7.0
+    created: "2024-11-28T15:23:22.240479017Z"
+    dependencies:
+    - name: ske-operator-crds
+      repository: ""
       version: 0.27.0
-    - apiVersion: v2
-      appVersion: v0.6.0
-      created: "2024-11-26T11:19:32.595991457Z"
-      dependencies:
-        - name: ske-operator-crds
-          repository: ""
-          version: 0.25.0
-      description: A Helm Chart for deploying the SKE-Operator
-      digest: 2648df8028240dad6c75eb7cac0e75143b8ec2af6229875c6fe0d55fa884150d
-      name: ske-operator
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.26.0/ske-operator-0.26.0.tgz
-      version: 0.26.0
-    - apiVersion: v2
-      appVersion: v0.6.0
-      created: "2024-11-21T12:26:56.580123972Z"
-      dependencies:
-        - name: ske-operator-crds
-          repository: ""
-          version: 0.25.0
-      description: A Helm Chart for deploying the SKE-Operator
-      digest: 00ea14f7d05258193f362abd1a5ecaddc09251a85b3e2d657ee2a5378176d216
-      name: ske-operator
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.25.0/ske-operator-0.25.0.tgz
+    description: A Helm Chart for deploying the SKE-Operator
+    digest: f0e276d0f6bc5f78606f1e68b77fdfb87376579b6dd73f216554400a77da4fef
+    name: ske-operator
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.27.0/ske-operator-0.27.0.tgz
+    version: 0.27.0
+  - apiVersion: v2
+    appVersion: v0.6.0
+    created: "2024-11-26T11:19:32.595991457Z"
+    dependencies:
+    - name: ske-operator-crds
+      repository: ""
       version: 0.25.0
-    - apiVersion: v2
-      appVersion: v0.5.2
-      created: "2024-11-18T18:09:44.89330493Z"
-      dependencies:
-        - name: ske-operator-crds
-          repository: ""
-          version: 0.24.0
-      description: A Helm Chart for deploying the SKE-Operator
-      digest: eb93fb7dec3c2c9bd31255643e810f4bab5c0ef1e3d2d8a9b5b89845e15606bb
-      name: ske-operator
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.24.0/ske-operator-0.24.0.tgz
+    description: A Helm Chart for deploying the SKE-Operator
+    digest: 2648df8028240dad6c75eb7cac0e75143b8ec2af6229875c6fe0d55fa884150d
+    name: ske-operator
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.26.0/ske-operator-0.26.0.tgz
+    version: 0.26.0
+  - apiVersion: v2
+    appVersion: v0.6.0
+    created: "2024-11-21T12:26:56.580123972Z"
+    dependencies:
+    - name: ske-operator-crds
+      repository: ""
+      version: 0.25.0
+    description: A Helm Chart for deploying the SKE-Operator
+    digest: 00ea14f7d05258193f362abd1a5ecaddc09251a85b3e2d657ee2a5378176d216
+    name: ske-operator
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.25.0/ske-operator-0.25.0.tgz
+    version: 0.25.0
+  - apiVersion: v2
+    appVersion: v0.5.2
+    created: "2024-11-18T18:09:44.89330493Z"
+    dependencies:
+    - name: ske-operator-crds
+      repository: ""
       version: 0.24.0
-    - apiVersion: v2
-      appVersion: v0.5.1
-      created: "2024-11-14T15:25:38.843575045Z"
-      dependencies:
-        - name: ske-operator-crds
-          repository: ""
-          version: 0.23.0
-      description: A Helm Chart for deploying the SKE-Operator
-      digest: 5a24a551d38d7383d381369970c2f56e96460e078be7de44779d560ffc7ea29a
-      name: ske-operator
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.23.0/ske-operator-0.23.0.tgz
+    description: A Helm Chart for deploying the SKE-Operator
+    digest: eb93fb7dec3c2c9bd31255643e810f4bab5c0ef1e3d2d8a9b5b89845e15606bb
+    name: ske-operator
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.24.0/ske-operator-0.24.0.tgz
+    version: 0.24.0
+  - apiVersion: v2
+    appVersion: v0.5.1
+    created: "2024-11-14T15:25:38.843575045Z"
+    dependencies:
+    - name: ske-operator-crds
+      repository: ""
       version: 0.23.0
-    - apiVersion: v2
-      appVersion: v0.5.0
-      created: "2024-11-12T16:05:42.898677018Z"
-      dependencies:
-        - name: ske-operator-crds
-          repository: ""
-          version: 0.22.0
-      description: A Helm Chart for deploying the SKE-Operator
-      digest: 8e56eaaa1267e2fa8067da04033c0c3f74e2b44d5b2cc94844d7db692efa6f39
-      name: ske-operator
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.22.0/ske-operator-0.22.0.tgz
+    description: A Helm Chart for deploying the SKE-Operator
+    digest: 5a24a551d38d7383d381369970c2f56e96460e078be7de44779d560ffc7ea29a
+    name: ske-operator
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.23.0/ske-operator-0.23.0.tgz
+    version: 0.23.0
+  - apiVersion: v2
+    appVersion: v0.5.0
+    created: "2024-11-12T16:05:42.898677018Z"
+    dependencies:
+    - name: ske-operator-crds
+      repository: ""
       version: 0.22.0
-    - apiVersion: v2
-      appVersion: v0.4.1
-      created: "2024-10-21T15:50:04.952871813Z"
-      description: A Helm Chart for deploying the SKE-Operator
-      digest: dc2c41f382514929e2df264ff58890c2cab2237371ae0200b962cc668c970e7d
-      name: ske-operator
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.21.0/ske-operator-0.21.0.tgz
-      version: 0.21.0
-    - apiVersion: v2
-      appVersion: v0.4.0
-      created: "2024-10-17T11:51:22.061746611Z"
-      description: A Helm Chart for deploying the SKE-Operator
-      digest: 0afa4950f92b3ae01fb715c0cadf232f5633c4e3570daa33c7540576c95225c0
-      name: ske-operator
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.20.0/ske-operator-0.20.0.tgz
-      version: 0.20.0
-    - apiVersion: v2
-      appVersion: v0.4.0
-      created: "2024-10-17T09:38:52.449233149Z"
-      description: A Helm Chart for deploying the SKE-Operator
-      digest: 7b2df1efe3d8f84d7e9ef30d394b9ff277df2f6e831fc8fdf68ae40cd160fa89
-      name: ske-operator
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.19.0/ske-operator-0.19.0.tgz
-      version: 0.19.0
-    - apiVersion: v2
-      appVersion: v0.4.0
-      created: "2024-10-16T14:13:41.806399648Z"
-      description: A Helm Chart for deploying the SKE-Operator
-      digest: b34479428f7508ecc08e69b7949021f36b6c2069401fd750ccae5ef3b0687ff4
-      name: ske-operator
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.18.0/ske-operator-0.18.0.tgz
-      version: 0.18.0
-    - apiVersion: v2
-      appVersion: v0.3.1
-      created: "2024-10-15T11:12:46.375186276Z"
-      description: A Helm Chart for deploying the SKE-Operator
-      digest: 64fbdf13205f3895e5844f474f586b9069500c6b8941e5c61a6e914f2396fbb8
-      name: ske-operator
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.17.0/ske-operator-0.17.0.tgz
-      version: 0.17.0
-    - apiVersion: v2
-      appVersion: v0.3.0
-      created: "2024-10-10T14:13:18.129877217Z"
-      description: A Helm Chart for deploying the SKE-Operator
-      digest: 702eb0df0405191af7936b495369361f666a42ea8c17a2b5de2752b2cea4f4bc
-      name: ske-operator
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.16.0/ske-operator-0.16.0.tgz
-      version: 0.16.0
-    - apiVersion: v2
-      appVersion: v0.3.0
-      created: "2024-10-10T13:31:43.351178403Z"
-      description: A Helm Chart for deploying the SKE-Operator
-      digest: 726708bbceac89628ffb87a666822ae979fe394dc1ba7d0a7be5a1c29606871d
-      name: ske-operator
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.15.0/ske-operator-0.15.0.tgz
-      version: 0.15.0
-    - apiVersion: v2
-      appVersion: v0.1.6
-      created: "2024-09-17T14:16:32.736883984Z"
-      description: A Helm Chart for deploying the SKE-Operator.
-      digest: 9765d6a9d8bc1e342fbd5d4abe24234de4e7ec54c4e405aafa5f0f5be94c8656
-      name: ske-operator
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.13.0/ske-operator-0.13.0.tgz
-      version: 0.13.0
-    - apiVersion: v2
-      appVersion: v0.1.5
-      created: "2024-09-05T16:16:29.500172162Z"
-      description: A Helm Chart for deploying the SKE-Operator
-      digest: fcc53866c3c8ddfb6254d06c6ececc9e77de0552d17ecfa37f07b88c03dbfcf5
-      name: ske-operator
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.12.0/ske-operator-0.12.0.tgz
-      version: 0.12.0
-    - apiVersion: v2
-      appVersion: v0.1.4
-      created: "2024-09-05T13:51:31.846971124Z"
-      description: A Helm Chart for deploying the SKE-Operator
-      digest: 9b9bc9a5ff1f57493b195b627b05df04d09415e003895fda7339855dd407629c
-      name: ske-operator
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.11.0/ske-operator-0.11.0.tgz
-      version: 0.11.0
-    - apiVersion: v2
-      appVersion: v0.1.3
-      created: "2024-09-05T10:19:36.491613668Z"
-      description: A Helm Chart for deploying the SKE-Operator
-      digest: 1647ff2cf7b6388207bdc9c007a2ef8a1f59aa3c64a8e2e15a2ac5db80d489ce
-      name: ske-operator
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.10.0/ske-operator-0.10.0.tgz
-      version: 0.10.0
-    - apiVersion: v2
-      appVersion: v0.1.2
-      created: "2024-08-23T09:39:28.954884494Z"
-      description: A Helm Chart for deploying the SKE-Operator
-      digest: b70fea97aa0f708b1a474ec883576018e5981a21945652e5d029901c4d88780a
-      name: ske-operator
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.9.0/ske-operator-0.9.0.tgz
-      version: 0.9.0
-    - apiVersion: v2
-      appVersion: v0.1.1
-      created: "2024-08-22T14:53:14.149895848Z"
-      description: A Helm Chart for deploying the SKE-Operator
-      digest: 3973fe9d81e12ac116dabab3d98b5cf12bda099c969aa550343dce1d8fc55668
-      name: ske-operator
-      type: application
-      urls:
-        - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.8.0/ske-operator-0.8.0.tgz
-      version: 0.8.0
-generated: "2025-10-28T10:54:31.634322191Z"
+    description: A Helm Chart for deploying the SKE-Operator
+    digest: 8e56eaaa1267e2fa8067da04033c0c3f74e2b44d5b2cc94844d7db692efa6f39
+    name: ske-operator
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.22.0/ske-operator-0.22.0.tgz
+    version: 0.22.0
+  - apiVersion: v2
+    appVersion: v0.4.1
+    created: "2024-10-21T15:50:04.952871813Z"
+    description: A Helm Chart for deploying the SKE-Operator
+    digest: dc2c41f382514929e2df264ff58890c2cab2237371ae0200b962cc668c970e7d
+    name: ske-operator
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.21.0/ske-operator-0.21.0.tgz
+    version: 0.21.0
+  - apiVersion: v2
+    appVersion: v0.4.0
+    created: "2024-10-17T11:51:22.061746611Z"
+    description: A Helm Chart for deploying the SKE-Operator
+    digest: 0afa4950f92b3ae01fb715c0cadf232f5633c4e3570daa33c7540576c95225c0
+    name: ske-operator
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.20.0/ske-operator-0.20.0.tgz
+    version: 0.20.0
+  - apiVersion: v2
+    appVersion: v0.4.0
+    created: "2024-10-17T09:38:52.449233149Z"
+    description: A Helm Chart for deploying the SKE-Operator
+    digest: 7b2df1efe3d8f84d7e9ef30d394b9ff277df2f6e831fc8fdf68ae40cd160fa89
+    name: ske-operator
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.19.0/ske-operator-0.19.0.tgz
+    version: 0.19.0
+  - apiVersion: v2
+    appVersion: v0.4.0
+    created: "2024-10-16T14:13:41.806399648Z"
+    description: A Helm Chart for deploying the SKE-Operator
+    digest: b34479428f7508ecc08e69b7949021f36b6c2069401fd750ccae5ef3b0687ff4
+    name: ske-operator
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.18.0/ske-operator-0.18.0.tgz
+    version: 0.18.0
+  - apiVersion: v2
+    appVersion: v0.3.1
+    created: "2024-10-15T11:12:46.375186276Z"
+    description: A Helm Chart for deploying the SKE-Operator
+    digest: 64fbdf13205f3895e5844f474f586b9069500c6b8941e5c61a6e914f2396fbb8
+    name: ske-operator
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.17.0/ske-operator-0.17.0.tgz
+    version: 0.17.0
+  - apiVersion: v2
+    appVersion: v0.3.0
+    created: "2024-10-10T14:13:18.129877217Z"
+    description: A Helm Chart for deploying the SKE-Operator
+    digest: 702eb0df0405191af7936b495369361f666a42ea8c17a2b5de2752b2cea4f4bc
+    name: ske-operator
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.16.0/ske-operator-0.16.0.tgz
+    version: 0.16.0
+  - apiVersion: v2
+    appVersion: v0.3.0
+    created: "2024-10-10T13:31:43.351178403Z"
+    description: A Helm Chart for deploying the SKE-Operator
+    digest: 726708bbceac89628ffb87a666822ae979fe394dc1ba7d0a7be5a1c29606871d
+    name: ske-operator
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.15.0/ske-operator-0.15.0.tgz
+    version: 0.15.0
+  - apiVersion: v2
+    appVersion: v0.1.6
+    created: "2024-09-17T14:16:32.736883984Z"
+    description: A Helm Chart for deploying the SKE-Operator.
+    digest: 9765d6a9d8bc1e342fbd5d4abe24234de4e7ec54c4e405aafa5f0f5be94c8656
+    name: ske-operator
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.13.0/ske-operator-0.13.0.tgz
+    version: 0.13.0
+  - apiVersion: v2
+    appVersion: v0.1.5
+    created: "2024-09-05T16:16:29.500172162Z"
+    description: A Helm Chart for deploying the SKE-Operator
+    digest: fcc53866c3c8ddfb6254d06c6ececc9e77de0552d17ecfa37f07b88c03dbfcf5
+    name: ske-operator
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.12.0/ske-operator-0.12.0.tgz
+    version: 0.12.0
+  - apiVersion: v2
+    appVersion: v0.1.4
+    created: "2024-09-05T13:51:31.846971124Z"
+    description: A Helm Chart for deploying the SKE-Operator
+    digest: 9b9bc9a5ff1f57493b195b627b05df04d09415e003895fda7339855dd407629c
+    name: ske-operator
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.11.0/ske-operator-0.11.0.tgz
+    version: 0.11.0
+  - apiVersion: v2
+    appVersion: v0.1.3
+    created: "2024-09-05T10:19:36.491613668Z"
+    description: A Helm Chart for deploying the SKE-Operator
+    digest: 1647ff2cf7b6388207bdc9c007a2ef8a1f59aa3c64a8e2e15a2ac5db80d489ce
+    name: ske-operator
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.10.0/ske-operator-0.10.0.tgz
+    version: 0.10.0
+  - apiVersion: v2
+    appVersion: v0.1.2
+    created: "2024-08-23T09:39:28.954884494Z"
+    description: A Helm Chart for deploying the SKE-Operator
+    digest: b70fea97aa0f708b1a474ec883576018e5981a21945652e5d029901c4d88780a
+    name: ske-operator
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.9.0/ske-operator-0.9.0.tgz
+    version: 0.9.0
+  - apiVersion: v2
+    appVersion: v0.1.1
+    created: "2024-08-22T14:53:14.149895848Z"
+    description: A Helm Chart for deploying the SKE-Operator
+    digest: 3973fe9d81e12ac116dabab3d98b5cf12bda099c969aa550343dce1d8fc55668
+    name: ske-operator
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.8.0/ske-operator-0.8.0.tgz
+    version: 0.8.0
+generated: "2025-10-30T11:04:14.166605344Z"
