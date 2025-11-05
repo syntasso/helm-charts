@@ -137,6 +137,7 @@ rules:
       - gitstatestores
       - healthrecords
       - promisereleases
+      - promiserevisions
       - promises
       - workplacements
       - works
@@ -156,6 +157,7 @@ rules:
       - gitstatestores/finalizers
       - healthrecords/finalizers
       - promisereleases/finalizers
+      - promiserevisions/finalizers
       - promises/finalizers
       - workplacements/finalizers
       - works/finalizers
@@ -169,6 +171,7 @@ rules:
       - gitstatestores/status
       - healthrecords/status
       - promisereleases/status
+      - promiserevisions/status
       - promises/status
       - workplacements/status
       - works/status
@@ -293,7 +296,7 @@ subjects:
 ---
 apiVersion: v1
 data:
-  PIPELINE_ADAPTER_IMG: syntasso-community.docker.reo.dev/syntasso/kratix-platform@sha256:8daf6a267fb2a502470224a8ec4c0bd3244a20b557b9073fdc70468e9a3352dc
+  PIPELINE_ADAPTER_IMG: syntasso-community.docker.reo.dev/syntasso/kratix-platform@sha256:42e3905d8702828bf8353ad37caecaf7398a3cae2ce3fd1f7a8f21de644aca75
 kind: ConfigMap
 metadata:
   labels:
