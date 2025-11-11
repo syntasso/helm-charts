@@ -139,6 +139,7 @@ rules:
       - promisereleases
       - promiserevisions
       - promises
+      - resourcebindings
       - workplacements
       - works
     verbs:
@@ -159,6 +160,7 @@ rules:
       - promisereleases/finalizers
       - promiserevisions/finalizers
       - promises/finalizers
+      - resourcebindings/finalizers
       - workplacements/finalizers
       - works/finalizers
     verbs:
@@ -173,6 +175,7 @@ rules:
       - promisereleases/status
       - promiserevisions/status
       - promises/status
+      - resourcebindings/status
       - workplacements/status
       - works/status
     verbs:
@@ -296,7 +299,7 @@ subjects:
 ---
 apiVersion: v1
 data:
-  PIPELINE_ADAPTER_IMG: syntasso-community.docker.reo.dev/syntasso/kratix-platform@sha256:c8b5e1ee1c5195b9292771ec17a52f9db8d39a4a2a1fd361b4e95eb4319a2149
+  PIPELINE_ADAPTER_IMG: syntasso-community.docker.reo.dev/syntasso/kratix-platform@sha256:97d84ebd4bfa2ca71131bfc692cf499a2ec6ae799d0be431468980e368890e05
 kind: ConfigMap
 metadata:
   labels:
