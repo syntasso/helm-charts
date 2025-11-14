@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.8.0](https://github.com/syntasso/helm-charts/compare/ske-gui-0.7.0...ske-gui-v0.8.0) (2025-11-14)
+
+
+### Features
+
+* **ske-gui:** update appVersion (autorelease) ([99a119b](https://github.com/syntasso/helm-charts/commit/99a119b1c7afb4ea2fd2dee186c117347541932b))
+
 ## [0.7.0](https://github.com/syntasso/helm-charts/compare/ske-gui-0.6.0...ske-gui-v0.7.0) (2025-11-05)
 
 
