@@ -1,23 +1,19 @@
 apiVersion: platform.kratix.io/v1alpha1
 kind: Promise
 metadata:
-  creationTimestamp: null
-  name: redis
-  namespace: default
-  labels:
-    kratix.io/promise-version: v0.1.0
+  name: namespace-delta
 spec:
   api:
     apiVersion: apiextensions.k8s.io/v1
     kind: CustomResourceDefinition
     metadata:
-      name: redis.marketplace.kratix.io
+      name: namespacedeltas.testing.kratix.io
     spec:
-      group: marketplace.kratix.io
+      group: testing.kratix.io
       names:
-        kind: redis
-        plural: redis
-        singular: redis
+        kind: NamespaceDelta
+        plural: namespacedeltas
+        singular: namespacedelta
       scope: Namespaced
       versions:
         - name: v1alpha1
@@ -26,37 +22,38 @@ spec:
               properties:
                 spec:
                   properties:
-                    size:
-                      default: small
-                      description: |
-                        Size of this Redis deployment. If small, it deploy redis with a single replica; if large, deploy redis with 3 replicas.
-                      pattern: ^(small|large)$
+                    namespaceName:
                       type: string
                   type: object
               type: object
           served: true
           storage: true
+  destinationSelectors:
+    - matchLabels:
+        environment: soak
   workflows:
     resource:
       configure:
         - apiVersion: platform.kratix.io/v1alpha1
           kind: Pipeline
           metadata:
-            name: instance-configure
-            namespace: default
+            name: namespacedelta-configure
           spec:
             containers:
-              - image: ghcr.io/syntasso/kratix-marketplace/redis-configure-pipeline:v0.1.0
-                name: redis-configure-pipeline
-    promise:
-      configure:
-        - apiVersion: platform.kratix.io/v1alpha1
-          kind: Pipeline
-          metadata:
-            name: promise-configure
-            namespace: default
-          spec:
-            containers:
-              - image: ghcr.io/syntasso/kratix-marketplace/redis-configure-pipeline:v0.1.0
-                name: redis-configure-pipeline
-status: {}
+              - image: ghcr.io/syntasso/kratix-pipeline-debugger:v0.0.1
+                name: render-namespace
+                command:
+                  - sh
+                  - -c
+                args:
+                  - |
+                    set -euo pipefail
+
+                    namespace="$(yq '.spec.namespaceName' /kratix/input/object.yaml)"
+
+                    cat <<EOF > /kratix/output/namespace.yaml
+                    apiVersion: v1
+                    kind: Namespace
+                    metadata:
+                      name: ${namespace}
+                    EOF
