@@ -56,17 +56,17 @@ var _ = Describe("ske-operator helm chart", func() {
 					// if the Kratix got created successfully by helm install, this means the
 					// webhook was running successfully
 					run("kubectl", context, "get", "kratixes", "kratix")
-					kratixVersion = run("kubectl", context, "get", "kratixes", "kratix", "-o", "jsonpath={.spec.version}")
-					creationTimestamp = run("kubectl", context, "get", "kratixes", "kratix", "-o", "jsonpath={.metadata.creationTimestamp}")
+					kratixVersion, _ = run("kubectl", context, "get", "kratixes", "kratix", "-o", "jsonpath={.spec.version}")
+					creationTimestamp, _ = run("kubectl", context, "get", "kratixes", "kratix", "-o", "jsonpath={.metadata.creationTimestamp}")
 				})
 
 				By("creating any additional resources provided in values file", func() {
 					run("kubectl", context, "get", "secrets", "git-credentials", "-n=default")
 					run("kubectl", context, "get", "configmaps", "test-cm", "-n=default")
 					run("kubectl", context, "get", "gitstatestores", "default")
-					gitStateStoreCreationTimestamp = run("kubectl", context, "get", "gitstatestores", "default", "-o", "jsonpath={.metadata.creationTimestamp}")
+					gitStateStoreCreationTimestamp, _ = run("kubectl", context, "get", "gitstatestores", "default", "-o", "jsonpath={.metadata.creationTimestamp}")
 					run("kubectl", context, "get", "destinations", "worker-1")
-					destinationCreationTimestamp = run("kubectl", context, "get", "destinations", "worker-1", "-o", "jsonpath={.metadata.creationTimestamp}")
+					destinationCreationTimestamp, _ = run("kubectl", context, "get", "destinations", "worker-1", "-o", "jsonpath={.metadata.creationTimestamp}")
 				})
 			})
 
@@ -77,12 +77,12 @@ var _ = Describe("ske-operator helm chart", func() {
 
 				By("upgrading SKE version", func() {
 					Expect(run("kubectl", context, "get", "kratixes", "kratix", "-o", "jsonpath={.metadata.creationTimestamp}")).To(Equal(creationTimestamp))
-					upgradedKratixVersion = run("kubectl", context, "get", "kratixes", "kratix", "-o", "jsonpath={.spec.version}")
+					upgradedKratixVersion, _ = run("kubectl", context, "get", "kratixes", "kratix", "-o", "jsonpath={.spec.version}")
 					Expect(upgradedKratixVersion).NotTo(Equal(kratixVersion))
 				})
 
 				By("updating some additional resources", func() {
-					encodedUsername := run("kubectl", context, "get", "secrets", "git-credentials", "-o", "jsonpath={.data.username}")
+					encodedUsername, _ := run("kubectl", context, "get", "secrets", "git-credentials", "-o", "jsonpath={.data.username}")
 					decodedUsername, err := base64.StdEncoding.DecodeString(encodedUsername)
 					Expect(err).NotTo(HaveOccurred())
 					Expect(string(decodedUsername)).To(Equal("now"))
@@ -131,10 +131,10 @@ var _ = Describe("ske-operator helm chart", func() {
 		})
 	})
 
-	FWhen("global.skeOperator.tlsConfig.certManager.disabled=true, and certs are provided", func() {
+	When("global.skeOperator.tlsConfig.certManager.disabled=true, and certs are provided", func() {
 		BeforeEach(func() {
 			// double check cert-manager is not installed
-			crds := run("kubectl", context, "get", "crds")
+			crds, _ := run("kubectl", context, "get", "crds")
 			Expect(crds).NotTo(ContainSubstring("cert-manager"))
 			run("./assets/generate-certs")
 			run("./assets/generate-metrics-certs")
@@ -149,17 +149,27 @@ var _ = Describe("ske-operator helm chart", func() {
 
 		It("should use the provided certs for the webhook", func() {
 			By("installing the operator with helm and the provided certs", func() {
+				operatorTlsCrt, _ := run("cat", "./operator-tls.crt")
+				operatorTlsKey, _ := run("cat", "./operator-tls.key")
+				operatorCa, _ := run("cat", "./operator-ca.crt")
+				deploymentTlsCrt, _ := run("cat", "./deployment-tls.crt")
+				deploymentTlsKey, _ := run("cat", "./deployment-tls.key")
+				deploymentCa, _ := run("cat", "./deployment-ca.crt")
+				metricsTlsCrt, _ := run("cat", "./metrics-tls.crt")
+				metricsTlsKey, _ := run("cat", "./metrics-tls.key")
+				metricsCa, _ := run("cat", "./metrics-ca.crt")
+
 				run("helm", "install", "ske-operator", "--create-namespace", "../ske-operator/",
 					"-n=kratix-platform-system", "-f=./assets/values-without-certmanager.yaml", "--set-string", "skeLicense="+skeLicenseToken, "--wait",
-					"--set-string", "global.skeOperator.tlsConfig.webhookTLSCert="+run("cat", "./operator-tls.crt"),
-					"--set-string", "global.skeOperator.tlsConfig.webhookTLSKey="+run("cat", "./operator-tls.key"),
-					"--set-string", "global.skeOperator.tlsConfig.webhookCACert="+run("cat", "./operator-ca.crt"),
-					"--set-string", "skeDeployment.tlsConfig.webhookTLSCert="+run("cat", "./deployment-tls.crt"),
-					"--set-string", "skeDeployment.tlsConfig.webhookTLSKey="+run("cat", "./deployment-tls.key"),
-					"--set-string", "skeDeployment.tlsConfig.webhookCACert="+run("cat", "./deployment-ca.crt"),
-					"--set-string", "skeDeployment.tlsConfig.metricsServerTLSCert="+run("cat", "./metrics-tls.crt"),
-					"--set-string", "skeDeployment.tlsConfig.metricsServerTLSKey="+run("cat", "./metrics-tls.key"),
-					"--set-string", "skeDeployment.tlsConfig.metricsServerCACert="+run("cat", "./metrics-ca.crt"))
+					"--set-string", "global.skeOperator.tlsConfig.webhookTLSCert="+operatorTlsCrt,
+					"--set-string", "global.skeOperator.tlsConfig.webhookTLSKey="+operatorTlsKey,
+					"--set-string", "global.skeOperator.tlsConfig.webhookCACert="+operatorCa,
+					"--set-string", "skeDeployment.tlsConfig.webhookTLSCert="+deploymentTlsCrt,
+					"--set-string", "skeDeployment.tlsConfig.webhookTLSKey="+deploymentTlsKey,
+					"--set-string", "skeDeployment.tlsConfig.webhookCACert="+deploymentCa,
+					"--set-string", "skeDeployment.tlsConfig.metricsServerTLSCert="+metricsTlsCrt,
+					"--set-string", "skeDeployment.tlsConfig.metricsServerTLSKey="+metricsTlsKey,
+					"--set-string", "skeDeployment.tlsConfig.metricsServerCACert="+metricsCa)
 			})
 
 			By("verifying that Kratix got created successfully by helm install", func() {
@@ -174,6 +184,9 @@ var _ = Describe("ske-operator helm chart", func() {
 
 			By("removing the promise to clean up resources", func() {
 				run("kubectl", context, "delete", "promises", "--all", "--timeout="+formatTimeout(kubectlMediumTimeout))
+				out, err := run("kubectl", context, "get", "promises")
+				Expect(out).To((BeEmpty()))
+				Expect(err).To(ContainSubstring("No resources found"))
 			})
 		})
 	})
@@ -181,24 +194,24 @@ var _ = Describe("ske-operator helm chart", func() {
 	Describe("deleteOnUninstall", func() {
 		When("deleteOnUninstall is not set", func() {
 			It("the secret template sets the resource-policy to 'keep'", func() {
-				template := run("helm", "template", "ske-operator", "../ske-operator/", "-s=templates/registry-secret.yaml", "-f=./assets/values-with-certmanager.yaml")
+				template, _ := run("helm", "template", "ske-operator", "../ske-operator/", "-s=templates/registry-secret.yaml", "-f=./assets/values-with-certmanager.yaml")
 				Expect(template).To(ContainSubstring("helm.sh/resource-policy: keep"))
 			})
 
 			It("the CRD template sets the resource-policy to 'keep'", func() {
-				template := run("helm", "template", "ske-operator", "../ske-operator/", "-s=charts/ske-operator-crds/templates/crds-with-cert-manager.yaml", "-f=./assets/values-with-certmanager.yaml")
+				template, _ := run("helm", "template", "ske-operator", "../ske-operator/", "-s=charts/ske-operator-crds/templates/crds-with-cert-manager.yaml", "-f=./assets/values-with-certmanager.yaml")
 				Expect(template).To(ContainSubstring("helm.sh/resource-policy: keep"))
 			})
 		})
 
 		When("deleteOnUninstall is set to false", func() {
 			It("the secret template sets the resource-policy to 'keep'", func() {
-				template := run("helm", "template", "ske-operator", "../ske-operator/", "-s=templates/registry-secret.yaml", "-f=./assets/values-with-delete-on-uninstall-false.yaml")
+				template, _ := run("helm", "template", "ske-operator", "../ske-operator/", "-s=templates/registry-secret.yaml", "-f=./assets/values-with-delete-on-uninstall-false.yaml")
 				Expect(template).To(ContainSubstring("helm.sh/resource-policy: keep"))
 			})
 
 			It("the CRD template sets the resource-policy to 'keep'", func() {
-				template := run("helm", "template", "ske-operator", "../ske-operator/", "-s=charts/ske-operator-crds/templates/crds-with-cert-manager.yaml", "-f=./assets/values-with-delete-on-uninstall-false.yaml")
+				template, _ := run("helm", "template", "ske-operator", "../ske-operator/", "-s=charts/ske-operator-crds/templates/crds-with-cert-manager.yaml", "-f=./assets/values-with-delete-on-uninstall-false.yaml")
 				Expect(template).To(ContainSubstring("helm.sh/resource-policy: keep"))
 			})
 		})
@@ -219,12 +232,12 @@ var _ = Describe("ske-operator helm chart", func() {
 
 			It("uninstalls the deployed kratix when uninstalling the ske operator", func() {
 				By("setting the secret template resource-policy to 'keep'", func() {
-					template := run("helm", "template", "ske-operator", "../ske-operator/", "-s=templates/registry-secret.yaml", "-f=./assets/values-with-delete-on-uninstall-true.yaml")
+					template, _ := run("helm", "template", "ske-operator", "../ske-operator/", "-s=templates/registry-secret.yaml", "-f=./assets/values-with-delete-on-uninstall-true.yaml")
 					Expect(template).ToNot(ContainSubstring("helm.sh/resource-policy: keep"))
 				})
 
 				By("setting the crd template resource-policy to 'keep'", func() {
-					template := run("helm", "template", "ske-operator", "../ske-operator/", "-s=charts/ske-operator-crds/templates/crds-with-cert-manager.yaml", "-f=./assets/values-with-delete-on-uninstall-true.yaml")
+					template, _ := run("helm", "template", "ske-operator", "../ske-operator/", "-s=charts/ske-operator-crds/templates/crds-with-cert-manager.yaml", "-f=./assets/values-with-delete-on-uninstall-true.yaml")
 					Expect(template).ToNot(ContainSubstring("helm.sh/resource-policy: keep"))
 				})
 
@@ -264,13 +277,13 @@ var _ = Describe("ske-operator helm chart", func() {
 	When("user provides a custom cert-manager issuer", func() {
 		It("templates use the custom issuer", func() {
 			By("setting the custom issuer on certificates and not having the self-signed issuer", func() {
-				template := run("helm", "template", "ske-operator", "../ske-operator/", "-s=templates/with-cert-manager.yaml", "-f=./assets/values-with-certmanager-custom-issuer.yaml")
+				template, _ := run("helm", "template", "ske-operator", "../ske-operator/", "-s=templates/with-cert-manager.yaml", "-f=./assets/values-with-certmanager-custom-issuer.yaml")
 				Expect(template).To(MatchRegexp(`issuerRef:\s+kind:\s+ClusterIssuer\s+name:\s+custom-issuer`))
 				Expect(template).NotTo(MatchRegexp(`apiVersion:\s+cert-manager.io/v1\s+kind:\s+Issuer\s+`))
 			})
 
 			By("setting the custom issuer on ske-deployment config", func() {
-				template := run("helm", "template", "ske-operator", "../ske-operator/", "-s=templates/ske-deployment-config.yaml", "-f=./assets/values-with-certmanager-custom-issuer.yaml")
+				template, _ := run("helm", "template", "ske-operator", "../ske-operator/", "-s=templates/ske-deployment-config.yaml", "-f=./assets/values-with-certmanager-custom-issuer.yaml")
 				Expect(template).To(MatchRegexp(`issuerRef:\s+kind:\s+ClusterIssuer\s+name:\s+custom-issuer`))
 			})
 		})
@@ -288,19 +301,19 @@ func formatTimeout(timeout time.Duration) string {
 	return fmt.Sprintf("%ds", int(timeout.Seconds()))
 }
 
-func runLongTimeout(args ...string) string {
+func runLongTimeout(args ...string) (string, string) {
 	return r(Default, longTimeout, args...)
 }
 
-func run(args ...string) string {
+func run(args ...string) (string, string) {
 	return r(Default, timeout, args...)
 }
 
-func runGinkgo(g Gomega, args ...string) string {
+func runGinkgo(g Gomega, args ...string) (string, string) {
 	return r(g, timeout, args...)
 }
 
-func r(g Gomega, t time.Duration, args ...string) string {
+func r(g Gomega, t time.Duration, args ...string) (string, string) {
 	firstArg := args[0]
 	remainingArgs := args[1:]
 	command := exec.Command(firstArg, remainingArgs...)
@@ -309,7 +322,7 @@ func r(g Gomega, t time.Duration, args ...string) string {
 	fmt.Fprintf(GinkgoWriter, "Running: %s %s\n", firstArg, strings.Join(remainingArgs, " "))
 	g.ExpectWithOffset(2, err).ShouldNot(HaveOccurred())
 	g.EventuallyWithOffset(2, session, t, interval).Should(gexec.Exit(0))
-	return string(session.Out.Contents())
+	return string(session.Out.Contents()), string(session.Err.Contents())
 }
 
 func deleteCRDs(context string) {
