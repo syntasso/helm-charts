@@ -255,11 +255,17 @@ var _ = Describe("ske-operator helm chart", func() {
 					run("helm", "uninstall", "ske-operator", "-n=kratix-platform-system", "--wait")
 
 					By("deleting operator", func() {
-						Expect(run("kubectl", context, "get", "deployments", "ske-operator-controller-manager", "--ignore-not-found")).To(BeEmpty())
+						Eventually(func() string {
+							out, _ := run("kubectl", context, "get", "deployments", "ske-operator-controller-manager", "--ignore-not-found")
+							return out
+						}, timeout, interval).Should(BeEmpty())
 					})
 
 					By("deleting the Kratix deployment", func() {
-						Expect(run("kubectl", context, "get", "deployments", "kratix-platform-controller-manager", "-n=kratix-platform-system", "--ignore-not-found")).To(BeEmpty())
+						Eventually(func() string {
+							out, _ := run("kubectl", context, "get", "deployments", "kratix-platform-controller-manager", "-n=kratix-platform-system", "--ignore-not-found")
+							return out
+						}, timeout, interval).Should(BeEmpty())
 					})
 
 					By("deleting the crds", func() { // if the crds are deleted, so are the Kratix custom resources
