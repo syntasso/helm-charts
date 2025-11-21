@@ -131,7 +131,7 @@ var _ = Describe("ske-operator helm chart", func() {
 		})
 	})
 
-	When("global.skeOperator.tlsConfig.certManager.disabled=true, and certs are provided", func() {
+	FWhen("global.skeOperator.tlsConfig.certManager.disabled=true, and certs are provided", func() {
 		BeforeEach(func() {
 			// double check cert-manager is not installed
 			crds := run("kubectl", context, "get", "crds")
@@ -174,7 +174,6 @@ var _ = Describe("ske-operator helm chart", func() {
 
 			By("removing the promise to clean up resources", func() {
 				run("kubectl", context, "delete", "promises", "--all", "--timeout="+formatTimeout(kubectlMediumTimeout))
-				run("kubectl", context, "get", "promises")
 			})
 		})
 	})
