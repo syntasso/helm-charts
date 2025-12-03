@@ -299,7 +299,7 @@ subjects:
 ---
 apiVersion: v1
 data:
-  PIPELINE_ADAPTER_IMG: syntasso-community.docker.reo.dev/syntasso/kratix-platform@sha256:25831f9292636c588087b15709b757f6fa96d35b883a637b5f9d93f29bb54499
+  PIPELINE_ADAPTER_IMG: syntasso-community.docker.reo.dev/syntasso/kratix-platform@sha256:37d236309d1571c24b428fccf7ffc79ea78b29b34003963c56328e2b5e027564
 kind: ConfigMap
 metadata:
   labels:
@@ -552,4 +552,25 @@ webhooks:
           - UPDATE
         resources:
           - promisereleases
+    sideEffects: None
+  - admissionReviewVersions:
+      - v1
+    clientConfig:
+      service:
+        name: kratix-platform-webhook-service
+        namespace: kratix-platform-system
+        path: /validate-platform-kratix-io-v1alpha1-promiserevision
+    failurePolicy: Fail
+    name: vpromiserevision-v1alpha1.kb.io
+    rules:
+      - apiGroups:
+          - platform.kratix.io
+        apiVersions:
+          - v1alpha1
+        operations:
+          - CREATE
+          - UPDATE
+          - DELETE
+        resources:
+          - promiserevisions
     sideEffects: None
