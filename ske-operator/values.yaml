@@ -93,9 +93,11 @@ skeOperator:
     requests:
       memory: "256Mi"
       cpu: "100m"
+      # ephemeral-storage: "2Gi"
     limits:
       memory: "256Mi"
       cpu: "100m"
+      # ephemeral-storage: "4Gi"
   nodeSelector: {}
   tolerations: []
   affinity: {}
