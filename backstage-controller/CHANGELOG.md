@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.0](https://github.com/syntasso/helm-charts/compare/backstage-controller-0.4.1...backstage-controller-v0.5.0) (2025-12-16)
+
+
+### Features
+
+* **backstage-controller:** update appVersion (autorelease) ([d5ca6b1](https://github.com/syntasso/helm-charts/commit/d5ca6b1c3123bbc5f7a73e63a7de7006d62549f8))
+
 ## [0.4.1](https://github.com/syntasso/helm-charts/compare/backstage-controller-0.4.0...backstage-controller-v0.4.1) (2025-10-07)
 
 
