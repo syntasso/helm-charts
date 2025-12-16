@@ -6,7 +6,7 @@ imageRegistry:
   # If you are using a custom registry, update this value to your registry host
   host: "registry.syntasso.io"
   imageName: "syntasso/ske-gui"
-  imageVersion: "v0.5.1"
+  imageVersion: "v0.5.2"
   # Name of the image pull secret to use.
   imagePullSecret: "syntasso-registry"
   # imagePullPolicy: IfNotPresent
