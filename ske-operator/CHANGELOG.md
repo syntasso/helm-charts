@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.50.1](https://github.com/syntasso/helm-charts/compare/ske-operator-0.50.0...ske-operator-v0.50.1) (2025-12-16)
+
+
+### Chores
+
+* adding documented example of how to configure ephemeral-storage ([954c678](https://github.com/syntasso/helm-charts/commit/954c6786faec69494f9c7f0eb6398f3f35fab368))
+
 ## [0.50.0](https://github.com/syntasso/helm-charts/compare/ske-operator-0.49.0...ske-operator-v0.50.0) (2025-11-21)
 
 
