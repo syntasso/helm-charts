@@ -44,7 +44,6 @@ var _ = Describe("ske-operator helm chart", func() {
 
 		It("can install, upgrade and uninstall SKE successfully", func() {
 			By("installing SKE", func() {
-				run("pwd")
 				run("helm", "install", "ske-operator", "--create-namespace", "../ske-operator/",
 					"-n=kratix-platform-system", "-f=./assets/values-with-certmanager.yaml", "--set-string", "skeLicense="+skeLicenseToken, "--wait")
 
@@ -187,6 +186,58 @@ var _ = Describe("ske-operator helm chart", func() {
 				out, err := run("kubectl", context, "get", "promises")
 				Expect(out).To((BeEmpty()))
 				Expect(err).To(ContainSubstring("No resources found"))
+			})
+		})
+	})
+
+	Describe("backstageIntegration", func() {
+		When("backstageIntegration.enabled is false", func() {
+			It("does not template the post deploy job or configmap", func() {
+				template, _ := run("helm", "template", "ske-operator", "../ske-operator/", "-f=./assets/values-with-certmanager.yaml")
+				Expect(template).ToNot(ContainSubstring("deploy-backstage-integration"))
+				Expect(template).ToNot(ContainSubstring("backstage-integration-config"))
+			})
+		})
+
+		When("backstageIntegration.enabled is false", func() {
+			When("templating the chart", func() {
+				It("templates the post deploy job", func() {
+					template, _ := run("helm", "template", "ske-operator", "../ske-operator/", "-s=templates/post-install-backstage-integration.yaml", "-f=./assets/values-with-backstage-integration-enabled.yaml")
+					Expect(template).To(ContainSubstring("deploy-backstage-integration"))
+				})
+
+				It("templates the deployment config job", func() {
+					template, _ := run("helm", "template", "ske-operator", "../ske-operator/", "-s=templates/backstage-integration-deployment-config.yaml", "-f=./assets/values-with-backstage-integration-enabled.yaml")
+					Expect(template).To(ContainSubstring("backstage-integration-config"))
+					Expect(template).To(ContainSubstring("memory: 512Mi"))
+					Expect(template).To(ContainSubstring("cpu: 100m"))
+					Expect(template).To(ContainSubstring("memory: 256Mi"))
+					Expect(template).To(ContainSubstring("cpu: 400m"))
+				})
+			})
+
+			When("deploying the chart", func() {
+				BeforeEach(func() {
+					run("kubectl", context, "apply", "-f=https://github.com/cert-manager/cert-manager/releases/download/v1.15.0/cert-manager.yaml")
+					run("kubectl", context, "wait", "crd/certificates.cert-manager.io", "--for=condition=established", "--timeout="+fmt.Sprintf("%ds", int(kubectlTimeout.Seconds())))
+					validateCertManagerWebhook()
+					run("kubectl", context, "wait", "--for=condition=available", "deployment/cert-manager-webhook", "-n=cert-manager")
+				})
+
+				AfterEach(func() {
+					runLongTimeout("kubectl", context, "delete", "namespace", "kratix-platform-system", "--timeout="+formatTimeout(kubectlLongTimeout), "--ignore-not-found")
+					run("kubectl", context, "delete", "-f=https://github.com/cert-manager/cert-manager/releases/download/v1.15.0/cert-manager.yaml")
+					deleteCRDs(context)
+				})
+
+				It("creates a Backstage SKEIntegration", func() {
+					run("helm", "install", "ske-operator", "--create-namespace", "../ske-operator/",
+						"-n=kratix-platform-system", "-f=./assets/values-with-backstage-integration-enabled.yaml", "--set-string", "skeLicense="+skeLicenseToken, "--wait")
+					Eventually(func() string {
+						out, _ := run("kubectl", context, "get", "skeintegration", "backstage-integration", "-n=kratix-platform-system")
+						return out
+					}, timeout, interval).Should(Succeed())
+				})
 			})
 		})
 	})

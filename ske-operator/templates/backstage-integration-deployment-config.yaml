@@ -7,12 +7,12 @@ metadata:
   namespace: kratix-platform-system
 data:
   backstage-integration: |
-  apiVersion: platform.syntasso.io/v1alpha1
-  kind: SKEIntegration
-  metadata:
-    name: backstage-integration
-  spec:
-    type: backstage
+    apiVersion: platform.syntasso.io/v1alpha1
+    kind: SKEIntegration
+    metadata:
+      name: backstage-integration
+    spec:
+      type: backstage
       version: {{ .version | default "latest" }}
       {{- with .deploymentConfig.resources }}
       deploymentConfig:

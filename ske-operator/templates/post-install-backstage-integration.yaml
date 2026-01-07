@@ -1,4 +1,4 @@
-{{- if .Values.skeDeployment.enabled }}
+{{- if .Values.backstageIntegration.enabled }}
 ---
 apiVersion: batch/v1
 kind: Job

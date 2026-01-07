@@ -1,0 +1,27 @@
+global:
+  skeOperator:
+    tlsConfig:
+      certManager:
+        disabled: false
+  skeDeployment:
+    deleteOnUninstall: false
+
+skeLicense: "set via cli arg"
+skeDeployment:
+  enabled: true
+  version: "v0.16.0" # older version so we can test upgrade
+  tlsConfig:
+    certManager:
+      disabled: false
+
+backstageIntegration:
+  enabled: true
+  version: "latest"
+  deploymentConfig:
+    resources:
+      limits:
+        memory: "512Mi"
+        cpu: "100m"
+      requests:
+        memory: "256Mi"
+        cpu: "400m"
