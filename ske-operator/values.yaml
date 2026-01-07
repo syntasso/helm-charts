@@ -154,5 +154,18 @@ skeDeployment:
 #      secretRef:
 #        name: minio-credentials
 #        namespace: default
+
+backstageIntegration:
+  enabled: true
+  version: "latest"
+  deploymentConfig:
+    resources:
+      limits:
+        memory: "256Mi"
+        cpu: "100m"
+      requests:
+        memory: "256Mi"
+        cpu: "100m"
+
 additionalResources: []
 # Any additional k8s resources, such as Secrets, Configmaps

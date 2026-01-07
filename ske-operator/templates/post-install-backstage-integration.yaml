@@ -1,0 +1,54 @@
+{{- if .Values.skeDeployment.enabled }}
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: deploy-backstage-integration
+  namespace: kratix-platform-system
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-weight": "4"
+spec:
+  template:
+    spec:
+      serviceAccountName: ske-operator-controller-manager
+      restartPolicy: Never
+      imagePullSecrets:
+        - name: '{{ .Values.imageRegistry.imagePullSecret | default "syntasso-registry" }}'
+      containers:
+        - name: deploy-ske
+          image: {{ .Values.imageRegistry.host }}/{{ .Values.imageRegistry.skeOperatorImage.name }}:{{ .Chart.AppVersion }}
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              set -exu
+              kubectl wait --for=condition=KratixDeploymentReady kratixes/kratix --timeout=300s
+              kubectl apply -f /etc/config/backstage-integration/backstage-integration.yaml
+          volumeMounts:
+            - name: backstage-integration-config-volume
+              mountPath: /etc/config/backstage-integration
+          resources:
+            requests:
+              cpu: 100m
+              memory: 100Mi
+              ephemeral-storage: 100Mi
+            limits:
+              cpu: 200m
+              memory: 200Mi
+              ephemeral-storage: 200Mi
+      volumes:
+        - name: backstage-integration-config-volume
+          configMap:
+            name: backstage-integration-config
+            items:
+              - key: backstage-integration
+                path: backstage-integration.yaml
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- . | toYaml | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- . | toYaml | nindent 8 }}
+      {{- end }}
+{{- end -}}
