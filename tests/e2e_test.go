@@ -218,6 +218,7 @@ var _ = Describe("ske-operator helm chart", func() {
 
 			When("deploying the chart", func() {
 				BeforeEach(func() {
+					run("helm", "uninstall", "ske-operator", "-n=kratix-platform-system", "--ignore-not-found", "--wait")
 					run("kubectl", context, "apply", "-f=https://github.com/cert-manager/cert-manager/releases/download/v1.15.0/cert-manager.yaml")
 					run("kubectl", context, "wait", "crd/certificates.cert-manager.io", "--for=condition=established", "--timeout="+fmt.Sprintf("%ds", int(kubectlTimeout.Seconds())))
 					validateCertManagerWebhook()
