@@ -212,6 +212,7 @@ rules:
       - platform.syntasso.io
     resources:
       - kratixes
+      - skeintegrations
     verbs:
       - create
       - delete
@@ -224,12 +225,14 @@ rules:
       - platform.syntasso.io
     resources:
       - kratixes/finalizers
+      - skeintegrations/finalizers
     verbs:
       - update
   - apiGroups:
       - platform.syntasso.io
     resources:
       - kratixes/status
+      - skeintegrations/status
     verbs:
       - get
       - patch
@@ -277,6 +280,77 @@ metadata:
 rules:
   - nonResourceURLs:
       - /metrics
+    verbs:
+      - get
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: ske-operator
+  name: ske-operator-skeintegration-admin-role
+rules:
+  - apiGroups:
+      - platform.syntasso.io
+    resources:
+      - skeintegrations
+    verbs:
+      - '*'
+  - apiGroups:
+      - platform.syntasso.io
+    resources:
+      - skeintegrations/status
+    verbs:
+      - get
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: ske-operator
+  name: ske-operator-skeintegration-editor-role
+rules:
+  - apiGroups:
+      - platform.syntasso.io
+    resources:
+      - skeintegrations
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - platform.syntasso.io
+    resources:
+      - skeintegrations/status
+    verbs:
+      - get
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: ske-operator
+  name: ske-operator-skeintegration-viewer-role
+rules:
+  - apiGroups:
+      - platform.syntasso.io
+    resources:
+      - skeintegrations
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - platform.syntasso.io
+    resources:
+      - skeintegrations/status
     verbs:
       - get
 ---

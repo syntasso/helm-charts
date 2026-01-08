@@ -34,6 +34,26 @@ webhooks:
         resources:
           - kratixes
     sideEffects: None
+  - admissionReviewVersions:
+      - v1
+    clientConfig:
+      service:
+        name: ske-operator-webhook-service
+        namespace: kratix-platform-system
+        path: /validate-platform-syntasso-io-v1alpha1-skeintegration
+    failurePolicy: Fail
+    name: vskeintegration-v1alpha1.kb.io
+    rules:
+      - apiGroups:
+          - platform.syntasso.io
+        apiVersions:
+          - v1alpha1
+        operations:
+          - CREATE
+          - UPDATE
+        resources:
+          - skeintegrations
+    sideEffects: None
 ---
 apiVersion: v1
 data:
