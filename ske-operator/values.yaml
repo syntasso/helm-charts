@@ -156,7 +156,7 @@ skeDeployment:
 #        namespace: default
 
 backstageIntegration:
-  enabled: true
+  enabled: false
   version: "latest"
   deploymentConfig:
     resources:
