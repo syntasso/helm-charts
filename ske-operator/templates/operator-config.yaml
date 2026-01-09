@@ -36,6 +36,7 @@ data:
       pullSecret: {{ .imagePullSecret | default "syntasso-registry" }}
       platformImage: {{ .skePlatformImage.name }}
       pipelineImage: {{ .skePlatformPipelineAdapterImage.name }}
+      backstageControllerImage: {{ .backstageControllerImage.name }}
     {{- end }}
 
 {{ if and (.Values.releaseStorage) (.Values.releaseStorage.git) (.Values.releaseStorage.git.secret) (.Values.releaseStorage.git.secret.values) }}
