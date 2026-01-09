@@ -156,7 +156,9 @@ skeDeployment:
 #        namespace: default
 
 backstageIntegration:
+  # Set to true if you want to deploy the SKE Backstage Controller
   enabled: false
+  # The version of the controller to deploy
   version: "latest"
   deploymentConfig:
     resources:
