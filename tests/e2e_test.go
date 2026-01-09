@@ -234,8 +234,8 @@ var _ = Describe("ske-operator helm chart", func() {
 				It("creates a Backstage SKEIntegration", func() {
 					run("helm", "install", "ske-operator", "--create-namespace", "../ske-operator/",
 						"-n=kratix-platform-system", "-f=./assets/values-with-backstage-integration-enabled.yaml", "--set-string", "skeLicense="+skeLicenseToken, "--wait")
-					Eventually(func() {
-						run("kubectl", context, "get", "skeintegration", "backstage-integration", "-n=kratix-platform-system")
+					Eventually(func(g Gomega) {
+						runGinkgo(g, "kubectl", context, "get", "skeintegration", "backstage-integration", "-n=kratix-platform-system")
 					}, timeout, interval).Should(Succeed())
 				})
 			})
