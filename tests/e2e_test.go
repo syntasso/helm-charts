@@ -207,7 +207,7 @@ var _ = Describe("ske-operator helm chart", func() {
 			})
 		})
 
-		When("backstageIntegration.enabled is false", func() {
+		When("backstageIntegration.enabled is true", func() {
 			When("templating the chart", func() {
 				It("templates the post deploy job", func() {
 					template, _ := run("helm", "template", "ske-operator", "../ske-operator/", "-s=templates/post-install-backstage-integration.yaml", "-f=./assets/values-with-backstage-integration-enabled.yaml")

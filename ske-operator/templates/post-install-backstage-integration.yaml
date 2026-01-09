@@ -2,7 +2,8 @@
     (hasKey .Values "backstageIntegration")
     (eq (default false .Values.backstageIntegration.enabled) true)
 }}
-{{- with .Values.backstageIntegration }}
+{{- $root := . }}
+{{- with $root.Values.backstageIntegration }}
 ---
 apiVersion: batch/v1
 kind: Job
@@ -18,10 +19,10 @@ spec:
       serviceAccountName: ske-operator-controller-manager
       restartPolicy: Never
       imagePullSecrets:
-        - name: '{{ .Values.imageRegistry.imagePullSecret | default "syntasso-registry" }}'
+        - name: '{{ $root.Values.imageRegistry.imagePullSecret | default "syntasso-registry" }}'
       containers:
         - name: deploy-ske
-          image: {{ .Values.imageRegistry.host }}/{{ .Values.imageRegistry.skeOperatorImage.name }}:{{ .Chart.AppVersion }}
+          image: {{ $root.Values.imageRegistry.host }}/{{ $root.Values.imageRegistry.skeOperatorImage.name }}:{{ $root.Chart.AppVersion }}
           command: ["/bin/sh", "-c"]
           args:
             - |
@@ -47,11 +48,10 @@ spec:
             items:
               - key: backstage-integration
                 path: backstage-integration.yaml
-      {{- with .Values.nodeSelector }}
-      nodeSelector:
+      {{- with $root.Values.nodeSelector }}
         {{- . | toYaml | nindent 8 }}
       {{- end }}
-      {{- with .Values.tolerations }}
+      {- with $root.Values.tolerations }}
       tolerations:
         {{- . | toYaml | nindent 8 }}
       {{- end }}
