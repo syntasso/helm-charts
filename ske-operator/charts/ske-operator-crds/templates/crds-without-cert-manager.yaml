@@ -395,9 +395,4 @@ spec:
       storage: true
       subresources:
         status: {}
-  conversion:
-    webhook:
-      clientConfig:
-        caBundle: |-
-          {{ .Values.global.skeOperator.tlsConfig.webhookCACert | b64enc }}
 {{ end }}

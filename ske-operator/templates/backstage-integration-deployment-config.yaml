@@ -1,0 +1,26 @@
+{{- if and
+    (hasKey .Values "backstageIntegration")
+    (eq (default false .Values.backstageIntegration.enabled) true)
+}}
+{{- with .Values.backstageIntegration }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: backstage-integration-config
+  namespace: kratix-platform-system
+data:
+  backstage-integration: |
+    apiVersion: platform.syntasso.io/v1alpha1
+    kind: SKEIntegration
+    metadata:
+      name: backstage-integration
+    spec:
+      type: backstage
+      version: {{ .version | default "latest" }}
+      {{- with .deploymentConfig.resources }}
+      deploymentConfig:
+        resources:
+{{- toYaml . | nindent 10 }}
+{{- end }}
+{{- end }}
+{{- end }}

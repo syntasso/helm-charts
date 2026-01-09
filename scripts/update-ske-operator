@@ -28,9 +28,12 @@ EOF
 
 
   echo "{{ if .Values.global.skeOperator.tlsConfig.certManager.disabled }}" > "${CHART_CRDS_WITHOUT_CERT_MANAGER}"
-  yq 'select(.kind == "CustomResourceDefinition")' ${MANIFEST_NAME} |
+  yq 'select(.kind == "CustomResourceDefinition" and (.spec.conversion // {} | length > 0))' ${MANIFEST_NAME} |
     yq 'del(.metadata.annotations."cert-manager.io/inject-ca-from")' |
-    yq '.spec.conversion.webhook.clientConfig.caBundle= "{{ .Values.global.skeOperator.tlsConfig.webhookCACert | b64enc }}" | .spec.conversion.webhook.clientConfig.caBundle style="literal" '>> "${CHART_CRDS_WITHOUT_CERT_MANAGER}"
+    yq '.spec.conversion.webhook.clientConfig.caBundle= "{{ .Values.global.skeOperator.tlsConfig.webhookCACert | b64enc }}" | .spec.conversion.webhook.clientConfig.caBundle style="literal"' >> "${CHART_CRDS_WITHOUT_CERT_MANAGER}"
+  echo "---" >> "${CHART_CRDS_WITHOUT_CERT_MANAGER}"
+  yq 'select(.kind == "CustomResourceDefinition" and (.spec.conversion // {} | length == 0))' ${MANIFEST_NAME} |
+    yq 'del(.metadata.annotations."cert-manager.io/inject-ca-from")' >> "${CHART_CRDS_WITHOUT_CERT_MANAGER}"
   echo "{{ end }}" >> "${CHART_CRDS_WITHOUT_CERT_MANAGER}"
 
   add_resource_policy_to_template $CHART_CRDS_WITHOUT_CERT_MANAGER
