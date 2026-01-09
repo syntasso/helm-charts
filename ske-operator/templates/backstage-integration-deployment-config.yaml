@@ -1,4 +1,7 @@
-{{- if .Values.backstageIntegration.enabled }}
+{{- if and
+    (hasKey .Values "backstageIntegration")
+    (eq (default false .Values.backstageIntegration.enabled) true)
+}}
 {{- with .Values.backstageIntegration }}
 apiVersion: v1
 kind: ConfigMap

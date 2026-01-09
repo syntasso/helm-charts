@@ -191,9 +191,17 @@ var _ = Describe("ske-operator helm chart", func() {
 	})
 
 	Describe("backstageIntegration", func() {
-		When("backstageIntegration.enabled is false", func() {
+		When("the backstageIntegration block is absent", func() {
 			It("does not template the post deploy job or configmap", func() {
 				template, _ := run("helm", "template", "ske-operator", "../ske-operator/", "-f=./assets/values-with-certmanager.yaml")
+				Expect(template).ToNot(ContainSubstring("deploy-backstage-integration"))
+				Expect(template).ToNot(ContainSubstring("backstage-integration-config"))
+			})
+		})
+
+		When("backstageIntegration.enabled is false", func() {
+			It("does not template the post deploy job or configmap", func() {
+				template, _ := run("helm", "template", "ske-operator", "../ske-operator/", "-f=./assets/values-with-backstage-integration-disabled.yaml")
 				Expect(template).ToNot(ContainSubstring("deploy-backstage-integration"))
 				Expect(template).ToNot(ContainSubstring("backstage-integration-config"))
 			})
