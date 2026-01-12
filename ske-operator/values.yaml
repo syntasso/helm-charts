@@ -46,6 +46,9 @@ imageRegistry:
     # DEPRECATED: This field is no longer needed for SKE v0.37.0 and above
     # The name of the SKE-Platform Pipeline Adapter image
     name: "syntasso/ske-platform-pipeline-adapter"
+  backstageControllerImage:
+    # The name of the Backstage Controller image
+    name: "syntasso/backstage-controller"
 # Syntasso Enterprise manifests are available in the S3 bucket below
 # If you are using a custom bucket, update the values accordingly
 releaseStorage:
@@ -154,5 +157,20 @@ skeDeployment:
 #      secretRef:
 #        name: minio-credentials
 #        namespace: default
+
+backstageIntegration:
+  # Set to true if you want to deploy the SKE Backstage Controller
+  enabled: false
+  # The version of the controller to deploy
+  version: "latest"
+  deploymentConfig:
+    resources:
+      limits:
+        memory: "256Mi"
+        cpu: "100m"
+      requests:
+        memory: "256Mi"
+        cpu: "100m"
+
 additionalResources: []
 # Any additional k8s resources, such as Secrets, Configmaps
