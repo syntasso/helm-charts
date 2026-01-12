@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.52.0](https://github.com/syntasso/helm-charts/compare/ske-operator-0.51.0...ske-operator-v0.52.0) (2026-01-12)
+
+
+### Features
+
+* **#60:** ske operator deploys backstage ([#103](https://github.com/syntasso/helm-charts/issues/103)) ([a869d03](https://github.com/syntasso/helm-charts/commit/a869d0320b82b144dc2549d766020d6c549e7dc1))
+* **ske-operator:** update appVersion (autorelease) ([35d4a41](https://github.com/syntasso/helm-charts/commit/35d4a41377e14dd021ffa00b8156f1e5aba41fdf))
+
 ## [0.51.0](https://github.com/syntasso/helm-charts/compare/ske-operator-0.50.1...ske-operator-v0.51.0) (2025-12-17)
 
 
