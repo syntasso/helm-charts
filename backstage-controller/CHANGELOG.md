@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.1](https://github.com/syntasso/helm-charts/compare/backstage-controller-0.5.0...backstage-controller-v0.5.1) (2026-01-12)
+
+
+### Chores
+
+* deprecate backstage controller chart ([#104](https://github.com/syntasso/helm-charts/issues/104)) ([819e8b7](https://github.com/syntasso/helm-charts/commit/819e8b7535112b60c859c0a22132089ed3d6aea2))
+
 ## [0.5.0](https://github.com/syntasso/helm-charts/compare/backstage-controller-0.4.1...backstage-controller-v0.5.0) (2025-12-16)
 
 
