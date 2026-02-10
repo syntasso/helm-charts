@@ -3,5 +3,5 @@ name: backstage-controller
 description: A Helm chart for deploying the Backstage Controller
 type: application
 version: 0.5.1
-appVersion: "v0.4.1"
+appVersion: "v0.4.2"
 deprecated: true

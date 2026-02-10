@@ -39,7 +39,7 @@ spec:
                 configMapKeyRef:
                   key: SKE_BACKSTAGE_GENERATOR_IMG
                   name: backstage-controller-config
-          image: registry.syntasso.io/syntasso/backstage-controller:v0.4.1
+          image: registry.syntasso.io/syntasso/backstage-controller:v0.4.2
           livenessProbe:
             httpGet:
               path: /healthz
