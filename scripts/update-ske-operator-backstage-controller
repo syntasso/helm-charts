@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+set -euxo pipefail
+
+function main() {
+  root=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )/.." &> /dev/null && pwd )
+
+  # Download the latest Backstage Controller release tag
+  latest_release="$(gh release list --repo=syntasso/enterprise-kratix --exclude-pre-releases --order desc --json tagName --jq "[ .[] | select(.tagName | match(\"backstage-controller\")) ][0].tagName")"
+  if [ -z "$latest_release" ]; then
+    echo "No release found for backstage-controller"
+    exit 1
+  fi
+
+  export latest_version=${latest_release#"backstage-controller-"}
+
+  yq -i '.backstageIntegration.version = strenv(latest_version)' "${root}/ske-operator/values.yaml"
+}
+
+main
