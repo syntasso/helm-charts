@@ -24,7 +24,6 @@ global:
   # WARNING: when skeDeployment.deleteOnUninstall is true, uninstalling this helm chart will delete your SKE platform
   # only set to true for dev or testing environments
   # deleteOnUninstall: false
-
 # Your SKE License Key
 skeLicense: "my-ske-license"
 # Configuration for the Registry and Manifests
@@ -80,7 +79,6 @@ releaseStorage:
     #   values:
     #     accessKeyID: "my-access"
     #     secretAccessKey: "my-secret"
-
   # If you are mirroring SKE release bucket, you might need to provide a custom CA certificate
   # for accessing the release storage endpoints.
   # customCaCert:
@@ -104,7 +102,6 @@ skeOperator:
   nodeSelector: {}
   tolerations: []
   affinity: {}
-
 skeDeployment:
   # Set to true if you want to deploy SKE
   enabled: true
@@ -162,7 +159,7 @@ backstageIntegration:
   # Set to true if you want to deploy the SKE Backstage Controller
   enabled: false
   # The version of the controller to deploy
-  version: "latest"
+  version: "v0.4.2"
   deploymentConfig:
     resources:
       limits:
@@ -171,6 +168,5 @@ backstageIntegration:
       requests:
         memory: "256Mi"
         cpu: "100m"
-
 additionalResources: []
 # Any additional k8s resources, such as Secrets, Configmaps
