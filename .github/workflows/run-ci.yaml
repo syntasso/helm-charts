@@ -36,6 +36,10 @@ on:
         type: boolean
         description: "Update chart appVersion"
         default: false
+      update_component:
+        type: string
+        description: "Component to update within the chart (optional)"
+        required: false
       chart_tag:
         type: string
         description: "Tag to Release (optional)"
@@ -246,17 +250,25 @@ jobs:
             exit 0
           fi
 
-          echo "Looking for update script in scripts/update-${CHART_NAME}..."
-          if [ -f ./scripts/update-${CHART_NAME} ]; then
-            ./scripts/update-${CHART_NAME}
+          update_script="./scripts/update-${CHART_NAME}"
+          if [ -n "${{ inputs.update_component }}" ] && [ "${CHART_NAME}" = "ske-operator" ] && [ "${{ inputs.update_component }}" = "backstage-controller" ]; then
+            update_script="./scripts/update-ske-operator-backstage-controller"
+          fi
+
+          echo "Looking for update script in ${update_script}..."
+          if [ -f "${update_script}" ]; then
+            "${update_script}"
           else
-            echo "No update script found for ${CHART_NAME}"
+            echo "No update script found for ${update_script}"
             exit 1
           fi
 
           git add .
 
           message="feat(${CHART_NAME}): update appVersion"
+          if [ -n "${{ inputs.update_component }}" ] && [ "${CHART_NAME}" = "ske-operator" ] && [ "${{ inputs.update_component }}" = "backstage-controller" ]; then
+            message="feat(${CHART_NAME}): update backstage-controller version"
+          fi
           if [ "${{ inputs.merge_release_pr }}" == "true" ]; then
             message=$(echo "${message} (autorelease)")
           fi
