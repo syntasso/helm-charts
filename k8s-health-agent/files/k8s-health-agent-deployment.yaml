@@ -51,7 +51,7 @@ spec:
               value: "3"
             - name: FAILED_JOBS_HISTORY_LIMIT
               value: "1"
-          image: registry.syntasso.io/syntasso/k8s-health-agent:v0.5.1
+          image: registry.syntasso.io/syntasso/k8s-health-agent:v0.5.2
           imagePullPolicy: IfNotPresent
           livenessProbe:
             httpGet:
