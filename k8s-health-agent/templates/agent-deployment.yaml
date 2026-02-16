@@ -32,7 +32,7 @@ resources:
                     | merge (include "containerPatch" . | fromYaml) }}
 
 {{/* Apply image configuration from kustomization.yaml */}}
-{{- $originalImage := "registry.syntasso.io/syntasso/k8s-health-agent" }}
+{{- $originalImage := "ghcr.io/syntasso/k8s-health-agent" }}
 {{- $newName := printf "%s/%s" .Values.imageRegistry.host (coalesce .Values.imageRegistry.healthAgentImage.name .Values.imageRegistry.k8sHealthAgentImage.name) }}
 {{- $newTag := .Chart.AppVersion }}
 {{- $_ := set $container "image" (printf "%s:%s" $newName $newTag) }}
