@@ -15,7 +15,7 @@ skeDeployment:
       disabled: false
 
 imageRegistry:
-  host: "registry.syntasso.io"
+  host: "ghcr.io"
   skeOperatorImage:
     name: "syntasso/ske-operator"
   skePlatformImage:
