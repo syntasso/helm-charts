@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.56.0](https://github.com/syntasso/helm-charts/compare/ske-operator-0.55.0...ske-operator-v0.56.0) (2026-02-17)
+
+
+### Features
+
+* **ske-operator:** update appVersion (autorelease) ([131117a](https://github.com/syntasso/helm-charts/commit/131117a3e1ddc52e358a3f3875c0c8419e395ad2))
+
 ## [0.55.0](https://github.com/syntasso/helm-charts/compare/ske-operator-0.54.0...ske-operator-v0.55.0) (2026-02-13)
 
 
