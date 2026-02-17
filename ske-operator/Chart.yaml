@@ -2,8 +2,8 @@ apiVersion: v2
 name: ske-operator
 description: A Helm Chart for deploying the SKE-Operator
 type: application
-version: 0.55.0 # the helm chart version
-appVersion: "v0.19.2" # the ske operator version
+version: 0.56.0 # the helm chart version
+appVersion: "v0.19.3" # the ske operator version
 dependencies:
   - name: ske-operator-crds
-    version: 0.55.0
+    version: 0.56.0
