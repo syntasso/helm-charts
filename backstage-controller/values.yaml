@@ -1,7 +1,7 @@
 # Configuration for the image registry
 # Update these values if you are using a private image registry
 imageRegistry:
-  host: "registry.syntasso.io"
+  host: "ghcr.io"
   imagePullSecret: "syntasso-registry"
   backstageControllerImage:
     name: "syntasso/backstage-controller"

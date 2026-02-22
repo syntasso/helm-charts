@@ -4,9 +4,9 @@ skeLicense: "my-ske-license"
 # Update these values if you are using a custom registry or bucket
 # If using Syntasso Enterprise defaults, no changes are required
 imageRegistry:
-  # The host registry to pull the images from Syntasso Enterprise images are hosted on registry.syntasso.io
+  # The host registry to pull the images from Syntasso Enterprise images are hosted on ghcr.io
   # If you are using a custom registry, update this value to your registry host
-  host: "registry.syntasso.io"
+  host: "ghcr.io"
   # The name of the image pull secret to use. Update this if you are using a custom image pull secret
   # imagePullSecret: <your secret name>
 
