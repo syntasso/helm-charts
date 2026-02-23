@@ -299,7 +299,7 @@ subjects:
 ---
 apiVersion: v1
 data:
-  PIPELINE_ADAPTER_IMG: syntasso-community.docker.reo.dev/syntasso/kratix-platform@sha256:613ba7c6c2819603284529e3efb5a12ae93bae25525d6cb42de1d93f193c755d
+  PIPELINE_ADAPTER_IMG: syntasso-community.docker.reo.dev/syntasso/kratix-platform@sha256:1b7287602c20e8a00b73f6d2a31bcdc8a878bbc2962dcb6899cde93a3a41a969
 kind: ConfigMap
 metadata:
   labels:
