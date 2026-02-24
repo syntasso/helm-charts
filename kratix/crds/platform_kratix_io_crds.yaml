@@ -95,6 +95,7 @@ spec:
               description: StateStoreStatus defines the observed state of a state store
               properties:
                 conditions:
+                  description: Current conditions of the StateStore. Includes a Ready condition indicating whether Kratix can access the store
                   items:
                     description: Condition contains details for one aspect of the current state of this API Resource.
                     properties:
@@ -150,6 +151,7 @@ spec:
                     type: object
                   type: array
                 status:
+                  description: Overall status of the StateStore
                   type: string
               required:
                 - status
@@ -261,9 +263,11 @@ spec:
                   type: object
                 initWorkloads:
                   default: {}
+                  description: InitWorkloads controls whether Kratix writes initial placeholder files to the StateStore for this Destination
                   properties:
                     enabled:
                       default: true
+                      description: When true, Kratix will write initial directory structure to the StateStore on Destination creation
                       type: boolean
                   type: object
                 path:
@@ -277,14 +281,16 @@ spec:
                     Defaults to the Destination name
                   type: string
                 stateStoreRef:
-                  description: StateStoreReference is a reference to a StateStore
+                  description: Reference to the StateStore (GitStateStore or BucketStateStore) used to persist resources for this Destination
                   properties:
                     kind:
+                      description: Kind of the StateStore resource. Must be either BucketStateStore or GitStateStore
                       enum:
                         - BucketStateStore
                         - GitStateStore
                       type: string
                     name:
+                      description: Name of the StateStore resource
                       type: string
                   required:
                     - kind
@@ -306,6 +312,7 @@ spec:
               description: DestinationStatus defines the observed state of Destination
               properties:
                 conditions:
+                  description: Current conditions of the Destination. Includes a Ready condition indicating whether the StateStore is accessible
                   items:
                     description: Condition contains details for one aspect of the current state of this API Resource.
                     properties:
@@ -438,8 +445,10 @@ spec:
                   description: Git author name and email used to commit this git state store; name defaults to 'kratix'
                   properties:
                     email:
+                      description: Email of the Git commit author
                       type: string
                     name:
+                      description: Name of the Git commit author
                       type: string
                   type: object
                 path:
@@ -468,6 +477,7 @@ spec:
               description: StateStoreStatus defines the observed state of a state store
               properties:
                 conditions:
+                  description: Current conditions of the StateStore. Includes a Ready condition indicating whether Kratix can access the store
                   items:
                     description: Condition contains details for one aspect of the current state of this API Resource.
                     properties:
@@ -523,6 +533,7 @@ spec:
                     type: object
                   type: array
                 status:
+                  description: Overall status of the StateStore
                   type: string
               required:
                 - status
@@ -577,30 +588,33 @@ spec:
               description: HealthRecordData defines the desired state of HealthRecord
               properties:
                 details:
+                  description: Arbitrary JSON details from the healthcheck pipeline
                   type: object
                   x-kubernetes-preserve-unknown-fields: true
                 lastRun:
-                  description: Timestamp of the last healthcheck run
+                  description: Unix timestamp of the last healthcheck run
                   format: int64
                   type: integer
                 promiseRef:
+                  description: Reference to the Promise this health record belongs to
                   properties:
                     name:
+                      description: Name of the referenced Promise
                       type: string
                   required:
                     - name
                   type: object
                 resourceRef:
-                  description: ResourceRef represents the resource request; required value if HealthRecord is for a resource request
+                  description: Reference to the Resource Request this health record belongs to. Required when the HealthRecord is for a resource request
                   properties:
                     generation:
-                      description: Generation the generation of the resource
+                      description: Generation of the Resource Request at the time of recording
                       type: integer
                     name:
-                      description: Name the resource name
+                      description: Name of the Resource Request
                       type: string
                     namespace:
-                      description: Namespace the resource namespace
+                      description: Namespace of the Resource Request
                       type: string
                   required:
                     - name
@@ -608,6 +622,7 @@ spec:
                   type: object
                 state:
                   default: unknown
+                  description: Health state of the resource; one of unknown, ready, unhealthy, healthy, or degraded
                   enum:
                     - unknown
                     - ready
@@ -690,6 +705,7 @@ spec:
                 sourceRef:
                   default:
                     type: http
+                  description: Reference to the source from which the Promise will be fetched
                   properties:
                     secretRef:
                       description: |-
@@ -706,15 +722,18 @@ spec:
                       type: object
                       x-kubernetes-map-type: atomic
                     type:
+                      description: Type of the source; currently only "http" is supported
                       enum:
                         - http
                       type: string
                     url:
+                      description: URL from which to fetch the Promise definition
                       type: string
                   required:
                     - type
                   type: object
                 version:
+                  description: Version of the Promise to install
                   type: string
               required:
                 - sourceRef
@@ -723,6 +742,7 @@ spec:
               description: PromiseReleaseStatus defines the observed state of PromiseRelease
               properties:
                 conditions:
+                  description: Current conditions of the PromiseRelease
                   items:
                     description: Condition contains details for one aspect of the current state of this API Resource.
                     properties:
@@ -778,6 +798,7 @@ spec:
                     type: object
                   type: array
                 status:
+                  description: Overall status of the PromiseRelease (e.g. Installed, Failed)
                   type: string
               type: object
           type: object
@@ -841,6 +862,7 @@ spec:
                   description: PromiseRef is the reference to the Promise this revision is based on.
                   properties:
                     name:
+                      description: Name of the referenced Promise
                       type: string
                   required:
                     - name
@@ -865,10 +887,12 @@ spec:
                     destinationSelectors:
                       description: A list of key and value pairs (labels) used for scheduling.
                       items:
+                        description: PromiseScheduling defines label selectors for matching Destinations where Resources should be scheduled
                         properties:
                           matchLabels:
                             additionalProperties:
                               type: string
+                            description: Labels that a Destination must match for Resources from this Promise to be scheduled to it
                             type: object
                         type: object
                       type: array
@@ -877,12 +901,13 @@ spec:
                         A list of Promises that are required by this Promise.
                         All required Promises must be present and available for this promise to be made available.
                       items:
+                        description: RequiredPromise defines a dependency on another Promise that must be installed and available
                         properties:
                           name:
-                            description: Name of Promise
+                            description: Name of the required Promise
                             type: string
                           version:
-                            description: Version of Promise
+                            description: Version of the required Promise. If empty, any version is accepted
                             type: string
                         type: object
                       type: array
@@ -890,32 +915,39 @@ spec:
                       description: A list of pipelines to be executed at different stages of the Promise lifecycle.
                       properties:
                         config:
+                          description: Configuration options that apply to all workflows defined in this Promise
                           properties:
                             pipelineNamespace:
                               description: Namespace for all workflow jobs (promise and resource) to run in; needs to be an existing namespace or else workflow won't start
                               type: string
                           type: object
                         promise:
+                          description: Pipelines triggered when the Promise itself is created, updated, or deleted
                           properties:
                             configure:
+                              description: Pipelines to execute when the resource or Promise is created or updated
                               items:
                                 type: object
                               type: array
                               x-kubernetes-preserve-unknown-fields: true
                             delete:
+                              description: Pipelines to execute when the resource or Promise is deleted
                               items:
                                 type: object
                               type: array
                               x-kubernetes-preserve-unknown-fields: true
                           type: object
                         resource:
+                          description: Pipelines triggered when a Resource Request (instance of the Promise API) is created, updated, or deleted
                           properties:
                             configure:
+                              description: Pipelines to execute when the resource or Promise is created or updated
                               items:
                                 type: object
                               type: array
                               x-kubernetes-preserve-unknown-fields: true
                             delete:
+                              description: Pipelines to execute when the resource or Promise is deleted
                               items:
                                 type: object
                               type: array
@@ -1092,10 +1124,12 @@ spec:
                 destinationSelectors:
                   description: A list of key and value pairs (labels) used for scheduling.
                   items:
+                    description: PromiseScheduling defines label selectors for matching Destinations where Resources should be scheduled
                     properties:
                       matchLabels:
                         additionalProperties:
                           type: string
+                        description: Labels that a Destination must match for Resources from this Promise to be scheduled to it
                         type: object
                     type: object
                   type: array
@@ -1104,12 +1138,13 @@ spec:
                     A list of Promises that are required by this Promise.
                     All required Promises must be present and available for this promise to be made available.
                   items:
+                    description: RequiredPromise defines a dependency on another Promise that must be installed and available
                     properties:
                       name:
-                        description: Name of Promise
+                        description: Name of the required Promise
                         type: string
                       version:
-                        description: Version of Promise
+                        description: Version of the required Promise. If empty, any version is accepted
                         type: string
                     type: object
                   type: array
@@ -1117,32 +1152,39 @@ spec:
                   description: A list of pipelines to be executed at different stages of the Promise lifecycle.
                   properties:
                     config:
+                      description: Configuration options that apply to all workflows defined in this Promise
                       properties:
                         pipelineNamespace:
                           description: Namespace for all workflow jobs (promise and resource) to run in; needs to be an existing namespace or else workflow won't start
                           type: string
                       type: object
                     promise:
+                      description: Pipelines triggered when the Promise itself is created, updated, or deleted
                       properties:
                         configure:
+                          description: Pipelines to execute when the resource or Promise is created or updated
                           items:
                             type: object
                           type: array
                           x-kubernetes-preserve-unknown-fields: true
                         delete:
+                          description: Pipelines to execute when the resource or Promise is deleted
                           items:
                             type: object
                           type: array
                           x-kubernetes-preserve-unknown-fields: true
                       type: object
                     resource:
+                      description: Pipelines triggered when a Resource Request (instance of the Promise API) is created, updated, or deleted
                       properties:
                         configure:
+                          description: Pipelines to execute when the resource or Promise is created or updated
                           items:
                             type: object
                           type: array
                           x-kubernetes-preserve-unknown-fields: true
                         delete:
+                          description: Pipelines to execute when the resource or Promise is deleted
                           items:
                             type: object
                           type: array
@@ -1154,8 +1196,10 @@ spec:
               description: PromiseStatus defines the observed state of Promise
               properties:
                 apiVersion:
+                  description: The API version of the Resource API defined by this Promise (e.g. "marketplace.kratix.io/v1alpha1")
                   type: string
                 conditions:
+                  description: Current conditions of the Promise. Includes Available, WorksSucceeded, and Reconciled conditions
                   items:
                     description: Condition contains details for one aspect of the current state of this API Resource.
                     properties:
@@ -1211,49 +1255,68 @@ spec:
                     type: object
                   type: array
                 kind:
+                  description: The Kind of the Resource API defined by this Promise (e.g. "Database")
                   type: string
                 lastAvailableTime:
+                  description: Timestamp of when this Promise was last in an Available state
                   format: date-time
                   type: string
                 observedGeneration:
+                  description: The generation last observed by the controller
                   format: int64
                   type: integer
                 requiredBy:
+                  description: List of other Promises that depend on this Promise
                   items:
+                    description: RequiredBy indicates another Promise depends on this one
                     properties:
                       promise:
+                        description: The Promise that requires this Promise
                         properties:
                           name:
+                            description: Name of the Promise
                             type: string
                           version:
+                            description: Version of the Promise
                             type: string
                         type: object
                       requiredVersion:
+                        description: The specific version required by the dependent Promise
                         type: string
                     type: object
                   type: array
                 requiredPromises:
+                  description: Status of each required Promise dependency
                   items:
+                    description: RequiredPromiseStatus tracks the availability of a required Promise dependency
                     properties:
                       name:
+                        description: Name of the required Promise
                         type: string
                       state:
+                        description: Current state of the required Promise (e.g. "Available", "Unavailable")
                         type: string
                       version:
+                        description: Installed version of the required Promise
                         type: string
                     type: object
                   type: array
                 status:
+                  description: 'Overall status of the Promise: Available or Unavailable'
                   type: string
                 version:
+                  description: Version of the Promise, derived from the PromiseRelease if installed via one
                   type: string
                 workflows:
+                  description: Total number of Promise-level workflow pipelines
                   format: int64
                   type: integer
                 workflowsFailed:
+                  description: Number of Promise-level workflow pipelines that have failed
                   format: int64
                   type: integer
                 workflowsSucceeded:
+                  description: Number of Promise-level workflow pipelines that have completed successfully
                   format: int64
                   type: integer
               required:
@@ -1325,22 +1388,25 @@ spec:
               description: spec defines the desired state of ResourceBinding
               properties:
                 promiseRef:
+                  description: Reference to the Promise that this binding tracks
                   properties:
                     name:
+                      description: Name of the referenced Promise
                       type: string
                   required:
                     - name
                   type: object
                 resourceRef:
+                  description: Reference to the Resource Request that this binding tracks
                   properties:
                     generation:
-                      description: Generation the generation of the resource
+                      description: Generation of the Resource Request at the time of recording
                       type: integer
                     name:
-                      description: Name the resource name
+                      description: Name of the Resource Request
                       type: string
                     namespace:
-                      description: Namespace the resource namespace
+                      description: Namespace of the Resource Request
                       type: string
                   required:
                     - name
@@ -1486,25 +1552,27 @@ spec:
               description: WorkPlacementSpec defines the desired state of WorkPlacement
               properties:
                 id:
+                  description: Unique identifier for the workload group this WorkPlacement represents
                   type: string
                 promiseName:
+                  description: Name of the Promise that generated the parent Work
                   type: string
                 resourceName:
+                  description: Name of the Resource Request that generated the parent Work. Empty for Promise-level dependencies
                   type: string
                 targetDestinationName:
+                  description: Name of the Destination this WorkPlacement is assigned to
                   type: string
                 workloads:
-                  description: |-
-                    List of Workloads scheduled to target Destination;
-                    Each Workload details name of the filepath on Destination,
-                    and the compressed content of the workload.
+                  description: List of workloads to be written to the target Destination's StateStore
                   items:
-                    description: Workload represents the manifest workload to be deployed on destination
+                    description: Workload represents a single manifest file to be written to a Destination StateStore
                     properties:
                       content:
-                        description: Content of the workload, which is base64 encoded and compressed with gzip.
+                        description: Content of the workload manifest, base64 encoded and gzip compressed
                         type: string
                       filepath:
+                        description: Path of the file relative to the workload group directory
                         type: string
                     type: object
                   type: array
@@ -1513,6 +1581,7 @@ spec:
               description: WorkPlacementStatus defines the observed state of WorkPlacement
               properties:
                 conditions:
+                  description: Current conditions of the WorkPlacement. Includes a Ready condition indicating all workloads are written to the StateStore
                   items:
                     description: Condition contains details for one aspect of the current state of this API Resource.
                     properties:
@@ -1632,43 +1701,49 @@ spec:
               description: WorkSpec defines the desired state of Work
               properties:
                 promiseName:
+                  description: Name of the Promise that generated this Work
                   type: string
                 resourceName:
+                  description: Name of the Resource Request that generated this Work. Empty for Promise-level dependencies
                   type: string
                 workloadGroups:
-                  description: Workload represents the manifest workload to be deployed on destination
+                  description: Groups of workloads to be scheduled to Destinations. Each group can target different Destinations via label selectors
                   items:
                     description: |-
-                      WorkloadGroup represents the workloads in a particular directory that should
-                      be scheduled to a Destination
+                      WorkloadGroup represents a set of workloads in a particular directory that should
+                      be scheduled to a Destination.
                     properties:
                       destinationSelectors:
+                        description: Label selectors used to determine which Destinations should receive this workload group
                         items:
+                          description: WorkloadGroupScheduling defines label-based scheduling for a workload group
                           properties:
                             matchLabels:
                               additionalProperties:
                                 type: string
+                              description: Labels that a Destination must match to receive this workload group
                               type: object
                             source:
+                              description: Origin of these selectors (e.g. "promise" or "resource")
                               type: string
                           type: object
                         type: array
                       directory:
+                        description: Directory within the pipeline output where these workloads originated
                         type: string
                       id:
+                        description: Unique identifier for this workload group, derived from a hash of the directory
                         type: string
                       workloads:
-                        description: |-
-                          List of Workloads scheduled to target Destination;
-                          Each Workload details name of the filepath on Destination,
-                          and the compressed content of the workload.
+                        description: List of workloads to be written to the Destination StateStore
                         items:
-                          description: Workload represents the manifest workload to be deployed on destination
+                          description: Workload represents a single manifest file to be written to a Destination StateStore
                           properties:
                             content:
-                              description: Content of the workload, which is base64 encoded and compressed with gzip.
+                              description: Content of the workload manifest, base64 encoded and gzip compressed
                               type: string
                             filepath:
+                              description: Path of the file relative to the workload group directory
                               type: string
                           type: object
                         type: array
@@ -1679,6 +1754,7 @@ spec:
               description: WorkStatus defines the observed state of Work
               properties:
                 conditions:
+                  description: Current conditions of the Work. Includes a Ready condition indicating all WorkPlacements are written successfully
                   items:
                     description: Condition contains details for one aspect of the current state of this API Resource.
                     properties:
@@ -1734,8 +1810,10 @@ spec:
                     type: object
                   type: array
                 workPlacements:
+                  description: Number of WorkPlacements currently scheduled for this Work
                   type: integer
                 workPlacementsCreated:
+                  description: Total number of WorkPlacements that have been created for this Work
                   type: integer
               type: object
           type: object
