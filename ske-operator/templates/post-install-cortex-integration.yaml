@@ -1,0 +1,60 @@
+{{- if and
+    (hasKey .Values "cortexIntegration")
+    (eq (default false .Values.cortexIntegration.enabled) true)
+}}
+{{- $root := . }}
+{{- with $root.Values.cortexIntegration }}
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: deploy-cortex-integration
+  namespace: kratix-platform-system
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-weight": "4"
+spec:
+  template:
+    spec:
+      serviceAccountName: ske-operator-controller-manager
+      restartPolicy: Never
+      imagePullSecrets:
+        - name: '{{ $root.Values.imageRegistry.imagePullSecret | default "syntasso-registry" }}'
+      containers:
+        - name: deploy-ske
+          image: {{ $root.Values.imageRegistry.host }}/{{ $root.Values.imageRegistry.skeOperatorImage.name }}:{{ $root.Chart.AppVersion }}
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              set -exu
+              kubectl wait --for=condition=KratixDeploymentReady kratixes/kratix --timeout=300s
+              kubectl apply -f /etc/config/cortex-integration/cortex-integration.yaml
+          volumeMounts:
+            - name: cortex-integration-config-volume
+              mountPath: /etc/config/cortex-integration
+          resources:
+            requests:
+              cpu: 100m
+              memory: 100Mi
+              ephemeral-storage: 100Mi
+            limits:
+              cpu: 200m
+              memory: 200Mi
+              ephemeral-storage: 200Mi
+      volumes:
+        - name: cortex-integration-config-volume
+          configMap:
+            name: cortex-integration-config
+            items:
+              - key: cortex-integration
+                path: cortex-integration.yaml
+      {{- with $root.Values.nodeSelector }}
+      nodeSelector:
+        {{- . | toYaml | nindent 8 }}
+      {{- end }}
+      {{- with $root.Values.tolerations }}
+      tolerations:
+        {{- . | toYaml | nindent 8 }}
+      {{- end }}
+{{- end -}}
+{{- end -}}
