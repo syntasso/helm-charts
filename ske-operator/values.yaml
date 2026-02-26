@@ -189,5 +189,14 @@ cortexIntegration:
     path: "" # e.g. "cortex-resource-requests/"
     provider: "" # "github" or "gitlab"
     repositoryName: "" # e.g. "syntasso/cortex-resource-requests"
+    # auth options (choose exactly one):
+    # 1) set both token and url and this chart creates Secret `cortex-crdential`
+    # 2) set secretRef.name to an existing Secret in kratix-platform-system
+    # token/url and secretRef are mutually exclusive.
+    token: ""
+    url: ""
+    # optional existing Secret reference (used only when token/url are not set)
+    # secretRef:
+    #   name: "cortex-crdential"
 additionalResources: []
 # Any additional k8s resources, such as Secrets, Configmaps

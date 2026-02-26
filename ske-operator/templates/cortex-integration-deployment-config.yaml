@@ -4,6 +4,7 @@
 }}
 {{- with .Values.cortexIntegration }}
 {{- $config := required "cortexIntegration.config is required when cortexIntegration.enabled is true" .config }}
+{{- $auth := include "ske-operator.cortexAuth" (dict "config" $config) | fromYaml }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -29,9 +30,7 @@ data:
         path: {{ required "cortexIntegration.config.path is required when cortexIntegration.enabled is true" $config.path | quote }}
         provider: {{ required "cortexIntegration.config.provider is required when cortexIntegration.enabled is true" $config.provider | quote }}
         repositoryName: {{ required "cortexIntegration.config.repositoryName is required when cortexIntegration.enabled is true" $config.repositoryName | quote }}
-{{- with $config.secretRef }}
         secretRef:
-          name: {{ required "cortexIntegration.config.secretRef.name is required when cortexIntegration.config.secretRef is set" .name | quote }}
-{{- end }}
+          name: {{ $auth.secretName | quote }}
 {{- end }}
 {{- end }}
