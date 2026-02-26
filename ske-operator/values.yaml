@@ -184,18 +184,10 @@ cortexIntegration:
         cpu: "100m"
   # Required when cortexIntegration.enabled is true
   config:
-    branch: ""
-    integrationAlias: ""
-    path: ""
-    provider: ""
-    repositoryName: ""
-    # Example:
-    # branch: "main"
-    # integrationAlias: "my-alias"
-    # path: "apps/catalog"
-    # provider: "github"
-    # repositoryName: "golden-path"
-    # secretRef:
-    #   name: "my-secret"
+    branch: "" # e.g. "main"
+    integrationAlias: "" # e.g. "my-github-alias"
+    path: "" # e.g. "cortex-resource-requests/"
+    provider: "" # "github" or "gitlab"
+    repositoryName: "" # e.g. "syntasso/cortex-resource-requests"
 additionalResources: []
 # Any additional k8s resources, such as Secrets, Configmaps
