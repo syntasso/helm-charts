@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.58.0](https://github.com/syntasso/helm-charts/compare/ske-operator-0.57.0...ske-operator-v0.58.0) (2026-03-02)
+
+
+### Features
+
+* Add support for configuring cortex in the ske-operator ([#118](https://github.com/syntasso/helm-charts/issues/118)) ([0b6d4a5](https://github.com/syntasso/helm-charts/commit/0b6d4a5e0d5e7ebd40ede399f5a01f7d86ee75a4))
+
 ## [0.57.0](https://github.com/syntasso/helm-charts/compare/ske-operator-0.56.0...ske-operator-v0.57.0) (2026-03-02)
 
 
