@@ -79,7 +79,7 @@ Returned YAML keys:
 */}}
 {{- define "ske-operator.cortexAuth" -}}
 {{- $config := required "cortexIntegration.config is required when cortexIntegration.enabled is true" (index . "config") -}}
-{{- $generatedSecretName := "cortex-crdential" -}}
+{{- $generatedSecretName := "cortex-credentials" -}}
 {{- $token := default "" $config.token -}}
 {{- $url := default "" $config.url -}}
 {{- $tokenSet := ne $token "" -}}
