@@ -1,0 +1,40 @@
+{{- if and
+    (hasKey .Values "cortexIntegration")
+    (eq (default false .Values.cortexIntegration.enabled) true)
+}}
+{{- with .Values.cortexIntegration }}
+{{- $config := required "cortexIntegration.config is required when cortexIntegration.enabled is true" .config }}
+{{- $auth := include "ske-operator.cortexAuth" (dict "config" $config) | fromYaml }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cortex-integration-config
+  namespace: kratix-platform-system
+data:
+  cortex-integration: |
+    apiVersion: platform.syntasso.io/v1alpha1
+    kind: SKEIntegration
+    metadata:
+      name: cortex-integration
+    spec:
+      type: cortex
+      version: {{ .version | default "latest" }}
+      {{- with .deploymentConfig.resources }}
+      deploymentConfig:
+        resources:
+{{- toYaml . | nindent 10 }}
+      {{- end }}
+      cortex:
+        {{- with $config.branch }}
+        branch: {{ . | quote }}
+        {{- end }}
+        integrationAlias: {{ required "cortexIntegration.config.integrationAlias is required when cortexIntegration.enabled is true" $config.integrationAlias | quote }}
+        {{- with $config.path }}
+        path: {{ . | quote }}
+        {{- end }}
+        provider: {{ required "cortexIntegration.config.provider is required when cortexIntegration.enabled is true" $config.provider | quote }}
+        repositoryName: {{ required "cortexIntegration.config.repositoryName is required when cortexIntegration.enabled is true" $config.repositoryName | quote }}
+        secretRef:
+          name: {{ $auth.secretName | quote }}
+{{- end }}
+{{- end }}
