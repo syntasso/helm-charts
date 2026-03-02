@@ -25,8 +25,7 @@ spec:
         - --health-probe-bind-address=:8081
         command:
         - /manager
-        image: '{{ .Values.imageRegistry.host }}/{{ .Values.imageRegistry.skeOperatorImage.name
-          }}:{{ .Chart.AppVersion }}'
+        image: ghcr.io/syntasso/ske-operator:v0.20.0
         livenessProbe:
           httpGet:
             path: /healthz

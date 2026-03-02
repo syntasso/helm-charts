@@ -264,6 +264,26 @@ spec:
             spec:
               description: spec defines the desired state of SKEIntegration
               properties:
+                cortex:
+                  description: cortex configures the cortex integration.
+                  properties:
+                    branch:
+                      type: string
+                    integrationAlias:
+                      type: string
+                    path:
+                      type: string
+                    provider:
+                      type: string
+                    repositoryName:
+                      type: string
+                    secretRef:
+                      description: SecretRef references the Secret containing Cortex credentials.
+                      properties:
+                        name:
+                          type: string
+                      type: object
+                  type: object
                 deploymentConfig:
                   properties:
                     resources:
@@ -304,6 +324,7 @@ spec:
                   description: The type of integration to deploy.
                   enum:
                     - backstage
+                    - cortex
                   type: string
                 version:
                   description: The version of the integration to deploy.
