@@ -59,3 +59,9 @@ ingress:
 #  clientSecret:
 ## SKE GUI requests the profile and email scopes by default. More scopes can be added by using the following value.
 #  scopes: profile,email
+
+tracing:
+  enabled: false
+metrics:
+  enabled: false
+otlpEndpoint: otel-collector:4317

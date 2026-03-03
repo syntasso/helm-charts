@@ -26,11 +26,11 @@ spec:
             - "-plugins-dir=/headlamp/plugins"
           env:
             - name: HEADLAMP_CONFIG_TRACING_ENABLED
-              value: "true"
+              value: {{ .Values.tracing.enabled | quote }}
             - name: HEADLAMP_CONFIG_METRICS_ENABLED
-              value: "true"
+              value: {{ .Values.metrics.enabled  | quote }}
             - name: HEADLAMP_CONFIG_OTLP_ENDPOINT
-              value: "otel-collector:4317"
+              value: {{ .Values.otlpEndpoint }}
             - name: HEADLAMP_CONFIG_SERVICE_NAME
               value: "headlamp"
             - name: HEADLAMP_CONFIG_SERVICE_VERSION
