@@ -187,7 +187,7 @@ cortexIntegration:
     branch: "" # e.g. "main"
     integrationAlias: "" # e.g. "my-github-alias"
     path: "" # e.g. "cortex-resource-requests/"
-    provider: "" # "github" or "gitlab"
+    provider: "" # only "github" is supported
     repositoryName: "" # e.g. "syntasso/cortex-resource-requests"
     # auth options (choose exactly one):
     # 1) set both token and url and this chart creates Secret `cortex-credentials`
