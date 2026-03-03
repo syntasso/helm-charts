@@ -42,7 +42,7 @@ resources:
 {{- end }}
 
 {{/* Apply image configuration from kustomization.yaml */}}
-{{- $originalImage := "registry.syntasso.io/syntasso/ske-operator" }}
+{{- $originalImage := "ghcr.io/syntasso/ske-operator" }}
 {{- $newName := printf "%s/%s" .Values.imageRegistry.host .Values.imageRegistry.skeOperatorImage.name }}
 {{- $newTag := .Chart.AppVersion }}
 {{- $_ := set $container "image" (printf "%s:%s" $newName $newTag) }}
