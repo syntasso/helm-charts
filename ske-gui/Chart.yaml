@@ -3,4 +3,4 @@ name: ske-gui
 description: Syntasso SKE GUI Helm chart
 type: application
 version: 0.13.0
-appVersion: "v0.6.3"
+appVersion: "v0.6.4"
