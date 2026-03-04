@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.59.0](https://github.com/syntasso/helm-charts/compare/ske-operator-0.58.0...ske-operator-v0.59.0) (2026-03-04)
+
+
+### Features
+
+* **ske-operator:** update backstage-controller version (autorelease) ([9547cbe](https://github.com/syntasso/helm-charts/commit/9547cbecd8fefd695058355061e978f19e240c40))
+
+
+### Bug Fixes
+
+* (ske-operator) correct a typo in cortex secret ([f4fa54a](https://github.com/syntasso/helm-charts/commit/f4fa54aa0fb46012b0fa446508c97c9d6c2f9cff))
+
+
+### Chores
+
+* note that only github is supported ([e17d879](https://github.com/syntasso/helm-charts/commit/e17d87916ee923a5e14550768c9c29c4eaae95c8))
+* update note in values file ([6684a27](https://github.com/syntasso/helm-charts/commit/6684a2773f02916f378fbe1a4f106c78265defe0))
+
 ## [0.58.0](https://github.com/syntasso/helm-charts/compare/ske-operator-0.57.0...ske-operator-v0.58.0) (2026-03-02)
 
 
