@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.14.0](https://github.com/syntasso/helm-charts/compare/ske-gui-0.13.0...ske-gui-v0.14.0) (2026-03-04)
+
+
+### Features
+
+* **ske-gui:** update appVersion (autorelease) ([a356f21](https://github.com/syntasso/helm-charts/commit/a356f21740fe07c3a7db7701b0967241973e3f1c))
+
+
+### Chores
+
+* update ske-gui to use templated values for metrics and tracing ([#125](https://github.com/syntasso/helm-charts/issues/125)) ([0147edf](https://github.com/syntasso/helm-charts/commit/0147edf180ff02e4eec73aaf482c119547b6cb4d))
+
 ## [0.13.0](https://github.com/syntasso/helm-charts/compare/ske-gui-0.12.0...ske-gui-v0.13.0) (2026-03-04)
 
 
