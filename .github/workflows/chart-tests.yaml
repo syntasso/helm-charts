@@ -1,0 +1,35 @@
+# Chart tests (bats). Run locally: ./scripts/test-charts.sh (requires helm + bats-core).
+name: Chart tests
+
+on:
+  push:
+    paths:
+      - 'ske-gui/**'
+      - 'tests/chart-tests.bats'
+      - '.github/workflows/chart-tests.yaml'
+  pull_request:
+    paths:
+      - 'ske-gui/**'
+      - 'tests/chart-tests.bats'
+      - '.github/workflows/chart-tests.yaml'
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Helm
+        uses: azure/setup-helm@v4
+        with:
+          version: 'v3.14.0'
+
+      - name: Install bats-core
+        run: |
+          git clone --depth 1 https://github.com/bats-core/bats-core.git /tmp/bats-core
+          /tmp/bats-core/install.sh /usr/local
+          bats --version
+
+      - name: Run chart tests
+        run: ./tests/chart-tests.bats
