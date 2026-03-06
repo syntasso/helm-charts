@@ -43,8 +43,8 @@ spec:
             - name: HEADLAMP_CONFIG_OIDC_CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: headlamp-oidc-secret
-                  key: client-secret
+                  name: {{ if .Values.oidc.secretRef }}{{ .Values.oidc.secretRef.name | default "headlamp-oidc-secret" | quote }}{{ else }}"headlamp-oidc-secret"{{ end }}
+                  key: {{ if .Values.oidc.secretRef }}{{ .Values.oidc.secretRef.key | default "client-secret" | quote }}{{ else }}"client-secret"{{ end }}
             - name: HEADLAMP_CONFIG_OIDC_SCOPES
               value: {{ .Values.oidc.scopes | default "profile,email" }}
             {{- end }}
