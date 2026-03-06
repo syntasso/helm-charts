@@ -68,6 +68,24 @@ Create the name of the service account to use
 {{- end }}
 
 {{/*
+Render the release storage location while keeping backward compatibility with
+releaseStorage.path during the deprecation window.
+*/}}
+{{- define "ske-operator.releaseStorageLocation" -}}
+{{- $releaseStorage := default dict .Values.releaseStorage -}}
+{{- $path := default "" $releaseStorage.path -}}
+{{- $releasesPath := default "" $releaseStorage.releasesPath -}}
+{{- if and (ne $path "") (ne $releasesPath "") -}}
+{{- fail "Invalid release storage config: releaseStorage.path and releaseStorage.releasesPath are mutually exclusive. Set only one of them." -}}
+{{- end -}}
+{{- if ne $releasesPath "" -}}
+releasesPath: {{ $releasesPath }}
+{{- else -}}
+path: {{ $path }}
+{{- end -}}
+{{- end -}}
+
+{{/*
 Validate cortex auth input and return normalized data.
 Expected input:
   dict "config" .Values.cortexIntegration.config

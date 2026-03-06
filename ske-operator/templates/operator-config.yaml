@@ -9,7 +9,7 @@ data:
   config: |
     {{- if and (.Values.releaseStorage) }}
     releaseStorage:
-      path: {{ .Values.releaseStorage.path }}
+      {{- include "ske-operator.releaseStorageLocation" . | nindent 6 }}
       {{- if and (.Values.releaseStorage.git) }}
       git:
         {{- with .Values.releaseStorage.git }}
