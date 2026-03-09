@@ -53,7 +53,7 @@ imageRegistry:
 # If you are using a custom bucket, update the values accordingly
 releaseStorage:
   # Parent directory containing release directories for multiple products, e.g. ske/ and ske-cortex-controller/.
-  releasesPath: "releases"
+  releasesPath: ""
   # DEPRECATED: path points directly to the SKE release directory itself, rather than the parent directory of all product releases.
   # It is still supported for the legacy SKE-only layout, but new installs should prefer releasesPath.
   # path and releasesPath are mutually exclusive.
