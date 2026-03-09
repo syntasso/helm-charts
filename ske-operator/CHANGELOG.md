@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.60.0](https://github.com/syntasso/helm-charts/compare/ske-operator-0.59.0...ske-operator-v0.60.0) (2026-03-09)
+
+
+### Features
+
+* Expose new releasesPath field in ske-operator ([#131](https://github.com/syntasso/helm-charts/issues/131)) ([3ec6af5](https://github.com/syntasso/helm-charts/commit/3ec6af5f87f656f2cc4bafcae93a49c85b41bdaf))
+* **ske-operator:** update appVersion ([e2ce7ef](https://github.com/syntasso/helm-charts/commit/e2ce7ef9b8333caebeb36fa453a84e4583e2451f))
+
 ## [0.59.0](https://github.com/syntasso/helm-charts/compare/ske-operator-0.58.0...ske-operator-v0.59.0) (2026-03-04)
 
 
