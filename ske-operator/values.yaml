@@ -52,7 +52,12 @@ imageRegistry:
 # Syntasso Enterprise manifests are available in the S3 bucket below
 # If you are using a custom bucket, update the values accordingly
 releaseStorage:
-  path: "ske"
+  # Parent directory containing release directories for multiple products, e.g. ske/ and ske-cortex-controller/.
+  releasesPath: "releases"
+  # DEPRECATED: path points directly to the SKE release directory itself, rather than the parent directory of all product releases.
+  # It is still supported for the legacy SKE-only layout, but new installs should prefer releasesPath.
+  # path and releasesPath are mutually exclusive.
+  # path: "ske"
   # if you are using a Git repository to store the manifests, update the values below and comment out the bucket section.
   # Provide either a secretName. If username and password is not provided, it
   # assumes the secret already exist and contains the required keys.
