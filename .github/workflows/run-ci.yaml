@@ -433,3 +433,12 @@ jobs:
               -d '{"parameters":{"ske_helm_chart_new_release":true}}' \
               https://circleci.com/api/v2/project/${CCI_TARGET_SLUG}/pipeline
           fi
+
+      - name: Run ske-gui chart upgrade action (ske-gui only)
+        env:
+          GH_TOKEN: ${{ secrets.GH_ACTION_TOKEN }}
+        run: |
+          if [ "${CHART_NAME}" == "ske-gui" ]; then
+            gh workflow run "Upgrade ske-gui helm chart in LRE" \
+              --repo syntasso/enterprise-kratix
+          fi
