@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.61.0](https://github.com/syntasso/helm-charts/compare/ske-operator-v0.60.0...ske-operator-v0.61.0) (2026-03-10)
+
+
+### Features
+
+* add readme to ske operator ([60c0944](https://github.com/syntasso/helm-charts/commit/60c09442ef9ea8ed93d0e6ea32958f19f025ce2a))
+
 ## [0.60.0](https://github.com/syntasso/helm-charts/compare/ske-operator-0.59.0...ske-operator-v0.60.0) (2026-03-09)
 
 
