@@ -86,7 +86,7 @@ jobs:
         if: ${{ (github.event_name == 'push' && steps.changes.outputs.ske-operator == 'true') || (github.event_name == 'workflow_dispatch' && inputs.helm_chart_name == 'ske-operator') }}
         uses: actions/setup-go@v4
         with:
-          go-version: 1.21
+          go-version: 1.26
 
       - name: Set up Kind
         if: ${{ (github.event_name == 'push' && steps.changes.outputs.ske-operator == 'true') || (github.event_name == 'workflow_dispatch' && inputs.helm_chart_name == 'ske-operator') }}
