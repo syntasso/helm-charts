@@ -28,7 +28,7 @@ resources:
 {{- end }}
 {{- end }}
 
-{{- $manifest := .Files.Get "files/deployment.yaml" | fromYaml }}
+{{- $manifest := tpl (.Files.Get "files/deployment.yaml") . | fromYaml }}
 {{- $container := index $manifest.spec.template.spec.containers 0
                     | merge (include "containerPatch" . | fromYaml) }}
 {{- $_ := set $manifest.spec.template "spec"
