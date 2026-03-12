@@ -250,6 +250,65 @@ var _ = Describe("ske-operator helm chart", func() {
 		})
 	})
 
+	Describe("CortexIntegration", func() {
+		When("cortexIntegration.enabled is false", func() {
+			It("does not template the post deploy job or configmap", func() {
+				template, _ := run("helm", "template", "ske-operator", "../ske-operator/", "-f=./assets/values-with-cortex-integration-disabled.yaml")
+				Expect(template).ToNot(ContainSubstring("deploy-cortex-integration"))
+				Expect(template).ToNot(ContainSubstring("cortex-integration-config"))
+			})
+		})
+
+		When("cortexIntegration.enabled is true", func() {
+			When("templating the chart", func() {
+				It("templates the post deploy job", func() {
+					template, _ := run("helm", "template", "ske-operator", "../ske-operator/", "-s=templates/post-install-cortex-integration.yaml", "-f=./assets/values-with-cortex-integration-enabled.yaml")
+					Expect(template).To(ContainSubstring("deploy-cortex-integration"))
+				})
+
+				It("templates the deployment config job", func() {
+					template, _ := run("helm", "template", "ske-operator", "../ske-operator/", "-s=templates/cortex-integration-deployment-config.yaml", "-f=./assets/values-with-cortex-integration-enabled.yaml")
+					Expect(template).To(ContainSubstring("cortex-integration-config"))
+					Expect(template).To(ContainSubstring("memory: 512Mi"))
+					Expect(template).To(ContainSubstring("cpu: 100m"))
+					Expect(template).To(ContainSubstring("memory: 256Mi"))
+					Expect(template).To(ContainSubstring("cpu: 400m"))
+				})
+
+				When("specifying a custom cortexControllerImage", func() {
+					It("templates the imageRegistry.cortexControllerImage in the Operator Config", func() {
+						template, _ := run("helm", "template", "ske-operator", "../ske-operator/", "-s=templates/operator-config.yaml", "-f=./assets/values-with-cortex-integration-enabled.yaml", "--set=imageRegistry.cortexControllerImage.name=my-path/cortex-controller")
+						Expect(template).To(ContainSubstring("my-path/cortex-controller"))
+					})
+				})
+			})
+
+			When("deploying the chart", func() {
+				BeforeEach(func() {
+					run("helm", "uninstall", "ske-operator", "-n=kratix-platform-system", "--ignore-not-found", "--wait")
+					run("kubectl", context, "apply", "-f=https://github.com/cert-manager/cert-manager/releases/download/v1.15.0/cert-manager.yaml")
+					run("kubectl", context, "wait", "crd/certificates.cert-manager.io", "--for=condition=established", "--timeout="+fmt.Sprintf("%ds", int(kubectlTimeout.Seconds())))
+					validateCertManagerWebhook()
+					run("kubectl", context, "wait", "--for=condition=available", "deployment/cert-manager-webhook", "-n=cert-manager")
+				})
+
+				AfterEach(func() {
+					runLongTimeout("kubectl", context, "delete", "namespace", "kratix-platform-system", "--timeout="+formatTimeout(kubectlLongTimeout), "--ignore-not-found")
+					run("kubectl", context, "delete", "-f=https://github.com/cert-manager/cert-manager/releases/download/v1.15.0/cert-manager.yaml")
+					deleteCRDs(context)
+				})
+
+				It("creates a Cortex SKEIntegration", func() {
+					run("helm", "install", "ske-operator", "--create-namespace", "../ske-operator/",
+						"-n=kratix-platform-system", "-f=./assets/values-with-cortex-integration-enabled.yaml", "--set-string", "skeLicense="+skeLicenseToken, "--wait")
+					Eventually(func(g Gomega) {
+						runGinkgo(g, "kubectl", context, "get", "skeintegration", "cortex-integration", "-n=kratix-platform-system")
+					}, timeout, interval).Should(Succeed())
+				})
+			})
+		})
+	})
+
 	Describe("deleteOnUninstall", func() {
 		When("deleteOnUninstall is not set", func() {
 			It("the secret template sets the resource-policy to 'keep'", func() {
