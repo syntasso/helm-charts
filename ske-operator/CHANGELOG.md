@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.61.1](https://github.com/syntasso/helm-charts/compare/ske-operator-0.61.0...ske-operator-v0.61.1) (2026-03-12)
+
+
+### Bug Fixes
+
+* expose the imageRegistry.cortexController value ([#139](https://github.com/syntasso/helm-charts/issues/139)) ([09bbc00](https://github.com/syntasso/helm-charts/commit/09bbc00faad1d2d721e805877c40c4284fd18aca))
+
 ## [0.61.0](https://github.com/syntasso/helm-charts/compare/ske-operator-v0.60.0...ske-operator-v0.61.0) (2026-03-10)
 
 
