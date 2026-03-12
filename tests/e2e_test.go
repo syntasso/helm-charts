@@ -270,9 +270,9 @@ var _ = Describe("ske-operator helm chart", func() {
 					template, _ := run("helm", "template", "ske-operator", "../ske-operator/", "-s=templates/cortex-integration-deployment-config.yaml", "-f=./assets/values-with-cortex-integration-enabled.yaml")
 					Expect(template).To(ContainSubstring("cortex-integration-config"))
 					Expect(template).To(ContainSubstring("memory: 512Mi"))
-					Expect(template).To(ContainSubstring("cpu: 100m"))
+					Expect(template).To(ContainSubstring("cpu: 200m"))
 					Expect(template).To(ContainSubstring("memory: 256Mi"))
-					Expect(template).To(ContainSubstring("cpu: 400m"))
+					Expect(template).To(ContainSubstring("cpu: 100m"))
 				})
 
 				When("specifying a custom cortexControllerImage", func() {
