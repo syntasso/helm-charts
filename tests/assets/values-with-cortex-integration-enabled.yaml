@@ -24,3 +24,4 @@ cortexIntegration:
     provider: "github"
     repositoryName: "my-requests"
     url: "a-url"
+    token: "a-token"
