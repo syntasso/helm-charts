@@ -14,25 +14,5 @@ skeDeployment:
     certManager:
       disabled: false
 
-imageRegistry:
-  host: "ghcr.io"
-  skeOperatorImage:
-    name: "syntasso/ske-operator"
-  skePlatformImage:
-    name: "syntasso/ske-platform"
-  skePlatformPipelineAdapterImage:
-    name: "syntasso/ske-platform-pipeline-adapter"
-  cortexControllerImage:
-    name: "syntasso/ske-cortex-controller"
-
 cortexIntegration:
   enabled: false
-  version: "latest"
-  deploymentConfig:
-    resources:
-      limits:
-        memory: "512Mi"
-        cpu: "100m"
-      requests:
-        memory: "256Mi"
-        cpu: "400m"
