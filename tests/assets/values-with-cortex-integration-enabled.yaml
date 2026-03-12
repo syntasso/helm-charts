@@ -1,0 +1,35 @@
+global:
+  skeOperator:
+    tlsConfig:
+      certManager:
+        disabled: false
+  skeDeployment:
+    deleteOnUninstall: false
+
+skeLicense: "set via cli arg"
+skeDeployment:
+  enabled: true
+  version: "v0.16.0" # older version so we can test upgrade
+  tlsConfig:
+    certManager:
+      disabled: false
+
+cortexIntegration:
+  enabled: true
+  version: "latest"
+  config:
+    branch: ""
+    integrationAlias: "my-alias"
+    path: ""
+    provider: "github"
+    repositoryName: "my-requests"
+    url: "a-url"
+    token: "a-token"
+  deploymentConfig:
+    resources:
+      limits:
+        memory: "512Mi"
+        cpu: "200m"
+      requests:
+        memory: "256Mi"
+        cpu: "100m"
