@@ -17,11 +17,10 @@ skeDeployment:
 cortexIntegration:
   enabled: true
   version: "latest"
-  deploymentConfig:
-    resources:
-      limits:
-        memory: "512Mi"
-        cpu: "200m"
-      requests:
-        memory: "256Mi"
-        cpu: "100m"
+  config:
+    branch: ""
+    integrationAlias: "my-alias"
+    path: ""
+    provider: "github"
+    repositoryName: "my-requests"
+    url: "a-url"
