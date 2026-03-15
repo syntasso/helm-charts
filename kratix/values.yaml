@@ -18,6 +18,10 @@ tolerations: []
 
 affinity: {}
 
+serviceAccount:
+  name: ""
+  annotations: {}
+
 # [DEPRECATED] Use additionalResources instead
 stateStores:
   - kind: BucketStateStore

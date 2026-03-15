@@ -11,7 +11,7 @@ metadata:
 spec:
   template:
     spec:
-      serviceAccountName: kratix-platform-controller-manager
+      serviceAccountName: {{ include "kratix.serviceAccountName" . }}
       restartPolicy: Never
       containers:
         - name: deploy-resources
@@ -49,7 +49,7 @@ metadata:
 spec:
   template:
     spec:
-      serviceAccountName: kratix-platform-controller-manager
+      serviceAccountName: {{ include "kratix.serviceAccountName" . }}
       restartPolicy: Never
       containers:
         - name: undeploy-resources

@@ -80,7 +80,7 @@ spec:
               readOnly: true
       securityContext:
         runAsNonRoot: true
-      serviceAccountName: kratix-platform-controller-manager
+      serviceAccountName: {{ include "kratix.serviceAccountName" . | trim }}
       terminationGracePeriodSeconds: 10
       volumes:
         - name: cert
