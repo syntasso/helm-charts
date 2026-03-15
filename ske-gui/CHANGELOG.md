@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.15.0](https://github.com/syntasso/helm-charts/compare/ske-gui-0.14.0...ske-gui-v0.15.0) (2026-03-06)
+
+
+### Features
+
+* add secretRef support to ske gui chart ([84e46ff](https://github.com/syntasso/helm-charts/commit/84e46ff2c861e275f092e38cbb9afb4adb8a12fe))
+* add secretRef support to ske gui chart ([49645d9](https://github.com/syntasso/helm-charts/commit/49645d9d2c59ed7d27bb81c7915569dd5311c218)), closes [#122](https://github.com/syntasso/helm-charts/issues/122)
+
 ## [0.14.0](https://github.com/syntasso/helm-charts/compare/ske-gui-0.13.0...ske-gui-v0.14.0) (2026-03-04)
 
 
