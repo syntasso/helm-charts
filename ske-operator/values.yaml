@@ -51,7 +51,7 @@ imageRegistry:
     name: "syntasso/backstage-controller"
   cortexControllerImage:
     # The name of the Cortex Controller image
-    name: "syntasso/cortex-controller"
+    name: "syntasso/ske-cortex-controller"
 # Syntasso Enterprise manifests are available in the S3 bucket below
 # If you are using a custom bucket, update the values accordingly
 releaseStorage:
