@@ -259,7 +259,7 @@ roleRef:
   name: kratix-platform-leader-election-role
 subjects:
   - kind: ServiceAccount
-    name: {{ include "kratix.serviceAccountName" . }}
+    name: {{ include "kratix.serviceAccountName" . | trim }}
     namespace: kratix-platform-system
 ---
 apiVersion: rbac.authorization.k8s.io/v1
@@ -276,7 +276,7 @@ roleRef:
   name: kratix-platform-manager-role
 subjects:
   - kind: ServiceAccount
-    name: {{ include "kratix.serviceAccountName" . }}
+    name: {{ include "kratix.serviceAccountName" . | trim }}
     namespace: kratix-platform-system
 ---
 apiVersion: rbac.authorization.k8s.io/v1
@@ -293,7 +293,7 @@ roleRef:
   name: kratix-platform-metrics-auth-role
 subjects:
   - kind: ServiceAccount
-    name: {{ include "kratix.serviceAccountName" . }}
+    name: {{ include "kratix.serviceAccountName" . | trim }}
     namespace: kratix-platform-system
 ---
 apiVersion: v1

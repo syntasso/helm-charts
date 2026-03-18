@@ -9,8 +9,35 @@ root=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )/.." &> /dev/null && pwd )
 CHART_CRDS=$root/kratix/crds/platform_kratix_io_crds.yaml
 CHART_DISTRIBUTION=$root/kratix/templates/distribution.yaml
 CHART_DEPLOYMENT=$root/kratix/files/deployment.yaml
+CHART_SERVICEACCOUNT=$root/kratix/templates/serviceaccount.yaml
 
 yq 'select(.kind == "CustomResourceDefinition")' ${kratixDist} > ${CHART_CRDS}
 yq 'select(.kind == "Deployment")' ${kratixDist} > ${CHART_DEPLOYMENT}
-yq 'select(.kind != "CustomResourceDefinition" and .kind != "Deployment")' ${kratixDist} > ${CHART_DISTRIBUTION}
 
+# Generate ServiceAccount template from the distribution
+labels_yaml=$(yq 'select(.kind == "ServiceAccount") | .metadata.labels | to_entries | map("    \(.key): \(.value)") | join("\n")' ${kratixDist} || true)
+if [ -z "$labels_yaml" ]; then
+  labels_yaml="    app.kubernetes.io/component: kratix-manager
+    app.kubernetes.io/instance: kratix-platform
+    app.kubernetes.io/part-of: kratix"
+fi
+cat > ${CHART_SERVICEACCOUNT} << EOF
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ include "kratix.serviceAccountName" . }}
+  namespace: kratix-platform-system
+  labels:
+${labels_yaml}
+  {{- with .Values.serviceAccount.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+EOF
+
+# Generate distribution (excluding CRDs, Deployment, ServiceAccount)
+yq 'select(.kind != "CustomResourceDefinition" and .kind != "Deployment" and .kind != "ServiceAccount")' ${kratixDist} > ${CHART_DISTRIBUTION}
+
+# Replace service account references with Helm template helper
+sed -E 's/name: kratix-platform-controller-manager$/name: {{ include "kratix.serviceAccountName" . | trim }}/' ${CHART_DISTRIBUTION} > ${CHART_DISTRIBUTION}.tmp && mv ${CHART_DISTRIBUTION}.tmp ${CHART_DISTRIBUTION}
+sed -E 's/serviceAccountName: kratix-platform-controller-manager$/serviceAccountName: {{ include "kratix.serviceAccountName" . | trim }}/' ${CHART_DEPLOYMENT} > ${CHART_DEPLOYMENT}.tmp && mv ${CHART_DEPLOYMENT}.tmp ${CHART_DEPLOYMENT}
