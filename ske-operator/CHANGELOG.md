@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.61.2](https://github.com/syntasso/helm-charts/compare/ske-operator-0.61.1...ske-operator-v0.61.2) (2026-03-18)
+
+
+### Bug Fixes
+
+* update Cortex Controller image name in values.yaml ([3340fe6](https://github.com/syntasso/helm-charts/commit/3340fe64188402171c61c1032aa9554adb81bb8d))
+
 ## [0.61.1](https://github.com/syntasso/helm-charts/compare/ske-operator-0.61.0...ske-operator-v0.61.1) (2026-03-12)
 
 
