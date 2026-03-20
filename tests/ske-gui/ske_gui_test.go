@@ -64,8 +64,19 @@ var _ = Describe("ske-gui helm chart", func() {
 				Expect(template).ToNot(ContainSubstring("# Source: ske-gui/templates/oidc-secret.yaml"))
 			})
 		})
+	})
 
-		// When()
+	When("extraArgs are specified", func() {
+		It("adds the additional args to the Headlamp command in teh deployment", func() {
+			template, _ := run(
+				"helm", "template", "ske-gui", "../../ske-gui/",
+				"-s=templates/deployment.yaml",
+				"-f=../assets/ske-gui-values.yaml",
+				"--set=extraArgs={--oidc-ca-file=/etc/oidc/ca.crt,--another-arg}",
+			)
+			Expect(template).To(ContainSubstring("--oidc-ca-file=/etc/oidc/ca.crt"))
+			Expect(template).To(ContainSubstring("--another-arg"))
+		})
 	})
 })
 

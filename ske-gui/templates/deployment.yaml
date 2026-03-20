@@ -235,19 +235,19 @@ spec:
               value: "latest"
           {{- end }}
           args:
-            {{- if .Values.config.inCluster }}
+            {{- if .Values.inCluster }}
             - "-in-cluster"
-            {{- if .Values.config.inClusterContextName }}
-            - "-in-cluster-context-name={{ .Values.config.inClusterContextName }}"
+            {{- if .Values.inClusterContextName }}
+            - "-in-cluster-context-name={{ .Values.inClusterContextName }}"
             {{- end }}
             {{- end }}
-            {{- with .Values.config.enableHelm }}
+            {{- with .Values.enableHelm }}
             - "-enable-helm"
             {{- end }}
-            {{- if .Values.config.watchPlugins }}
+            {{- if .Values.watchPlugins }}
             - "-watch-plugins-changes"
             {{- end }}
-            {{- with .Values.config.pluginsDir}}
+            {{- with .Values.pluginsDir}}
             - "-plugins-dir={{ . }}"
             {{- end }}
             {{- if not (and $oidc.externalSecret $oidc.externalSecret.enabled) }}
@@ -318,24 +318,17 @@ spec:
             - "-me-user-info-url=$(ME_USER_INFO_URL)"
             {{- end }}
             {{- end }}
-            {{- with .Values.config.baseURL }}
+            {{- with .Values.baseURL }}
             - "-base-url={{ . }}"
             {{- end }}
-            {{- with .Values.config.tlsCertPath }}
+            {{- with .Values.tlsCertPath }}
             - "-tls-cert-path={{ . }}"
             {{- end }}
-            {{- with .Values.config.tlsKeyPath }}
+            {{- with .Values.tlsKeyPath }}
             - "-tls-key-path={{ . }}"
             {{- end }}
-            {{- with .Values.config.extraArgs }}
+            {{- with .Values.extraArgs }}
               {{- toYaml . | nindent 12 }}
-            {{- end }}
-          env:
-            {{- if .Values.oidc }}
-            # - name: HEADLAMP_CONFIG_OIDC_IDP_ISSUER_URL
-            #   value: {{ .Values.oidc.issuerUrl | quote }}
-            - name: HEADLAMP_CONFIG_OIDC_SCOPES
-              value: {{ .Values.oidc.scopes | default "profile,email" }}
             {{- end }}
           ports:
             - name: http
