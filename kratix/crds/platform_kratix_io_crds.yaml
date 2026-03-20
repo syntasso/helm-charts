@@ -1314,6 +1314,9 @@ spec:
                                 description: Last transition time of the workflow
                                 format: date-time
                                 type: string
+                              message:
+                                description: Message from the suspended pipeline
+                                type: string
                               name:
                                 description: Name of the workflow
                                 type: string
@@ -1322,6 +1325,10 @@ spec:
                                 type: string
                             type: object
                           type: array
+                        suspendedGeneration:
+                          description: Generation at which the workflow was suspended
+                          format: int64
+                          type: integer
                       type: object
                   type: object
                 lastAvailableTime:
