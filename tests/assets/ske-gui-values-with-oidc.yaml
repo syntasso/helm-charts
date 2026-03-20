@@ -57,7 +57,9 @@ oidc:
   issuerUrl: "www.issuer.org"
   clientId: "my-client"
   clientSecret: "top-secret"  # omit when using secretRef (e.g. for ArgoCD / GitOps)
-  
+  useAccessToken: true
+  callbackURL: "www.url.org/call/back"
+
 #  # Reference an existing secret instead of providing clientSecret in values (recommended for GitOps)
 #  secretRef:
 #    name: my-oidc-secret   # name of the existing Secret

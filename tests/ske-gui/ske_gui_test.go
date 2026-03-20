@@ -19,15 +19,29 @@ var _ = Describe("ske-gui helm chart", func() {
 	When("an oidc config is provided", func() {
 		It("templates the oidc configuration options in the deployment", func() {
 			By("configuring the expected environment variables in the deployment")
-			template, _ := run("helm", "template", "ske-gui", "../../ske-gui/", "-f=../assets/ske-gui-values-with-oidc.yaml")
-			Expect(template).To(ContainSubstring("name: OIDC_CLIENT_SECRET\n              value: top-secret"))
+			template, _ := run("helm", "template", "ske-gui", "../../ske-gui/", "-s=templates/deployment.yaml", "-f=../assets/ske-gui-values-with-oidc.yaml")
+			Expect(template).To(ContainSubstring("name: OIDC_CLIENT_SECRET\n              valueFrom:\n                secretKeyRef:\n                  name: \"headlamp-oidc-secret\"\n                  key: \"client-secret\""))
 			Expect(template).To(ContainSubstring("name: OIDC_CLIENT_ID\n              value: my-client"))
+			Expect(template).To(ContainSubstring("name: OIDC_ISSUER_URL\n              value: www.issuer.org"))
+			Expect(template).To(ContainSubstring("name: OIDC_SCOPES\n              value: profile,email"))
+			Expect(template).To(ContainSubstring("name: OIDC_USE_ACCESS_TOKEN\n              value: \"true\""))
+			Expect(template).To(ContainSubstring("name: OIDC_CALLBACK_URL\n              value: www.url.org/call/back"))
 
 			By("configuring the expected fields in the secret")
 			template, _ = run("helm", "template", "ske-gui", "../../ske-gui/", "-s=templates/oidc-secret.yaml", "-f=../assets/ske-gui-values-with-oidc.yaml")
 			Expect(template).To(ContainSubstring("client-secret: \"dG9wLXNlY3JldA==\""))
 			Expect(template).To(ContainSubstring("clientID: \"bXktY2xpZW50\""))
 		})
+
+		When("a secretRef is provided", func() {
+			It("references the secretRef in the deployment and does not template a secret", func() {
+				template, _ := run("helm", "template", "ske-gui", "../../ske-gui/", "-f=../assets/ske-gui-values-with-oidc.yaml", "--set-string=oidc.secretRef.name=my-secret", "--set-string=oidc.secretRef.key=client-secret")
+				Expect(template).To(ContainSubstring("name: OIDC_CLIENT_SECRET\n              valueFrom:\n                secretKeyRef:\n                  name: \"my-secret\"\n                  key: \"client-secret\""))
+				Expect(template).ToNot(ContainSubstring("# Source: ske-gui/templates/oidc-secret.yaml"))
+			})
+		})
+
+		// When()
 	})
 })
 

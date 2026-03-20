@@ -105,7 +105,6 @@ spec:
           {{- end }}
           {{- else }}
           env:
-
             {{- if $oidc.secret }}
             {{- if $oidc.secret.create }}
             {{- if $oidc.clientId }}
@@ -184,17 +183,16 @@ spec:
             - name: OIDC_CLIENT_ID
               value: {{ $oidc.clientId }}
             {{- end }}
-            {{- if $oidc.clientSecret }}
             - name: OIDC_CLIENT_SECRET
-              value: {{ $oidc.clientSecret }}
-            {{- end }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ if .Values.oidc.secretRef }}{{ .Values.oidc.secretRef.name | default "headlamp-oidc-secret" | quote }}{{ else }}"headlamp-oidc-secret"{{ end }}
+                  key: {{ if .Values.oidc.secretRef }}{{ .Values.oidc.secretRef.key | default "client-secret" | quote }}{{ else }}"client-secret"{{ end }}
+            - name: OIDC_SCOPES
+              value: {{ .Values.oidc.scopes | default "profile,email" }}
             {{- if $oidc.issuerUrl }}
             - name: OIDC_ISSUER_URL
               value: {{ $oidc.issuerUrl }}
-            {{- end }}
-            {{- if $oidc.scopes }}
-            - name: OIDC_SCOPES
-              value: {{ $oidc.scopes }}
             {{- end }}
             {{- if $oidc.callbackURL }}
             - name: OIDC_CALLBACK_URL
@@ -236,7 +234,6 @@ spec:
             - name: HEADLAMP_CONFIG_SERVICE_VERSION
               value: "latest"
           {{- end }}
-          
           args:
             {{- if .Values.config.inCluster }}
             - "-in-cluster"
@@ -337,13 +334,6 @@ spec:
             {{- if .Values.oidc }}
             # - name: HEADLAMP_CONFIG_OIDC_IDP_ISSUER_URL
             #   value: {{ .Values.oidc.issuerUrl | quote }}
-            - name: HEADLAMP_CONFIG_OIDC_CLIENT_ID
-              value: {{ .Values.oidc.clientId | quote }}
-            - name: HEADLAMP_CONFIG_OIDC_CLIENT_SECRET
-              valueFrom:
-                secretKeyRef:
-                  name: {{ if .Values.oidc.secretRef }}{{ .Values.oidc.secretRef.name | default "headlamp-oidc-secret" | quote }}{{ else }}"headlamp-oidc-secret"{{ end }}
-                  key: {{ if .Values.oidc.secretRef }}{{ .Values.oidc.secretRef.key | default "client-secret" | quote }}{{ else }}"client-secret"{{ end }}
             - name: HEADLAMP_CONFIG_OIDC_SCOPES
               value: {{ .Values.oidc.scopes | default "profile,email" }}
             {{- end }}
