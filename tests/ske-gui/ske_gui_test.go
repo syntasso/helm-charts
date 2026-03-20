@@ -19,18 +19,42 @@ var _ = Describe("ske-gui helm chart", func() {
 	When("an oidc config is provided", func() {
 		It("templates the oidc configuration options in the deployment", func() {
 			By("configuring the expected environment variables in the deployment")
-			template, _ := run("helm", "template", "ske-gui", "../../ske-gui/", "-s=templates/deployment.yaml", "-f=../assets/ske-gui-values-with-oidc.yaml")
+			template, _ := run(
+				"helm", "template", "ske-gui", "../../ske-gui/",
+				"-s=templates/deployment.yaml",
+				"-f=../assets/ske-gui-values-with-oidc.yaml",
+				"--set-string=oidc.validatorClientID=validator-client",
+				"--set-string=oidc.validatorIssuerURL=https://validator.issuer.org",
+				"--set-string=oidc.usePKCE=true",
+				"--set-string=oidc.meUserInfoURL=https://issuer.org/userinfo",
+			)
 			Expect(template).To(ContainSubstring("name: OIDC_CLIENT_SECRET\n              valueFrom:\n                secretKeyRef:\n                  name: \"headlamp-oidc-secret\"\n                  key: \"client-secret\""))
 			Expect(template).To(ContainSubstring("name: OIDC_CLIENT_ID\n              value: my-client"))
 			Expect(template).To(ContainSubstring("name: OIDC_ISSUER_URL\n              value: www.issuer.org"))
 			Expect(template).To(ContainSubstring("name: OIDC_SCOPES\n              value: profile,email"))
 			Expect(template).To(ContainSubstring("name: OIDC_USE_ACCESS_TOKEN\n              value: \"true\""))
 			Expect(template).To(ContainSubstring("name: OIDC_CALLBACK_URL\n              value: www.url.org/call/back"))
+			Expect(template).To(ContainSubstring("name: OIDC_VALIDATOR_CLIENT_ID\n              value: validator-client"))
+			Expect(template).To(ContainSubstring("name: OIDC_VALIDATOR_ISSUER_URL\n              value: https://validator.issuer.org"))
+			Expect(template).To(ContainSubstring("name: OIDC_USE_PKCE\n              value: \"true\""))
+			Expect(template).To(ContainSubstring("name: ME_USER_INFO_URL\n              value: https://issuer.org/userinfo"))
 
 			By("configuring the expected fields in the secret")
-			template, _ = run("helm", "template", "ske-gui", "../../ske-gui/", "-s=templates/oidc-secret.yaml", "-f=../assets/ske-gui-values-with-oidc.yaml")
+			template, _ = run(
+				"helm", "template", "ske-gui", "../../ske-gui/",
+				"-s=templates/oidc-secret.yaml",
+				"-f=../assets/ske-gui-values-with-oidc.yaml",
+				"--set-string=oidc.validatorClientID=validator-client",
+				"--set-string=oidc.validatorIssuerURL=https://validator.issuer.org",
+				"--set-string=oidc.usePKCE=true",
+				"--set-string=oidc.meUserInfoURL=https://issuer.org/userinfo",
+			)
 			Expect(template).To(ContainSubstring("client-secret: \"dG9wLXNlY3JldA==\""))
 			Expect(template).To(ContainSubstring("clientID: \"bXktY2xpZW50\""))
+			Expect(template).To(ContainSubstring("validatorClientID: \"dmFsaWRhdG9yLWNsaWVudA==\""))
+			Expect(template).To(ContainSubstring("validatorIssuerURL: \"aHR0cHM6Ly92YWxpZGF0b3IuaXNzdWVyLm9yZw==\""))
+			Expect(template).To(ContainSubstring("usePKCE: \"dHJ1ZQ==\""))
+			Expect(template).To(ContainSubstring("meUserInfoURL: \"aHR0cHM6Ly9pc3N1ZXIub3JnL3VzZXJpbmZv\""))
 		})
 
 		When("a secretRef is provided", func() {
