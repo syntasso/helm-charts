@@ -11,6 +11,8 @@
 {{- $usePKCE := "" }}
 {{- $useAccessToken := "" }}
 {{- $meUserInfoURL := "" }}
+{{- $oidcUseAccessTokenEnabled := eq (default false $oidc.useAccessToken | toString) "true" }}
+{{- $oidcUsePKCEEnabled := eq (default false $oidc.usePKCE | toString) "true" }}
 
 # # This block of code is used to extract the values from the env.
 # # This is done to check if the values are non-empty and if they are, they are used in the deployment.yaml.
@@ -249,6 +251,7 @@ spec:
             {{- with .Values.pluginsDir}}
             - "-plugins-dir={{ . }}"
             {{- end }}
+            {{- if .Values.inCluster }}
             {{- if not (and $oidc.externalSecret $oidc.externalSecret.enabled) }}
             # Check if externalSecret is disabled
             {{- if or (ne $oidc.clientId "") (ne $clientId "") }}
@@ -279,12 +282,20 @@ spec:
             # Check if validatorIssuerURL is non empty either from env or oidc.config
             - "-oidc-validator-idp-issuer-url=$(OIDC_VALIDATOR_ISSUER_URL)"
             {{- end }}
-            {{- if or (ne ($oidc.useAccessToken | toString) "false") (ne $useAccessToken "") }}
-            # Check if useAccessToken is non false either from env or oidc.config
+            {{- if or $oidcUseAccessTokenEnabled (ne $useAccessToken "") }}
+            # Check if useAccessToken is enabled either from env or oidc config
+            {{- if ne $useAccessToken "" }}
             - "-oidc-use-access-token=$(OIDC_USE_ACCESS_TOKEN)"
+            {{- else }}
+            - "-oidc-use-access-token=true"
             {{- end }}
-            {{- if or (eq ($oidc.usePKCE | toString) "true") (eq $usePKCE "true") }}
+            {{- end }}
+            {{- if or $oidcUsePKCEEnabled (eq $usePKCE "true") }}
+            {{- if eq $usePKCE "true" }}
             - "-oidc-use-pkce=$(OIDC_USE_PKCE)"
+            {{- else }}
+            - "-oidc-use-pkce=true"
+            {{- end }}
             {{- end }}
             {{- if or (ne $oidc.meUserInfoURL "") (ne $meUserInfoURL "") }}
             - "-me-user-info-url=$(ME_USER_INFO_URL)"
@@ -298,8 +309,12 @@ spec:
             # Check if callbackURL is non empty either from env or oidc.config
             - "-oidc-callback-url=$(OIDC_CALLBACK_URL)"
             {{- end }}
-            {{- if or (eq ($oidc.usePKCE | toString) "true") (eq $usePKCE "true") }}
+            {{- if or $oidcUsePKCEEnabled (eq $usePKCE "true") }}
+            {{- if eq $usePKCE "true" }}
             - "-oidc-use-pkce=$(OIDC_USE_PKCE)"
+            {{- else }}
+            - "-oidc-use-pkce=true"
+            {{- end }}
             {{- end }}
             {{- if or (ne $oidc.validatorClientID "") (ne $validatorClientID "") }}
             # Check if validatorClientID is non empty either from env or oidc.config
@@ -309,12 +324,17 @@ spec:
             # Check if validatorIssuerURL is non empty either from env or oidc.config
             - "-oidc-validator-idp-issuer-url=$(OIDC_VALIDATOR_ISSUER_URL)"
             {{- end }}
-            {{- if or (eq ($oidc.useAccessToken | toString) "true") (eq $useAccessToken "true") }}
-            # Check if useAccessToken is non false either from env or oidc.config
+            {{- if or $oidcUseAccessTokenEnabled (eq $useAccessToken "true") }}
+            # Check if useAccessToken is enabled either from env or oidc config
+            {{- if eq $useAccessToken "true" }}
             - "-oidc-use-access-token=$(OIDC_USE_ACCESS_TOKEN)"
+            {{- else }}
+            - "-oidc-use-access-token=true"
+            {{- end }}
             {{- end }}
             {{- if or (ne $oidc.meUserInfoURL "") (ne $meUserInfoURL "") }}
             - "-me-user-info-url=$(ME_USER_INFO_URL)"
+            {{- end }}
             {{- end }}
             {{- end }}
             {{- with .Values.baseURL }}
