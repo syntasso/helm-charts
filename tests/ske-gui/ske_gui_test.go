@@ -78,6 +78,38 @@ var _ = Describe("ske-gui helm chart", func() {
 			Expect(template).To(ContainSubstring("--another-arg"))
 		})
 	})
+
+	When("additional volumes are specified", func() {
+		It("templates the oidc configuration options in the deployment", func() {
+			template, _ := run(
+				"helm", "template", "ske-gui", "../../ske-gui/",
+				"-s=templates/deployment.yaml",
+				"-f=../assets/ske-gui-values.yaml",
+				"--set=volumes[0].name=oidc-ca",
+				"--set=volumes[0].configMap.name=headlamp-oidc-ca",
+				"--set=volumes[1].name=more-config",
+				"--set=volumes[1].configMap.name=headlamp-config",
+			)
+			Expect(template).To(ContainSubstring("headlamp-oidc-ca"))
+			Expect(template).To(ContainSubstring("headlamp-config"))
+		})
+	})
+
+	When("additional volumeMounts are specified", func() {
+		It("templates the oidc configuration options in the deployment", func() {
+			template, _ := run(
+				"helm", "template", "ske-gui", "../../ske-gui/",
+				"-s=templates/deployment.yaml",
+				"-f=../assets/ske-gui-values.yaml",
+				"--set=volumes[0].name=oidc-ca",
+				"--set=volumes[0].mountPath=/etc/oidc",
+				"--set=volumes[0].readOnly=true",
+			)
+			Expect(template).To(ContainSubstring("name: oidc-ca"))
+			Expect(template).To(ContainSubstring("mountPath: /etc/oidc"))
+			Expect(template).To(ContainSubstring("readOnly: true"))
+		})
+	})
 })
 
 func run(args ...string) (string, string) {

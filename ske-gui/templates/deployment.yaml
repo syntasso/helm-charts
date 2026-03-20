@@ -363,3 +363,7 @@ spec:
       affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      volumes:
+        {{- with .Values.volumes}}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
