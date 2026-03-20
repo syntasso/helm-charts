@@ -186,7 +186,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: {{ if .Values.oidc.secretRef }}{{ .Values.oidc.secretRef.name | default "headlamp-oidc-secret" | quote }}{{ else }}"headlamp-oidc-secret"{{ end }}
-                  key: {{ if .Values.oidc.secretRef }}{{ .Values.oidc.secretRef.key | default "client-secret" | quote }}{{ else }}"client-secret"{{ end }}
+                  key: {{ if .Values.oidc.secretRef }}{{ .Values.oidc.secretRef.key | default "clientSecret" | quote }}{{ else }}"clientSecret"{{ end }}
             - name: OIDC_SCOPES
               value: {{ .Values.oidc.scopes | default "profile,email" }}
             {{- if $oidc.issuerUrl }}

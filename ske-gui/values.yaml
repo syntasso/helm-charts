@@ -60,7 +60,7 @@ ingress:
 #  # Reference an existing secret instead of providing clientSecret in values (recommended for GitOps)
 #  secretRef:
 #    name: my-oidc-secret   # name of the existing Secret
-#    key: client-secret     # key within the Secret (default: client-secret)
+#    key: clientSecret     # key within the Secret (default: clientSecret)
 ## SKE GUI requests the profile and email scopes by default. More scopes can be added by using the following value.
 #  scopes: profile,email
   # -- OIDC issuer URL

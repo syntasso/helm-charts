@@ -46,7 +46,7 @@ ske_operator_config() {
 
   [[ "$output" == *"kind: Secret"* ]]
   [[ $(echo "$deployment" | yq '.valueFrom.secretKeyRef.name') == "headlamp-oidc-secret" ]]
-  [[ $(echo "$deployment" | yq '.valueFrom.secretKeyRef.key') == "client-secret" ]]
+  [[ $(echo "$deployment" | yq '.valueFrom.secretKeyRef.key') == "clientSecret" ]]
 }
 
 @test "ske-operator releaseStorage.releasesPath: renders releasesPath in config" {
