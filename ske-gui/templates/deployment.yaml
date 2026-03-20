@@ -73,7 +73,6 @@ spec:
         app.kubernetes.io/component: web
     spec:
       serviceAccountName: {{ include "ske-gui.serviceAccountName" . }}
-      automountServiceAccountToken: {{ .Values.automountServiceAccountToken }}
       hostUsers: {{ .Values.hostUsers }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
