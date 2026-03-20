@@ -66,6 +66,28 @@ var _ = Describe("ske-gui helm chart", func() {
 		})
 	})
 
+	When("inCluster mode is enabled", func() {
+		It("renders oidc args and keeps inline boolean values literal", func() {
+			template, _ := run(
+				"helm", "template", "ske-gui", "../../ske-gui/",
+				"-s=templates/deployment.yaml",
+				"-f=../assets/ske-gui-values-with-oidc.yaml",
+				"--set=inCluster=true",
+				"--set-string=oidc.validatorClientID=validator-client",
+				"--set-string=oidc.validatorIssuerURL=https://validator.issuer.org",
+				"--set-string=oidc.usePKCE=true",
+				"--set-string=oidc.meUserInfoURL=https://issuer.org/userinfo",
+			)
+
+			Expect(template).To(ContainSubstring("- \"-in-cluster\""))
+			Expect(template).To(ContainSubstring("- \"-oidc-client-id=$(OIDC_CLIENT_ID)\""))
+			Expect(template).To(ContainSubstring("- \"-oidc-client-secret=$(OIDC_CLIENT_SECRET)\""))
+			Expect(template).To(ContainSubstring("- \"-oidc-idp-issuer-url=$(OIDC_ISSUER_URL)\""))
+			Expect(template).To(ContainSubstring("- \"-oidc-use-access-token=true\""))
+			Expect(template).To(ContainSubstring("- \"-oidc-use-pkce=true\""))
+		})
+	})
+
 	When("extraArgs are specified", func() {
 		It("adds the additional args to the Headlamp command in teh deployment", func() {
 			template, _ := run(
