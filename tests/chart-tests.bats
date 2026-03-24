@@ -29,7 +29,7 @@ ske_operator_config() {
     --set oidc.clientId=client \
     --set oidc.secretRef.name=custom-secret-name \
     --set oidc.secretRef.key=custom-secret-key
-  local deployment=$(echo "$output" | yq '.spec.template.spec.containers[0].env[] | select(.name == "HEADLAMP_CONFIG_OIDC_CLIENT_SECRET")')
+  local deployment=$(echo "$output" | yq '.spec.template.spec.containers[0].env[] | select(.name == "OIDC_CLIENT_SECRET")')
 
   # assert with yq
   [[ $(echo "$deployment" | yq '.valueFrom.secretKeyRef.name') == "custom-secret-name" ]]
@@ -42,11 +42,11 @@ ske_operator_config() {
     --set oidc.clientId=client \
     --set oidc.clientSecret=superSecret
 
-  local deployment=$(echo "$output" | yq '.spec.template.spec.containers[0].env[] | select(.name == "HEADLAMP_CONFIG_OIDC_CLIENT_SECRET")')
+  local deployment=$(echo "$output" | yq '.spec.template.spec.containers[0].env[] | select(.name == "OIDC_CLIENT_SECRET")')
 
   [[ "$output" == *"kind: Secret"* ]]
   [[ $(echo "$deployment" | yq '.valueFrom.secretKeyRef.name') == "headlamp-oidc-secret" ]]
-  [[ $(echo "$deployment" | yq '.valueFrom.secretKeyRef.key') == "client-secret" ]]
+  [[ $(echo "$deployment" | yq '.valueFrom.secretKeyRef.key') == "clientSecret" ]]
 }
 
 @test "ske-operator releaseStorage.releasesPath: renders releasesPath in config" {

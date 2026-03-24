@@ -1,4 +1,4 @@
-package tests_test
+package skeoperator_test
 
 import (
 	"encoding/base64"

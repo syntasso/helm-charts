@@ -53,85 +53,16 @@ ingress:
   #    hosts:
   #      - chart-example.local
 # SKE GUI OIDC configuration, add the following values if you are using OIDC
-# oidc:
-#  issuerUrl:
-#  clientId:
-#  clientSecret:   # omit when using secretRef (e.g. for ArgoCD / GitOps)
+oidc:
+  issuerUrl: "www.issuer.org"
+  clientId: "my-client"
+  clientSecret: "top-secret"  # omit when using secretRef (e.g. for ArgoCD / GitOps)
+  useAccessToken: true
+  callbackURL: "www.url.org/call/back"
+
 #  # Reference an existing secret instead of providing clientSecret in values (recommended for GitOps)
 #  secretRef:
 #    name: my-oidc-secret   # name of the existing Secret
 #    key: clientSecret     # key within the Secret (default: clientSecret)
 ## SKE GUI requests the profile and email scopes by default. More scopes can be added by using the following value.
 #  scopes: profile,email
-  # -- OIDC issuer URL
-  # issuerURL: ""
-  # # -- OIDC scopes to be used
-  # scopes: ""
-  # # -- OIDC callback URL
-  # callbackURL: ""
-
-  # # -- OIDC client to be used during token validation
-  # validatorClientID: ""
-  # # -- OIDC Issuer URL to be used during token validation
-  # validatorIssuerURL: ""
-  # # -- Use 'access_token' instead of 'id_token' when authenticating using OIDC
-  # useAccessToken: false
-  # # -- Use PKCE (Proof Key for Code Exchange) for enhanced security in OIDC flow
-  # usePKCE: false
-
-  # -- URL to fetch additional user info for the /me endpoint.
-  # For oauth2proxy /oauth2/userinfo can be used. Empty and it will not be used.
-  # meUserInfoURL: ""
-
-tracing:
-  enabled: false
-metrics:
-  enabled: false
-otlpEndpoint: otel-collector:4317
-
-# -- Headlamp pod's Security Context
-podSecurityContext:
-  {}
-  # fsGroup: 2000
-
-inCluster: false
-inClusterContextName: "main"
-baseURL: ""
-
-# -- Labels to add to the pod
-podLabels: {}
-
-# -- Annotations to add to the pod
-podAnnotations: {}
-
-hostUsers: true
-
-# -- Headlamp pod's Security Context
-podSecurityContext:
-  {}
-  # fsGroup: 2000
-
-# -- Headlamp containers Security Context
-securityContext:
-  # capabilities:
-  #   drop:
-  #   - ALL
-  # readOnlyRootFilesystem: true
-  runAsNonRoot: true
-  privileged: false
-  runAsUser: 100
-  runAsGroup: 101
-# Uses these defaults if this is empty.
-#   allowPrivilegeEscalation: false
-#   runAsNonRoot: true
-#   seccompProfile:
-#     type: RuntimeDefault
-#   capabilities:
-#     drop:
-#       - ALL
-
-# -- Headlamp containers volume mounts
-volumeMounts: []
-
-# -- Headlamp pod's volumes
-volumes: []
