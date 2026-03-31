@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.64.0](https://github.com/syntasso/helm-charts/compare/ske-operator-0.63.0...ske-operator-v0.64.0) (2026-03-31)
+
+
+### Features
+
+* Make all secrets configurable by secretRefs ([#149](https://github.com/syntasso/helm-charts/issues/149)) ([8506e0e](https://github.com/syntasso/helm-charts/commit/8506e0e675feac73b7fc5fba72f4fe416485b500))
+
 ## [0.63.0](https://github.com/syntasso/helm-charts/compare/ske-operator-0.62.0...ske-operator-v0.63.0) (2026-03-24)
 
 
