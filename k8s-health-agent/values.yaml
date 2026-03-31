@@ -1,4 +1,7 @@
-# Your SKE License Key
+# Your SKE License Key.
+# To avoid storing the license in plain text (e.g. for GitOps workflows), omit this field and
+# instead pre-create a kubernetes.io/dockerconfigjson Secret manually, then set
+# imageRegistry.imagePullSecret to its name. The chart will skip creating the pull secret.
 skeLicense: "my-ske-license"
 # Configuration for the Registry and Manifests
 # Update these values if you are using a custom registry or bucket
@@ -8,7 +11,9 @@ imageRegistry:
   # Syntasso Enterprise images are hosted on ghcr.io
   # If you are using a custom registry, update this value to your registry host
   host: "ghcr.io"
-  # The name of the image pull secret to use. Update this if you are using a custom image pull secret
+  # The name of an existing image pull secret to use instead of creating one from skeLicense above.
+  # Use this for GitOps workflows to avoid storing the license in Helm values:
+  # pre-create a kubernetes.io/dockerconfigjson Secret and set its name here.
   # imagePullSecret: <your secret name>
 
   healthAgentImage:

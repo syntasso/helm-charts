@@ -20,8 +20,8 @@ data:
       {{- end }}
       tlsConfig:
         {{- if ( .tlsConfig.certManager.disabled | default false ) }}
-        certSecretName: custom-kratix-platform-serving-cert
-        metricsServerCertSecretName: custom-kratix-platform-metrics-server-cert
+        certSecretName: {{ (.tlsConfig.webhookTLSSecretRef).name | default "custom-kratix-platform-serving-cert" }}
+        metricsServerCertSecretName: {{ (.tlsConfig.metricsServerTLSSecretRef).name | default "custom-kratix-platform-metrics-server-cert" }}
         {{- end }}
         certManager:
           disabled: {{ .tlsConfig.certManager.disabled | default false }}
