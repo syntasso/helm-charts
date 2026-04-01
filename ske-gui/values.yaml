@@ -89,6 +89,7 @@ metrics:
 otlpEndpoint: otel-collector:4317
 # -- Headlamp pod's Security Context
 
+## Run the Headlamp binary with the --in-cluster flag set
 inCluster: true
 inClusterContextName: "main"
 baseURL: ""
