@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.15.1](https://github.com/syntasso/helm-charts/compare/ske-gui-0.15.0...ske-gui-v0.15.1) (2026-04-01)
+
+
+### Bug Fixes
+
+* ensure ske-gui chart defaults in-cluster to true ([ac3e1b0](https://github.com/syntasso/helm-charts/commit/ac3e1b01c8ec50af6f2d0aaa9b55f61a1deb37ea))
+
+
+### Chores
+
+* de-duplicate podSecurityContext in ske-gui chart ([14643a1](https://github.com/syntasso/helm-charts/commit/14643a1a4bf8c394245992ef90505957fc26204c))
+* ske-gui chart defaults in-cluster to true ([92f8900](https://github.com/syntasso/helm-charts/commit/92f8900966414898059fd620831e568053f32f08))
+
 ## [0.15.0](https://github.com/syntasso/helm-charts/compare/ske-gui-0.14.0...ske-gui-v0.15.0) (2026-03-24)
 
 
