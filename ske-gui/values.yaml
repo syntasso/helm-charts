@@ -91,7 +91,7 @@ otlpEndpoint: otel-collector:4317
 podSecurityContext: {}
 # fsGroup: 2000
 
-inCluster: false
+inCluster: true
 inClusterContextName: "main"
 baseURL: ""
 # -- Labels to add to the pod
