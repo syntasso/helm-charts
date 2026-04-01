@@ -88,8 +88,6 @@ metrics:
   enabled: false
 otlpEndpoint: otel-collector:4317
 # -- Headlamp pod's Security Context
-podSecurityContext: {}
-# fsGroup: 2000
 
 inCluster: true
 inClusterContextName: "main"
