@@ -7,7 +7,7 @@ imageRegistry:
   # If you are using a custom registry, update this value to your registry host
   host: "ghcr.io"
   imageName: "syntasso/ske-gui"
-  imageVersion: "v0.7.0"
+  imageVersion: "v0.9.0"
   # Name of the image pull secret to use.
   imagePullSecret: "syntasso-registry"
   # imagePullPolicy: IfNotPresent
@@ -81,7 +81,6 @@ ingress:
 # -- URL to fetch additional user info for the /me endpoint.
 # For oauth2proxy /oauth2/userinfo can be used. Empty and it will not be used.
 # meUserInfoURL: ""
-
 tracing:
   enabled: false
 metrics:
