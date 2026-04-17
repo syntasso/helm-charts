@@ -287,9 +287,9 @@ entries:
   kratix:
     - apiVersion: v2
       appVersion: 1.16.0
-      created: "2026-04-17T11:01:01.449221404Z"
+      created: "2026-04-17T13:43:35.202343939Z"
       description: A Helm chart for installing Kratix (https://kratix.io)
-      digest: 4cfbf3e60979950ac3bb4c8959dc37fdc48c1f6c6b0eb12d3cbf89fdf45e4328
+      digest: 8bb26ab3ffa739bc7dd2550e3c8219ec02fb27daead08668e1ada34766345797
       name: kratix
       type: application
       urls:
