@@ -32,7 +32,7 @@ data:
     imageRegistry:
     {{- with .Values.imageRegistry }}
       host: {{ .host }}
-      pullSecret: {{ .imagePullSecret }}
+      pullSecret: {{ include "ske-operator.effectivePullSecretName" $ | trim }}
       platformImage: {{ .skePlatformImage.name }}
       pipelineImage: {{ .skePlatformPipelineAdapterImage.name }}
       backstageControllerImage: {{ .backstageControllerImage.name }}

@@ -25,50 +25,34 @@ global:
   # only set to true for dev or testing environments
   #   deleteOnUninstall: false
 
-# Your SKE License Key. 
-# Used wherever the license is required (e.g. pull secret creation). Setting
-# this field alone is sufficient for the most common installation. See
-# imageRegistry.managePullSecret below.
-skeLicense: "my-ske-license"
+# Your SKE License Key.
+# To avoid storing the license in plain text (e.g. for GitOps workflows), omit this field and
+# instead pre-create a kubernetes.io/dockerconfigjson Secret manually, then set
+# imageRegistry.imagePullSecret to its name. The chart will skip creating the pull secret.
+skeLicense: ""
 
 # Configuration for the Registry and Manifests
 # Update these values if you are using a custom registry or bucket
 # If using Syntasso Enterprise defaults, no changes are required
 imageRegistry:
-  # The host registry to pull the images from.
-  # Syntasso Enterprise images are hosted on ghcr.io.
-  # Update this value if you are mirroring images to a private registry.
+  # The host registry to pull the images from
+  # Syntasso Enterprise images are hosted on ghcr.io
+  # If you are using a custom registry, update this value to your registry host
   host: "ghcr.io"
+  # The name of an existing image pull secret to use instead of creating one from skeLicense above.
+  # Use this for GitOps workflows to avoid storing the license in Helm values:
+  # pre-create a kubernetes.io/dockerconfigjson Secret and set its name here.
 
-  # Pull secret configuration — three supported scenarios:
-  #
-  # 1. Chart manages the secret (DEFAULT when skeLicense is set)
-  #    The chart creates a Secret named "syntasso-registry" from skeLicense
-  #    and injects it into all workloads. No extra fields needed.
-  #
-  # 2. You manage the secret (GitOps / pre-created secret)
-  #    Pre-create a kubernetes.io/dockerconfigjson Secret yourself, then set:
-  #      imageRegistry.managePullSecret: false
-  #      imageRegistry.imagePullSecret: "<your-secret-name>"
-  #    The chart will inject that name without creating anything.
-  #
-  # 3. No pull secret (cluster-level image pull access)
-  #    Your cluster can pull images without a Secret (e.g. node-level credentials).
-  #    Set:
-  #      imageRegistry.managePullSecret: false
-  #    The chart will not create or inject any pull secret.
+  # The name of the pull secret used by all workloads to pull images.
+  # If empty or not set, no imagePullSecrets are injected and the cluster must
+  # be able to pull images without a secret.
+  imagePullSecret: ""
 
-  # Controls whether the chart creates the "syntasso-registry" Secret from
-  # skeLicense and injects it into all workloads.
-  # Default: true when skeLicense is set, false otherwise.
-  # Set to false to opt out of chart-managed pull secrets while still providing
-  # skeLicense for other features (e.g. entitlement checks).
-  #managePullSecret: true
-
-  # Name of a pre-existing kubernetes.io/dockerconfigjson Secret to inject into
-  # workloads. Only used when managePullSecret is false.
-  # Leave unset (or empty) if no pull secret is needed.
-  # imagePullSecret: "my-secret"
+  # Controls whether the chart creates the registry pull secret from skeLicense.
+  # When not set, defaults to true if skeLicense is provided, false otherwise.
+  # Set to false explicitly if you have pre-created the secret yourself and do
+  # not want the chart to manage it, even when skeLicense is also set.
+  createRegistrySecret: false
 
   skeOperatorImage:
     # The name of the SKE operator use. Update this if you are using a custom image name for the operator

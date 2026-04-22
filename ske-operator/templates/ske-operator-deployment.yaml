@@ -16,9 +16,10 @@ spec:
       affinity:
         {{- . | toYaml | nindent 8 }}
       {{- end }}
-      {{- if .Values.imageRegistry.imagePullSecret }}
+      {{- $pullSecret := (include "ske-operator.effectivePullSecretName" . | trim) -}}
+      {{- if $pullSecret }}
       imagePullSecrets:
-        - name: {{ .Values.imageRegistry.imagePullSecret | quote }}
+        - name: {{ $pullSecret | quote }}
       {{- end }}
 {{- end }}
 

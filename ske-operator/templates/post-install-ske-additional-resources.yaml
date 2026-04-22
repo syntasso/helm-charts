@@ -14,9 +14,10 @@ spec:
     spec:
       serviceAccountName: ske-operator-controller-manager
       restartPolicy: Never
-      {{- if .Values.imageRegistry.imagePullSecret }}
+      {{- $pullSecret := (include "ske-operator.effectivePullSecretName" . | trim) -}}
+      {{- if $pullSecret }}
       imagePullSecrets:
-        - name: {{ .Values.imageRegistry.imagePullSecret | quote }}
+        - name: {{ $pullSecret | quote }}
       {{- end }}
       containers:
         - name: deploy-resources

@@ -2,65 +2,14 @@
 
 load helpers
 
-# --- secret creation ---
+# ---------------------------------------------------------------------------
+# Scenario 1: no pull secret (managePullSecret: false, imagePullSecret unset)
+# The chart creates no secret and injects no imagePullSecrets anywhere.
+# ---------------------------------------------------------------------------
 
-@test "skeLicense set: registry secret is created with default imagePullSecret name" {
+@test "scenario 1: no pull secret: no secret created" {
   run helm_ske_operator \
-    --set skeLicense="abc123"
-  [ "$status" -eq 0 ]
-
-  local secret_name
-  secret_name=$(printf '%s\n' "$output" | yq 'select(.kind == "Secret" and .type == "kubernetes.io/dockerconfigjson") | .metadata.name')
-  [[ "$secret_name" == "syntasso-registry" ]]
-}
-
-@test "skeLicense set: registry secret uses custom imagePullSecret name" {
-  run helm_ske_operator \
-    --set skeLicense="abc123" \
-    --set imageRegistry.imagePullSecret=myorg-secret
-  [ "$status" -eq 0 ]
-
-  local secret_name
-  secret_name=$(printf '%s\n' "$output" | yq 'select(.kind == "Secret" and .type == "kubernetes.io/dockerconfigjson") | .metadata.name')
-  [[ "$secret_name" == "myorg-secret" ]]
-}
-
-@test "skeLicense empty: registry secret is not created" {
-  run helm_ske_operator \
-    --set skeLicense=""
-  [ "$status" -eq 0 ]
-
-  local secret_name
-  secret_name=$(printf '%s\n' "$output" | yq 'select(.kind == "Secret" and .type == "kubernetes.io/dockerconfigjson") | .metadata.name')
-  [[ -z "$secret_name" ]]
-}
-
-@test "createRegistrySecret: false: registry secret is not created even when skeLicense is set" {
-  run helm_ske_operator \
-    --set skeLicense="abc123" \
-    --set imageRegistry.createRegistrySecret=false
-  [ "$status" -eq 0 ]
-
-  local secret_name
-  secret_name=$(printf '%s\n' "$output" | yq 'select(.kind == "Secret" and .type == "kubernetes.io/dockerconfigjson") | .metadata.name')
-  [[ -z "$secret_name" ]]
-}
-
-@test "createRegistrySecret: false: registry secret is not created when imagePullSecret is also custom" {
-  run helm_ske_operator \
-    --set skeLicense="abc123" \
-    --set imageRegistry.imagePullSecret=my-preexisting-secret \
-    --set imageRegistry.createRegistrySecret=false
-  [ "$status" -eq 0 ]
-
-  local secret_name
-  secret_name=$(printf '%s\n' "$output" | yq 'select(.kind == "Secret" and .type == "kubernetes.io/dockerconfigjson") | .metadata.name')
-  [[ -z "$secret_name" ]]
-}
-
-@test "imagePullSecret empty: registry secret is not created even when skeLicense is set" {
-  run helm_ske_operator \
-    --set skeLicense="abc123" \
+    --set skeLicense="" \
     --set imageRegistry.imagePullSecret=""
   [ "$status" -eq 0 ]
 
@@ -69,64 +18,10 @@ load helpers
   [[ -z "$secret_name" ]]
 }
 
-# --- imagePullSecrets on workloads ---
-
-@test "imagePullSecret set: operator deployment references it" {
+@test "scenario 1: no pull secret: no imagePullSecrets on deployment" {
   run helm_ske_operator \
-    --set imageRegistry.imagePullSecret=syntasso-registry \
-    --set skeLicense="abc123"
-  [ "$status" -eq 0 ]
-
-  local pull_secret
-  pull_secret=$(printf '%s\n' "$output" | yq 'select(.kind == "Deployment") | .spec.template.spec.imagePullSecrets[].name')
-  [[ "$pull_secret" == *"syntasso-registry"* ]]
-}
-
-@test "imagePullSecret set: deploy-ske-deployment job references it" {
-  run helm_ske_operator \
-    --set imageRegistry.imagePullSecret=syntasso-registry \
-    --set skeLicense="abc123"
-  [ "$status" -eq 0 ]
-
-  local pull_secret
-  pull_secret=$(printf '%s\n' "$output" | yq 'select(.kind == "Job" and .metadata.name == "deploy-ske-deployment") | .spec.template.spec.imagePullSecrets[].name')
-  [[ "$pull_secret" == "syntasso-registry" ]]
-}
-
-@test "imagePullSecret set: backstage job references it" {
-  run helm_ske_operator \
-    --set imageRegistry.imagePullSecret=syntasso-registry \
-    --set skeLicense="abc123" \
-    --set backstageIntegration.enabled=true \
-    --set backstageIntegration.version=v0.6.0
-  [ "$status" -eq 0 ]
-
-  local pull_secret
-  pull_secret=$(printf '%s\n' "$output" | yq 'select(.kind == "Job" and .metadata.name == "deploy-backstage-integration") | .spec.template.spec.imagePullSecrets[].name')
-  [[ "$pull_secret" == "syntasso-registry" ]]
-}
-
-@test "imagePullSecret set: cortex job references it" {
-  run helm_ske_operator \
-    --set imageRegistry.imagePullSecret=syntasso-registry \
-    --set skeLicense="abc123" \
-    --set cortexIntegration.enabled=true \
-    --set cortexIntegration.config.integrationAlias=test \
-    --set cortexIntegration.config.provider=github \
-    --set cortexIntegration.config.repositoryName=test/repo \
-    --set cortexIntegration.config.token=mytoken \
-    --set cortexIntegration.config.url=https://cortex.example.com
-  [ "$status" -eq 0 ]
-
-  local pull_secret
-  pull_secret=$(printf '%s\n' "$output" | yq 'select(.kind == "Job" and .metadata.name == "deploy-cortex-integration") | .spec.template.spec.imagePullSecrets[].name')
-  [[ "$pull_secret" == "syntasso-registry" ]]
-}
-
-@test "imagePullSecret empty: no imagePullSecrets on operator deployment" {
-  run helm_ske_operator \
-    --set imageRegistry.imagePullSecret="" \
-    --set skeLicense="abc123"
+    --set skeLicense="" \
+    --set imageRegistry.imagePullSecret=""
   [ "$status" -eq 0 ]
 
   local pull_secrets
@@ -134,10 +29,10 @@ load helpers
   [[ -z "$pull_secrets" ]]
 }
 
-@test "imagePullSecret empty: no imagePullSecrets on any job" {
+@test "scenario 1: no pull secret: no imagePullSecrets on any job" {
   run helm_ske_operator \
+    --set skeLicense="" \
     --set imageRegistry.imagePullSecret="" \
-    --set skeLicense="abc123" \
     --set backstageIntegration.enabled=true \
     --set backstageIntegration.version=v0.6.0 \
     --set cortexIntegration.enabled=true \
@@ -153,48 +48,186 @@ load helpers
   [[ -z "$pull_secrets" ]]
 }
 
-# --- createRegistrySecret: false still injects the secret name into workloads ---
+@test "scenario 1: no pull secret: operator-config pullSecret is empty" {
+  run helm_ske_operator \
+    --set skeLicense="" \
+    --set imageRegistry.imagePullSecret=""
+  [ "$status" -eq 0 ]
 
-@test "createRegistrySecret: false: workloads still reference the imagePullSecret name" {
+  local pull_secret
+  pull_secret=$(ske_operator_config "$output" | yq '.imageRegistry.pullSecret')
+  [[ -z "$pull_secret" ]]
+}
+
+@test "scenario 1: managePullSecret false with skeLicense: no secret created, no injection" {
   run helm_ske_operator \
     --set skeLicense="abc123" \
-    --set imageRegistry.imagePullSecret=my-preexisting-secret \
-    --set imageRegistry.createRegistrySecret=false
+    --set imageRegistry.managePullSecret=false
   [ "$status" -eq 0 ]
 
-  local deployment_secret
-  deployment_secret=$(printf '%s\n' "$output" | yq 'select(.kind == "Deployment") | .spec.template.spec.imagePullSecrets[].name')
-  [[ "$deployment_secret" == "my-preexisting-secret" ]]
+  local secret_name
+  secret_name=$(printf '%s\n' "$output" | yq 'select(.kind == "Secret" and .type == "kubernetes.io/dockerconfigjson") | .metadata.name')
+  [[ -z "$secret_name" ]]
 
-  local job_secret
-  job_secret=$(printf '%s\n' "$output" | yq 'select(.kind == "Job" and .metadata.name == "deploy-ske-deployment") | .spec.template.spec.imagePullSecrets[].name')
-  [[ "$job_secret" == "my-preexisting-secret" ]]
+  local pull_secrets
+  pull_secrets=$(printf '%s\n' "$output" | yq 'select(.kind == "Deployment") | .spec.template.spec.imagePullSecrets[].name')
+  [[ -z "$pull_secrets" ]]
 }
 
-# --- operator-config configmap ---
+# ---------------------------------------------------------------------------
+# Scenario 2: pre-created secret (managePullSecret: false, imagePullSecret set)
+# The chart injects the given name everywhere and does not create a secret.
+# ---------------------------------------------------------------------------
 
-@test "operator-config: pullSecret reflects imagePullSecret value" {
+@test "scenario 2: managePullSecret false, imagePullSecret set: no secret created" {
   run helm_ske_operator \
-    --set imageRegistry.imagePullSecret=my-custom-secret \
+    --set skeLicense="" \
+    --set imageRegistry.imagePullSecret=my-secret
+  [ "$status" -eq 0 ]
+
+  local secret_name
+  secret_name=$(printf '%s\n' "$output" | yq 'select(.kind == "Secret" and .type == "kubernetes.io/dockerconfigjson") | .metadata.name')
+  [[ -z "$secret_name" ]]
+}
+
+@test "scenario 2: managePullSecret false, imagePullSecret set: operator deployment references it" {
+  run helm_ske_operator \
+    --set skeLicense="" \
+    --set imageRegistry.imagePullSecret=my-secret
+  [ "$status" -eq 0 ]
+
+  local pull_secret
+  pull_secret=$(printf '%s\n' "$output" | yq 'select(.kind == "Deployment") | .spec.template.spec.imagePullSecrets[].name')
+  [[ "$pull_secret" == "my-secret" ]]
+}
+
+@test "scenario 2: managePullSecret false, imagePullSecret set: all jobs reference it" {
+  run helm_ske_operator \
+    --set skeLicense="" \
+    --set imageRegistry.imagePullSecret=my-secret \
+    --set backstageIntegration.enabled=true \
+    --set backstageIntegration.version=v0.6.0 \
+    --set cortexIntegration.enabled=true \
+    --set cortexIntegration.config.integrationAlias=test \
+    --set cortexIntegration.config.provider=github \
+    --set cortexIntegration.config.repositoryName=test/repo \
+    --set cortexIntegration.config.token=mytoken \
+    --set cortexIntegration.config.url=https://cortex.example.com
+  [ "$status" -eq 0 ]
+
+  local ske_job backstage_job cortex_job
+  ske_job=$(printf '%s\n' "$output" | yq 'select(.kind == "Job" and .metadata.name == "deploy-ske-deployment") | .spec.template.spec.imagePullSecrets[].name')
+  backstage_job=$(printf '%s\n' "$output" | yq 'select(.kind == "Job" and .metadata.name == "deploy-backstage-integration") | .spec.template.spec.imagePullSecrets[].name')
+  cortex_job=$(printf '%s\n' "$output" | yq 'select(.kind == "Job" and .metadata.name == "deploy-cortex-integration") | .spec.template.spec.imagePullSecrets[].name')
+  [[ "$ske_job" == "my-secret" ]]
+  [[ "$backstage_job" == "my-secret" ]]
+  [[ "$cortex_job" == "my-secret" ]]
+}
+
+@test "scenario 2: managePullSecret false, imagePullSecret set: operator-config reflects it" {
+  run helm_ske_operator \
+    --set skeLicense="" \
+    --set imageRegistry.imagePullSecret=my-secret
+  [ "$status" -eq 0 ]
+
+  local pull_secret
+  pull_secret=$(ske_operator_config "$output" | yq '.imageRegistry.pullSecret')
+  [[ "$pull_secret" == "my-secret" ]]
+}
+
+@test "scenario 2: managePullSecret false with skeLicense set: no secret created, imagePullSecret injected" {
+  run helm_ske_operator \
+    --set skeLicense="abc123" \
+    --set imageRegistry.managePullSecret=false \
+    --set imageRegistry.imagePullSecret=my-preexisting-secret
+  [ "$status" -eq 0 ]
+
+  local secret_name
+  secret_name=$(printf '%s\n' "$output" | yq 'select(.kind == "Secret" and .type == "kubernetes.io/dockerconfigjson") | .metadata.name')
+  [[ -z "$secret_name" ]]
+
+  local pull_secret
+  pull_secret=$(printf '%s\n' "$output" | yq 'select(.kind == "Deployment") | .spec.template.spec.imagePullSecrets[].name')
+  [[ "$pull_secret" == "my-preexisting-secret" ]]
+}
+
+# ---------------------------------------------------------------------------
+# Scenario 3: chart-managed secret (skeLicense set, managePullSecret unset or true)
+# The chart creates "syntasso-registry" and injects it into all workloads.
+# imagePullSecret is ignored.
+# ---------------------------------------------------------------------------
+
+@test "scenario 3: skeLicense set: creates secret named syntasso-registry" {
+  run helm_ske_operator \
+    --set skeLicense="abc123"
+  [ "$status" -eq 0 ]
+
+  local secret_name
+  secret_name=$(printf '%s\n' "$output" | yq 'select(.kind == "Secret" and .type == "kubernetes.io/dockerconfigjson") | .metadata.name')
+  [[ "$secret_name" == "syntasso-registry" ]]
+}
+
+@test "scenario 3: skeLicense set: operator deployment uses syntasso-registry" {
+  run helm_ske_operator \
     --set skeLicense="abc123"
   [ "$status" -eq 0 ]
 
   local pull_secret
-  pull_secret=$(printf '%s\n' "$output" | \
-    yq 'select(.kind == "ConfigMap" and .metadata.name == "ske-operator") | .data.config' | \
-    yq '.imageRegistry.pullSecret')
-  [[ "$pull_secret" == "my-custom-secret" ]]
+  pull_secret=$(printf '%s\n' "$output" | yq 'select(.kind == "Deployment") | .spec.template.spec.imagePullSecrets[].name')
+  [[ "$pull_secret" == "syntasso-registry" ]]
 }
 
-@test "operator-config: pullSecret is empty when imagePullSecret is empty" {
+@test "scenario 3: skeLicense set: all jobs use syntasso-registry" {
   run helm_ske_operator \
-    --set imageRegistry.imagePullSecret="" \
+    --set skeLicense="abc123" \
+    --set backstageIntegration.enabled=true \
+    --set backstageIntegration.version=v0.6.0 \
+    --set cortexIntegration.enabled=true \
+    --set cortexIntegration.config.integrationAlias=test \
+    --set cortexIntegration.config.provider=github \
+    --set cortexIntegration.config.repositoryName=test/repo \
+    --set cortexIntegration.config.token=mytoken \
+    --set cortexIntegration.config.url=https://cortex.example.com
+  [ "$status" -eq 0 ]
+
+  local ske_job backstage_job cortex_job
+  ske_job=$(printf '%s\n' "$output" | yq 'select(.kind == "Job" and .metadata.name == "deploy-ske-deployment") | .spec.template.spec.imagePullSecrets[].name')
+  backstage_job=$(printf '%s\n' "$output" | yq 'select(.kind == "Job" and .metadata.name == "deploy-backstage-integration") | .spec.template.spec.imagePullSecrets[].name')
+  cortex_job=$(printf '%s\n' "$output" | yq 'select(.kind == "Job" and .metadata.name == "deploy-cortex-integration") | .spec.template.spec.imagePullSecrets[].name')
+  [[ "$ske_job" == "syntasso-registry" ]]
+  [[ "$backstage_job" == "syntasso-registry" ]]
+  [[ "$cortex_job" == "syntasso-registry" ]]
+}
+
+@test "scenario 3: skeLicense set: imagePullSecret value is ignored" {
+  run helm_ske_operator \
+    --set skeLicense="abc123" \
+    --set imageRegistry.imagePullSecret=some-other-secret
+  [ "$status" -eq 0 ]
+
+  local pull_secret
+  pull_secret=$(printf '%s\n' "$output" | yq 'select(.kind == "Deployment") | .spec.template.spec.imagePullSecrets[].name')
+  [[ "$pull_secret" == "syntasso-registry" ]]
+}
+
+@test "scenario 3: skeLicense set: operator-config pullSecret is syntasso-registry" {
+  run helm_ske_operator \
     --set skeLicense="abc123"
   [ "$status" -eq 0 ]
 
   local pull_secret
-  pull_secret=$(printf '%s\n' "$output" | \
-    yq 'select(.kind == "ConfigMap" and .metadata.name == "ske-operator") | .data.config' | \
-    yq '.imageRegistry.pullSecret')
-  [[ -z "$pull_secret" ]]
+  pull_secret=$(ske_operator_config "$output" | yq '.imageRegistry.pullSecret')
+  [[ "$pull_secret" == "syntasso-registry" ]]
+}
+
+# ---------------------------------------------------------------------------
+# Validation
+# ---------------------------------------------------------------------------
+
+@test "managePullSecret: true without skeLicense: helm template fails with clear error" {
+  run helm_ske_operator \
+    --set skeLicense="" \
+    --set imageRegistry.managePullSecret=true
+  [ "$status" -ne 0 ]
+  [[ "$output" == *"managePullSecret is true but skeLicense is not set"* ]]
 }
