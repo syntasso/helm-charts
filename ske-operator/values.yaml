@@ -29,7 +29,7 @@ global:
 # Used wherever the license is required (e.g. pull secret creation). Setting
 # this field alone is sufficient for the most common installation. See
 # imageRegistry.managePullSecret below.
-skeLicense: "my-ske-license"
+skeLicense: ""
 
 # Configuration for the Registry and Manifests
 # Update these values if you are using a custom registry or bucket
