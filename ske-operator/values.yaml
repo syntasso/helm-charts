@@ -23,12 +23,14 @@ global:
   # skeDeployment:
   # WARNING: when skeDeployment.deleteOnUninstall is true, uninstalling this helm chart will delete your SKE platform
   # only set to true for dev or testing environments
-  # deleteOnUninstall: false
+  #   deleteOnUninstall: false
+
 # Your SKE License Key.
 # To avoid storing the license in plain text (e.g. for GitOps workflows), omit this field and
 # instead pre-create a kubernetes.io/dockerconfigjson Secret manually, then set
 # imageRegistry.imagePullSecret to its name. The chart will skip creating the pull secret.
 skeLicense: "my-ske-license"
+
 # Configuration for the Registry and Manifests
 # Update these values if you are using a custom registry or bucket
 # If using Syntasso Enterprise defaults, no changes are required
@@ -40,7 +42,18 @@ imageRegistry:
   # The name of an existing image pull secret to use instead of creating one from skeLicense above.
   # Use this for GitOps workflows to avoid storing the license in Helm values:
   # pre-create a kubernetes.io/dockerconfigjson Secret and set its name here.
-  # imagePullSecret: "my-secret"
+
+  # The name of the pull secret used by all workloads to pull images.
+  # If empty or not set, no imagePullSecrets are injected and the cluster must
+  # be able to pull images without a secret.
+  imagePullSecret: "syntasso-registry"
+
+  # Controls whether the chart creates the registry pull secret from skeLicense.
+  # When not set, defaults to true if skeLicense is provided, false otherwise.
+  # Set to false explicitly if you have pre-created the secret yourself and do
+  # not want the chart to manage it, even when skeLicense is also set.
+  # createRegistrySecret: false
+
   skeOperatorImage:
     # The name of the SKE operator use. Update this if you are using a custom image name for the operator
     name: "syntasso/ske-operator"

@@ -16,8 +16,10 @@ spec:
       affinity:
         {{- . | toYaml | nindent 8 }}
       {{- end }}
+      {{- if .Values.imageRegistry.imagePullSecret }}
       imagePullSecrets:
-        - name: '{{ .Values.imageRegistry.imagePullSecret | default "syntasso-registry" }}'
+        - name: {{ .Values.imageRegistry.imagePullSecret | quote }}
+      {{- end }}
 {{- end }}
 
 {{- define "containerPatch" }}

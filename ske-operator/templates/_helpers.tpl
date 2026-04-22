@@ -68,6 +68,19 @@ Create the name of the service account to use
 {{- end }}
 
 {{/*
+Returns "true" if the chart should create the registry pull secret, "false" otherwise.
+When imageRegistry.createRegistrySecret is explicitly set, that value is used.
+When not set, defaults to true if skeLicense is provided, false otherwise.
+*/}}
+{{- define "ske-operator.createRegistrySecret" -}}
+{{- if hasKey .Values.imageRegistry "createRegistrySecret" -}}
+{{- .Values.imageRegistry.createRegistrySecret -}}
+{{- else -}}
+{{- ne "" (default "" .Values.skeLicense) -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
 Render the release storage location while keeping backward compatibility with
 releaseStorage.path during the deprecation window.
 */}}
