@@ -61,8 +61,7 @@ spec:
           name: cert
           readOnly: true
       imagePullSecrets:
-      - name: '{{ .Values.imageRegistry.imagePullSecret | default "syntasso-registry"
-          }}'
+      - name: '{{ .Values.imageRegistry.imagePullSecret }}'
       securityContext:
         runAsNonRoot: true
       serviceAccountName: ske-operator-controller-manager
