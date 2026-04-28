@@ -132,6 +132,9 @@ jobs:
               - 'ske-gui/**'
               - 'tests/chart-tests.bats'
               - 'scripts/test-charts.sh'
+            ske-operator-chart-tests:
+              - 'ske-operator/**'
+              - 'tests/ske-operator/**'
 
       - name: Install Helm
         uses: azure/setup-helm@v3
@@ -149,6 +152,14 @@ jobs:
           BATS_LIB_PATH: ${{ steps.setup-bats.outputs.lib-path }}
           TERM: xterm
         run: bats tests/chart-tests.bats
+
+      - name: Run ske-operator chart tests
+        if: ${{ steps.chart-test-changes.outputs.ske-operator-chart-tests == 'true' || (github.event_name == 'workflow_dispatch' && inputs.helm_chart_name == 'ske-operator') }}
+        shell: bash
+        env:
+          BATS_LIB_PATH: ${{ steps.setup-bats.outputs.lib-path }}
+          TERM: xterm
+        run: bats tests/ske-operator/
 
   update-and-release:
     if: ${{ !startsWith(github.ref, 'refs/tags/') && (needs.test.result == 'success' || needs.test.result == 'skipped') && (needs.chart-tests.result == 'success' || needs.chart-tests.result == 'skipped') }}

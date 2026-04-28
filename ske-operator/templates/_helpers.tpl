@@ -68,6 +68,35 @@ Create the name of the service account to use
 {{- end }}
 
 {{/*
+Returns "true" if the chart should create and manage the pull secret from
+skeLicense, "false" otherwise.
+When imageRegistry.managePullSecret is explicitly set, that value is honoured.
+When absent, defaults to true if skeLicense is provided, false otherwise —
+preserving backwards compatibility for existing installations.
+*/}}
+{{- define "ske-operator.managePullSecret" -}}
+{{- if hasKey .Values.imageRegistry "managePullSecret" -}}
+{{- .Values.imageRegistry.managePullSecret -}}
+{{- else -}}
+{{- ne "" (default "" .Values.skeLicense) -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Returns the effective image pull secret name injected into all workloads.
+When the chart manages the secret (managePullSecret=true) the name is always
+"syntasso-registry". Otherwise falls back to imageRegistry.imagePullSecret,
+which may be empty (no imagePullSecrets injected).
+*/}}
+{{- define "ske-operator.effectivePullSecretName" -}}
+{{- if eq (include "ske-operator.managePullSecret" . | trim) "true" -}}
+syntasso-registry
+{{- else -}}
+{{- default "" .Values.imageRegistry.imagePullSecret -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
 Render the release storage location while keeping backward compatibility with
 releaseStorage.path during the deprecation window.
 */}}

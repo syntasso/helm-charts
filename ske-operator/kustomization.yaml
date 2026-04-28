@@ -11,7 +11,7 @@ patches:
       - op: replace
         path: /spec/template/spec/imagePullSecrets
         value:
-          - name: '{{ .Values.imageRegistry.imagePullSecret | default "syntasso-registry" }}'
+          - name: '{{ .Values.imageRegistry.imagePullSecret }}'
 
 # patches:
 #   - target:

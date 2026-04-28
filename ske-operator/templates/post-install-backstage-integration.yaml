@@ -18,8 +18,11 @@ spec:
     spec:
       serviceAccountName: ske-operator-controller-manager
       restartPolicy: Never
+      {{- $pullSecret := (include "ske-operator.effectivePullSecretName" $root | trim) -}}
+      {{- if $pullSecret }}
       imagePullSecrets:
-        - name: '{{ $root.Values.imageRegistry.imagePullSecret | default "syntasso-registry" }}'
+        - name: {{ $pullSecret | quote }}
+      {{- end }}
       containers:
         - name: deploy-ske
           image: {{ $root.Values.imageRegistry.host }}/{{ $root.Values.imageRegistry.skeOperatorImage.name }}:{{ $root.Chart.AppVersion }}
