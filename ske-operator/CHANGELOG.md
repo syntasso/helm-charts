@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.66.0](https://github.com/syntasso/helm-charts/compare/ske-operator-0.65.0...ske-operator-v0.66.0) (2026-04-29)
+
+
+### Features
+
+* more control over the image pull secret ([d1aad38](https://github.com/syntasso/helm-charts/commit/d1aad3845430043aeec7369a1480d3493a409fd0))
+
 ## [0.65.0](https://github.com/syntasso/helm-charts/compare/ske-operator-0.64.0...ske-operator-v0.65.0) (2026-04-09)
 
 
