@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.67.0](https://github.com/syntasso/helm-charts/compare/ske-operator-0.66.0...ske-operator-v0.67.0) (2026-04-30)
+
+
+### Features
+
+* **ske-operator:** update backstage-controller version (autorelease) ([7e4c4fc](https://github.com/syntasso/helm-charts/commit/7e4c4fcddc55b7d43147e71d6351da5d05c45d8c))
+
 ## [0.66.0](https://github.com/syntasso/helm-charts/compare/ske-operator-0.65.0...ske-operator-v0.66.0) (2026-04-29)
 
 
