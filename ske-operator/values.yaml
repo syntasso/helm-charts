@@ -24,13 +24,11 @@ global:
   # WARNING: when skeDeployment.deleteOnUninstall is true, uninstalling this helm chart will delete your SKE platform
   # only set to true for dev or testing environments
   #   deleteOnUninstall: false
-
 # Your SKE License Key. 
 # Used wherever the license is required (e.g. pull secret creation). Setting
 # this field alone is sufficient for the most common installation. See
 # imageRegistry.managePullSecret below.
 skeLicense: ""
-
 # Configuration for the Registry and Manifests
 # Update these values if you are using a custom registry or bucket
 # If using Syntasso Enterprise defaults, no changes are required
@@ -39,7 +37,6 @@ imageRegistry:
   # Syntasso Enterprise images are hosted on ghcr.io.
   # Update this value if you are mirroring images to a private registry.
   host: "ghcr.io"
-
   # Pull secret configuration — three supported scenarios:
   #
   # 1. Chart manages the secret (DEFAULT when skeLicense is set)
@@ -69,7 +66,6 @@ imageRegistry:
   # workloads. Only used when managePullSecret is false.
   # Leave unset (or empty) if no pull secret is needed.
   # imagePullSecret: "my-secret"
-
   skeOperatorImage:
     # The name of the SKE operator use. Update this if you are using a custom image name for the operator
     name: "syntasso/ske-operator"
@@ -207,7 +203,7 @@ backstageIntegration:
   # Set to true if you want to deploy the SKE Backstage Controller
   enabled: false
   # The version of the controller to deploy
-  version: "v0.6.0"
+  version: "v0.7.0"
   deploymentConfig:
     resources:
       limits:
