@@ -153,6 +153,25 @@ skeDeployment:
       requests:
         memory: "256Mi"
         cpu: "100m"
+    nodeSelector: {}
+    # nodeSelector:
+    #   kubernetes.io/os: linux
+    tolerations: []
+    # tolerations:
+    #   - key: "dedicated"
+    #     operator: "Equal"
+    #     value: "ske"
+    #     effect: "NoSchedule"
+    affinity: {}
+    # affinity:
+    #   nodeAffinity:
+    #     requiredDuringSchedulingIgnoredDuringExecution:
+    #       nodeSelectorTerms:
+    #         - matchExpressions:
+    #             - key: kubernetes.io/arch
+    #               operator: In
+    #               values:
+    #                 - amd64
   tlsConfig:
     certManager:
       disabled: false

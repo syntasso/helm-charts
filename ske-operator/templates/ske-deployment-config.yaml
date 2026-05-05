@@ -13,10 +13,23 @@ data:
       name: kratix
     spec:
       version: {{ .version | default "latest" }}
-      {{- with .deploymentConfig.resources }}
+      {{- $dc := .deploymentConfig }}
+      {{- with $dc.resources }}
       deploymentConfig:
         resources:
 {{- toYaml . | nindent 10 }}
+        {{- with $dc.nodeSelector }}
+        nodeSelector:
+{{- toYaml . | nindent 10 }}
+        {{- end }}
+        {{- with $dc.tolerations }}
+        tolerations:
+{{- toYaml . | nindent 10 }}
+        {{- end }}
+        {{- with $dc.affinity }}
+        affinity:
+{{- toYaml . | nindent 10 }}
+        {{- end }}
       {{- end }}
       tlsConfig:
         {{- if ( .tlsConfig.certManager.disabled | default false ) }}
