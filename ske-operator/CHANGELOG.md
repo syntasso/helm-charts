@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.68.0](https://github.com/syntasso/helm-charts/compare/ske-operator-0.67.0...ske-operator-v0.68.0) (2026-05-05)
+
+
+### Features
+
+* bump ske-operator versions ([b18299a](https://github.com/syntasso/helm-charts/commit/b18299a17bcb6e4ff6cbb6025c1f7e82ecaa6a54))
+
 ## [0.67.0](https://github.com/syntasso/helm-charts/compare/ske-operator-0.66.0...ske-operator-v0.67.0) (2026-04-30)
 
 
