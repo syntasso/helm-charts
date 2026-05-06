@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.70.0](https://github.com/syntasso/helm-charts/compare/ske-operator-0.69.0...ske-operator-v0.70.0) (2026-05-06)
+
+
+### Features
+
+* add support for nodeSelector, affinity and tolations in ske-operator ([#163](https://github.com/syntasso/helm-charts/issues/163)) ([88a098b](https://github.com/syntasso/helm-charts/commit/88a098b36bfcafee6f5ba3c56a10ab6910a574f7))
+
 ## [0.69.0](https://github.com/syntasso/helm-charts/compare/ske-operator-0.68.0...ske-operator-v0.69.0) (2026-05-06)
 
 
