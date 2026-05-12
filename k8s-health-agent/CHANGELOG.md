@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.22.0](https://github.com/syntasso/helm-charts/compare/k8s-health-agent-0.21.0...k8s-health-agent-v0.22.0) (2026-05-12)
+
+
+### Features
+
+* **k8s-health-agent:** update appVersion (autorelease) ([4959e3e](https://github.com/syntasso/helm-charts/commit/4959e3e2b8b20deb4a6b1f8b5f468c9654eb431d))
+* **k8s-health-agent:** update appVersion (autorelease) ([344f4dd](https://github.com/syntasso/helm-charts/commit/344f4dd83c045ca77b0d5f6cc0f59afdb7b64e54))
+
 ## [0.21.0](https://github.com/syntasso/helm-charts/compare/k8s-health-agent-0.20.0...k8s-health-agent-v0.21.0) (2026-04-29)
 
 
