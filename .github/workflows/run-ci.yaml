@@ -56,13 +56,13 @@ jobs:
       CHART_NAME: ${{ inputs.helm_chart_name }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
           token: ${{ secrets.CR_TOKEN }}
 
       - name: Check for changes
-        uses: dorny/paths-filter@v2
+        uses: dorny/paths-filter@v4
         id: changes
         with:
           filters: |
@@ -72,19 +72,19 @@ jobs:
 
       - name: Set up kubectl
         if: ${{ (github.event_name == 'push' && steps.changes.outputs.ske-operator == 'true') || (github.event_name == 'workflow_dispatch' && inputs.helm_chart_name == 'ske-operator') }}
-        uses: azure/setup-kubectl@v3
+        uses: azure/setup-kubectl@v5
         with:
           version: "latest"
 
       - name: Set up Helm
         if: ${{ (github.event_name == 'push' && steps.changes.outputs.ske-operator == 'true') || (github.event_name == 'workflow_dispatch' && inputs.helm_chart_name == 'ske-operator') }}
-        uses: azure/setup-helm@v3
+        uses: azure/setup-helm@v5
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Go
         if: ${{ (github.event_name == 'push' && steps.changes.outputs.ske-operator == 'true') || (github.event_name == 'workflow_dispatch' && inputs.helm_chart_name == 'ske-operator') }}
-        uses: actions/setup-go@v4
+        uses: actions/setup-go@v6
         with:
           go-version: 1.26
 
@@ -121,10 +121,10 @@ jobs:
   chart-tests:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v6
 
       - name: Check for chart-test changes
-        uses: dorny/paths-filter@v2
+        uses: dorny/paths-filter@v4
         id: chart-test-changes
         with:
           filters: |
@@ -137,7 +137,7 @@ jobs:
               - 'tests/ske-operator/**'
 
       - name: Install Helm
-        uses: azure/setup-helm@v3
+        uses: azure/setup-helm@v5
         with:
           version: 'v3.14.0'
 
@@ -171,7 +171,7 @@ jobs:
       CHART_NAME: ${{ inputs.helm_chart_name }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
           token: ${{ secrets.CR_TOKEN }}
@@ -182,7 +182,7 @@ jobs:
           git config user.email "kratix@syntasso.io"
 
       - name: Check for changes
-        uses: dorny/paths-filter@v2
+        uses: dorny/paths-filter@v4
         id: changes
         with:
           filters: |
@@ -207,7 +207,7 @@ jobs:
           echo "K8S_HEALTH_AGENT_CHANGED=${{ steps.changes.outputs.k8s-health-agent }}" >> $GITHUB_ENV
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: 18
 
@@ -362,7 +362,7 @@ jobs:
       CR_TOKEN: ${{ secrets.CR_TOKEN }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
           token: ${{ secrets.CR_TOKEN }}
@@ -389,7 +389,7 @@ jobs:
           git config user.email "kratix@syntasso.io"
 
       - name: Install Helm
-        uses: azure/setup-helm@v3
+        uses: azure/setup-helm@v5
 
       - name: Create chart-releaser config
         run: |
@@ -408,7 +408,7 @@ jobs:
           cat ${CHART_NAME}/Chart.yaml
 
       - name: Run chart-releaser
-        uses: helm/chart-releaser-action@v1.6.0
+        uses: helm/chart-releaser-action@v1.7.0
         with:
           charts_dir: .
           pages_branch: gh-pages
@@ -416,7 +416,7 @@ jobs:
           config: .cr.yaml
 
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v6
         with:
           aws-region: eu-west-2
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
