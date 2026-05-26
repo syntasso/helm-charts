@@ -172,6 +172,15 @@ skeDeployment:
     #               operator: In
     #               values:
     #                 - amd64
+    volumes: []
+    # volumes:
+    #   - name: plugins
+    #     emptyDir: {}
+    volumeMounts: []
+    # volumeMounts:
+    #   - mountPath: /usr/local/libexec/vault
+    #     name: plugins
+    #     readOnly: true
   tlsConfig:
     certManager:
       disabled: false
