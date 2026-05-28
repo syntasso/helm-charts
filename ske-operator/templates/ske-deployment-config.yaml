@@ -30,6 +30,14 @@ data:
         affinity:
 {{- toYaml . | nindent 10 }}
         {{- end }}
+        {{- with $dc.volumes }}
+        volumes:
+{{- toYaml . | nindent 10 }}
+        {{- end }}
+        {{- with $dc.volumeMounts }}
+        volumeMounts:
+{{- toYaml . | nindent 10 }}
+        {{- end }}
       {{- end }}
       tlsConfig:
         {{- if ( .tlsConfig.certManager.disabled | default false ) }}
