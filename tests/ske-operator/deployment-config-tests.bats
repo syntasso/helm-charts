@@ -2,7 +2,7 @@
 
 load helpers
 
-@test "deploymentConfig.resources rendered, nodeSelector/tolerations/affinity absent" {
+@test "deploymentConfig.resources rendered, nodeSelector/tolerations/affinity/volumes/volumeMounts absent" {
   run helm_ske_operator
   [ "$status" -eq 0 ]
 
@@ -13,6 +13,8 @@ load helpers
   [[ $(printf '%s\n' "$deployment_config" | yq '.spec.deploymentConfig.nodeSelector') == "null" ]]
   [[ $(printf '%s\n' "$deployment_config" | yq '.spec.deploymentConfig.tolerations') == "null" ]]
   [[ $(printf '%s\n' "$deployment_config" | yq '.spec.deploymentConfig.affinity') == "null" ]]
+  [[ $(printf '%s\n' "$deployment_config" | yq '.spec.deploymentConfig.volumes') == "null" ]]
+  [[ $(printf '%s\n' "$deployment_config" | yq '.spec.deploymentConfig.volumeMounts') == "null" ]]
 }
 
 @test "deploymentConfig: not rendered when no fields are set" {
@@ -71,7 +73,35 @@ load helpers
   [[ $(printf '%s\n' "$deployment_config" | yq "${match_expr}.values[0]") == "amd64" ]]
 }
 
-@test "resources, nodeSelector, tolerations and affinity: all rendered under deploymentConfig when set together" {
+@test "volumes: rendered under deploymentConfig when set" {
+  run helm_ske_operator \
+    --set 'skeDeployment.deploymentConfig.volumes[0].name=plugins' \
+    --set 'skeDeployment.deploymentConfig.volumes[0].emptyDir.sizeLimit=1Gi'
+  [ "$status" -eq 0 ]
+
+  local deployment_config
+  deployment_config="$(ske_deployment_config "$output")"
+
+  [[ $(printf '%s\n' "$deployment_config" | yq '.spec.deploymentConfig.volumes[0].name') == "plugins" ]]
+  [[ $(printf '%s\n' "$deployment_config" | yq '.spec.deploymentConfig.volumes[0].emptyDir.sizeLimit') == "1Gi" ]]
+}
+
+@test "volumeMounts: rendered under deploymentConfig when set" {
+  run helm_ske_operator \
+    --set 'skeDeployment.deploymentConfig.volumeMounts[0].mountPath=/usr/local/libexec/vault' \
+    --set 'skeDeployment.deploymentConfig.volumeMounts[0].name=plugins' \
+    --set 'skeDeployment.deploymentConfig.volumeMounts[0].readOnly=true'
+  [ "$status" -eq 0 ]
+
+  local deployment_config
+  deployment_config="$(ske_deployment_config "$output")"
+
+  [[ $(printf '%s\n' "$deployment_config" | yq '.spec.deploymentConfig.volumeMounts[0].mountPath') == "/usr/local/libexec/vault" ]]
+  [[ $(printf '%s\n' "$deployment_config" | yq '.spec.deploymentConfig.volumeMounts[0].name') == "plugins" ]]
+  [[ $(printf '%s\n' "$deployment_config" | yq '.spec.deploymentConfig.volumeMounts[0].readOnly') == "true" ]]
+}
+
+@test "all deploymentConfig keys: rendered together when set" {
   run helm_ske_operator \
     --set 'skeDeployment.deploymentConfig.nodeSelector.kubernetes\.io/os=linux' \
     --set 'skeDeployment.deploymentConfig.tolerations[0].key=dedicated' \
@@ -80,7 +110,12 @@ load helpers
     --set 'skeDeployment.deploymentConfig.tolerations[0].effect=NoSchedule' \
     --set 'skeDeployment.deploymentConfig.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].key=kubernetes.io/arch' \
     --set 'skeDeployment.deploymentConfig.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].operator=In' \
-    --set 'skeDeployment.deploymentConfig.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].values[0]=amd64'
+    --set 'skeDeployment.deploymentConfig.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].values[0]=amd64' \
+    --set 'skeDeployment.deploymentConfig.volumes[0].name=plugins' \
+    --set 'skeDeployment.deploymentConfig.volumes[0].emptyDir.sizeLimit=1Gi' \
+    --set 'skeDeployment.deploymentConfig.volumeMounts[0].mountPath=/usr/local/libexec/vault' \
+    --set 'skeDeployment.deploymentConfig.volumeMounts[0].name=plugins' \
+    --set 'skeDeployment.deploymentConfig.volumeMounts[0].readOnly=true'
   [ "$status" -eq 0 ]
 
   local deployment_config
@@ -90,4 +125,7 @@ load helpers
   [[ $(printf '%s\n' "$deployment_config" | yq '.spec.deploymentConfig.nodeSelector["kubernetes.io/os"]') == "linux" ]]
   [[ $(printf '%s\n' "$deployment_config" | yq '.spec.deploymentConfig.tolerations[0].key') == "dedicated" ]]
   [[ $(printf '%s\n' "$deployment_config" | yq '.spec.deploymentConfig.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].key') == "kubernetes.io/arch" ]]
+  [[ $(printf '%s\n' "$deployment_config" | yq '.spec.deploymentConfig.volumes[0].name') == "plugins" ]]
+  [[ $(printf '%s\n' "$deployment_config" | yq '.spec.deploymentConfig.volumeMounts[0].mountPath') == "/usr/local/libexec/vault" ]]
+  [[ $(printf '%s\n' "$deployment_config" | yq '.spec.deploymentConfig.volumeMounts[0].name') == "plugins" ]]
 }
