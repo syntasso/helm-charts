@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.72.0](https://github.com/syntasso/helm-charts/compare/ske-operator-0.71.0...ske-operator-v0.72.0) (2026-05-29)
+
+
+### Features
+
+* allow template volume and volumeMounts for ske deployment ([#171](https://github.com/syntasso/helm-charts/issues/171)) ([e55d0b5](https://github.com/syntasso/helm-charts/commit/e55d0b5d82d4cf4509b077e8fe29a3a32d0e6f19))
+* **ske-operator:** update appVersion (autorelease) ([b8cd214](https://github.com/syntasso/helm-charts/commit/b8cd214af1125bef10201c9e2044700e1f04b0da))
+
 ## [0.71.0](https://github.com/syntasso/helm-charts/compare/ske-operator-0.70.0...ske-operator-v0.71.0) (2026-05-11)
 
 
