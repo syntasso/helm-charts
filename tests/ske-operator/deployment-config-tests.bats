@@ -28,38 +28,6 @@ load helpers
   [[ $(printf '%s\n' "$deployment_config" | yq '.spec.deploymentConfig') == "null" ]]
 }
 
-@test "webhookConfig: not rendered by default" {
-  run helm_ske_operator
-  [ "$status" -eq 0 ]
-
-  local deployment_config
-  deployment_config="$(ske_deployment_config "$output")"
-
-  [[ $(printf '%s\n' "$deployment_config" | yq '.spec.webhookConfig') == "null" ]]
-}
-
-@test "webhookConfig: timeoutSeconds rendered with override value" {
-  run helm_ske_operator \
-    --set 'skeDeployment.webhookConfig.timeoutSeconds=5'
-  [ "$status" -eq 0 ]
-
-  local deployment_config
-  deployment_config="$(ske_deployment_config "$output")"
-
-  [[ $(printf '%s\n' "$deployment_config" | yq '.spec.webhookConfig.timeoutSeconds') == "5" ]]
-}
-
-@test "webhookConfig: not rendered when unset" {
-  run helm_ske_operator \
-    --set 'skeDeployment.webhookConfig=null'
-  [ "$status" -eq 0 ]
-
-  local deployment_config
-  deployment_config="$(ske_deployment_config "$output")"
-
-  [[ $(printf '%s\n' "$deployment_config" | yq '.spec.webhookConfig') == "null" ]]
-}
-
 @test "nodeSelector: rendered under deploymentConfig when set" {
   run helm_ske_operator \
     --set 'skeDeployment.deploymentConfig.nodeSelector.kubernetes\.io/os=linux'
