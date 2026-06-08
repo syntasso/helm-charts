@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.23.0](https://github.com/syntasso/helm-charts/compare/ske-gui-0.22.0...ske-gui-v0.23.0) (2026-06-08)
+
+
+### Features
+
+* **ske-gui:** update appVersion (autorelease) ([360237b](https://github.com/syntasso/helm-charts/commit/360237b86269b43d2d141915cabf4cf98bd9443b))
+
 ## [0.22.0](https://github.com/syntasso/helm-charts/compare/ske-gui-0.21.0...ske-gui-v0.22.0) (2026-06-03)
 
 
