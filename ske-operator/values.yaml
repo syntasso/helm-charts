@@ -181,8 +181,8 @@ skeDeployment:
     #   - mountPath: /usr/local/libexec/vault
     #     name: plugins
     #     readOnly: true
-  webhookConfig:
-    timeoutSeconds: 10
+  # webhookConfig:
+  #   timeoutSeconds: 10
   tlsConfig:
     certManager:
       disabled: false

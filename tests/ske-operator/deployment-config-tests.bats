@@ -28,14 +28,14 @@ load helpers
   [[ $(printf '%s\n' "$deployment_config" | yq '.spec.deploymentConfig') == "null" ]]
 }
 
-@test "webhookConfig: timeoutSeconds rendered with default value" {
+@test "webhookConfig: not rendered by default" {
   run helm_ske_operator
   [ "$status" -eq 0 ]
 
   local deployment_config
   deployment_config="$(ske_deployment_config "$output")"
 
-  [[ $(printf '%s\n' "$deployment_config" | yq '.spec.webhookConfig.timeoutSeconds') == "10" ]]
+  [[ $(printf '%s\n' "$deployment_config" | yq '.spec.webhookConfig') == "null" ]]
 }
 
 @test "webhookConfig: timeoutSeconds rendered with override value" {
