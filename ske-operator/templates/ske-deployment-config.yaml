@@ -13,6 +13,10 @@ data:
       name: kratix
     spec:
       version: {{ .version | default "latest" }}
+{{- with .webhookConfig }}
+      webhookConfig:
+{{- toYaml . | nindent 8 }}
+{{- end }}
       {{- $dc := .deploymentConfig }}
       {{- with $dc.resources }}
       deploymentConfig:
