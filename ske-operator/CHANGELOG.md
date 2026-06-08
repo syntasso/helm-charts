@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.73.0](https://github.com/syntasso/helm-charts/compare/ske-operator-0.72.0...ske-operator-v0.73.0) (2026-06-08)
+
+
+### Features
+
+* allow setting timeoutSeconds for webhooks ([#176](https://github.com/syntasso/helm-charts/issues/176)) ([99b652d](https://github.com/syntasso/helm-charts/commit/99b652dfc210e024deedd42adda9643fac3aa399))
+* **ske-operator:** update appVersion (autorelease) ([b83f216](https://github.com/syntasso/helm-charts/commit/b83f216c14e530a630d4758426177d334a22058e))
+
 ## [0.72.0](https://github.com/syntasso/helm-charts/compare/ske-operator-0.71.0...ske-operator-v0.72.0) (2026-05-29)
 
 
