@@ -2804,6 +2804,18 @@ spec:
                     Version is the version of the Kratix platform to deploy, and corresponds to the
                     version in the object path in the S3 bucket.
                   type: string
+                webhookConfig:
+                  description: WebhookConfig is the configuration for the Kratix platform webhooks
+                  properties:
+                    timeoutSeconds:
+                      description: |-
+                        TimeoutSeconds specifies the timeout for Kratix platform webhooks in seconds.
+                        Valid values are 1-30. If unset, the Kubernetes default of 10 seconds is used.
+                      format: int32
+                      maximum: 30
+                      minimum: 1
+                      type: integer
+                  type: object
               type: object
             status:
               description: KratixStatus defines the observed state of Kratix
