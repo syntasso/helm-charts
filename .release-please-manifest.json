@@ -1,6 +1,6 @@
 {
   "backstage-controller": "0.6.0",
-  "ske-gui": "0.23.0",
+  "ske-gui": "0.24.0",
   "k8s-health-agent": "0.24.0",
   "ske-operator": "0.74.0"
 }
