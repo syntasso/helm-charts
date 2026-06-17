@@ -19,9 +19,10 @@ var (
 	timeout     = time.Second * 100
 	longTimeout = time.Second * 300
 
-	kubectlTimeout       = time.Second * 60
-	kubectlMediumTimeout = time.Second * 120
-	kubectlLongTimeout   = time.Second * 300
+	kubectlTimeout            = time.Second * 60
+	kubectlMediumTimeout      = time.Second * 120
+	kubectlLongTimeout        = time.Second * 300
+	certManagerWebhookTimeout = time.Second * 180
 
 	context = "--context=kind-platform"
 )
@@ -33,7 +34,7 @@ var _ = Describe("ske-operator helm chart", func() {
 			run("kubectl", context, "apply", "-f=https://github.com/cert-manager/cert-manager/releases/download/v1.15.0/cert-manager.yaml")
 			run("kubectl", context, "wait", "crd/certificates.cert-manager.io", "--for=condition=established", "--timeout="+formatTimeout(kubectlTimeout))
 			validateCertManagerWebhook()
-			run("kubectl", context, "wait", "--for=condition=available", "deployment/cert-manager-webhook", "-n=cert-manager")
+			run("kubectl", context, "wait", "--for=condition=available", "deployment/cert-manager-webhook", "-n=cert-manager", "--timeout="+formatTimeout(certManagerWebhookTimeout))
 		})
 
 		AfterEach(func() {
@@ -230,7 +231,7 @@ var _ = Describe("ske-operator helm chart", func() {
 					run("kubectl", context, "apply", "-f=https://github.com/cert-manager/cert-manager/releases/download/v1.15.0/cert-manager.yaml")
 					run("kubectl", context, "wait", "crd/certificates.cert-manager.io", "--for=condition=established", "--timeout="+fmt.Sprintf("%ds", int(kubectlTimeout.Seconds())))
 					validateCertManagerWebhook()
-					run("kubectl", context, "wait", "--for=condition=available", "deployment/cert-manager-webhook", "-n=cert-manager")
+					run("kubectl", context, "wait", "--for=condition=available", "deployment/cert-manager-webhook", "-n=cert-manager", "--timeout="+formatTimeout(certManagerWebhookTimeout))
 				})
 
 				AfterEach(func() {
@@ -289,7 +290,7 @@ var _ = Describe("ske-operator helm chart", func() {
 					run("kubectl", context, "apply", "-f=https://github.com/cert-manager/cert-manager/releases/download/v1.15.0/cert-manager.yaml")
 					run("kubectl", context, "wait", "crd/certificates.cert-manager.io", "--for=condition=established", "--timeout="+fmt.Sprintf("%ds", int(kubectlTimeout.Seconds())))
 					validateCertManagerWebhook()
-					run("kubectl", context, "wait", "--for=condition=available", "deployment/cert-manager-webhook", "-n=cert-manager")
+					run("kubectl", context, "wait", "--for=condition=available", "deployment/cert-manager-webhook", "-n=cert-manager", "--timeout="+formatTimeout(certManagerWebhookTimeout))
 				})
 
 				AfterEach(func() {
@@ -339,7 +340,7 @@ var _ = Describe("ske-operator helm chart", func() {
 				run("kubectl", context, "apply", "-f=https://github.com/cert-manager/cert-manager/releases/download/v1.15.0/cert-manager.yaml")
 				run("kubectl", context, "wait", "crd/certificates.cert-manager.io", "--for=condition=established", "--timeout="+fmt.Sprintf("%ds", int(kubectlTimeout.Seconds())))
 				validateCertManagerWebhook()
-				run("kubectl", context, "wait", "--for=condition=available", "deployment/cert-manager-webhook", "-n=cert-manager")
+				run("kubectl", context, "wait", "--for=condition=available", "deployment/cert-manager-webhook", "-n=cert-manager", "--timeout="+formatTimeout(certManagerWebhookTimeout))
 			})
 
 			AfterEach(func() {
@@ -415,10 +416,10 @@ var _ = Describe("ske-operator helm chart", func() {
 })
 
 func validateCertManagerWebhook() {
-	// It takes a while for the webhook to be ready, so we need to retry this with a timeout
+	// cert-manager webhook can take >100s to accept connections on slower CI runners
 	Eventually(func(g Gomega) {
 		runGinkgo(g, "kubectl", context, "apply", "-f", "assets/example-issuer.yaml", "--dry-run=server")
-	}, timeout, interval).Should(Succeed())
+	}, certManagerWebhookTimeout, interval).Should(Succeed())
 }
 
 func formatTimeout(timeout time.Duration) string {
