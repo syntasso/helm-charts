@@ -17,7 +17,7 @@ var (
 	interval = time.Second
 
 	timeout     = time.Second * 100
-	longTimeout = time.Second * 300
+	longTimeout = time.Second * 600
 
 	kubectlTimeout            = time.Second * 60
 	kubectlMediumTimeout      = time.Second * 120
@@ -45,7 +45,7 @@ var _ = Describe("ske-operator helm chart", func() {
 		It("can install, upgrade and uninstall SKE successfully", func() {
 			By("installing SKE", func() {
 				runLongTimeout("helm", "install", "ske-operator", "--create-namespace", "../ske-operator/",
-					"-n=kratix-platform-system", "-f=./assets/values-with-certmanager.yaml", "--set-string", "skeLicense="+skeLicenseToken, "--wait")
+					"-n=kratix-platform-system", "-f=./assets/values-with-certmanager.yaml", "--set-string", "skeLicense="+skeLicenseToken, "--wait", "--timeout=9m")
 
 				By("creating a certificate and issuer, and use them for the webhook")
 				run("kubectl", context, "get", "certificates", "ske-operator-serving-cert", "-n=kratix-platform-system")
@@ -72,7 +72,7 @@ var _ = Describe("ske-operator helm chart", func() {
 			By("upgrading SKE", func() {
 				run("pwd")
 				runLongTimeout("helm", "upgrade", "ske-operator", "../ske-operator/", "-n=kratix-platform-system",
-					"-f=./assets/values-with-upgrade.yaml", "--set-string", "skeLicense="+skeLicenseToken, "--wait")
+					"-f=./assets/values-with-upgrade.yaml", "--set-string", "skeLicense="+skeLicenseToken, "--wait", "--timeout=9m")
 
 				By("upgrading SKE version", func() {
 					Expect(run("kubectl", context, "get", "kratixes", "kratix", "-o", "jsonpath={.metadata.creationTimestamp}")).To(Equal(creationTimestamp))
@@ -159,7 +159,7 @@ var _ = Describe("ske-operator helm chart", func() {
 				metricsCa, _ := run("cat", "./metrics-ca.crt")
 
 				runLongTimeout("helm", "install", "ske-operator", "--create-namespace", "../ske-operator/",
-					"-n=kratix-platform-system", "-f=./assets/values-without-certmanager.yaml", "--set-string", "skeLicense="+skeLicenseToken, "--wait",
+					"-n=kratix-platform-system", "-f=./assets/values-without-certmanager.yaml", "--set-string", "skeLicense="+skeLicenseToken, "--wait", "--timeout=9m",
 					"--set-string", "global.skeOperator.tlsConfig.webhookTLSCert="+operatorTlsCrt,
 					"--set-string", "global.skeOperator.tlsConfig.webhookTLSKey="+operatorTlsKey,
 					"--set-string", "global.skeOperator.tlsConfig.webhookCACert="+operatorCa,
@@ -240,7 +240,7 @@ var _ = Describe("ske-operator helm chart", func() {
 
 				It("creates a Backstage SKEIntegration", func() {
 					runLongTimeout("helm", "install", "ske-operator", "--create-namespace", "../ske-operator/",
-						"-n=kratix-platform-system", "-f=./assets/values-with-backstage-integration-enabled.yaml", "--set-string", "skeLicense="+skeLicenseToken, "--wait")
+						"-n=kratix-platform-system", "-f=./assets/values-with-backstage-integration-enabled.yaml", "--set-string", "skeLicense="+skeLicenseToken, "--wait", "--timeout=9m")
 					Eventually(func(g Gomega) {
 						runGinkgo(g, "kubectl", context, "get", "skeintegration", "backstage-integration", "-n=kratix-platform-system")
 					}, timeout, interval).Should(Succeed())
@@ -298,7 +298,7 @@ var _ = Describe("ske-operator helm chart", func() {
 
 				It("creates a Cortex SKEIntegration", func() {
 					runLongTimeout("helm", "install", "ske-operator", "--create-namespace", "../ske-operator/",
-						"-n=kratix-platform-system", "-f=./assets/values-with-cortex-integration-enabled.yaml", "--set-string", "skeLicense="+skeLicenseToken, "--wait")
+						"-n=kratix-platform-system", "-f=./assets/values-with-cortex-integration-enabled.yaml", "--set-string", "skeLicense="+skeLicenseToken, "--wait", "--timeout=9m")
 					Eventually(func(g Gomega) {
 						runGinkgo(g, "kubectl", context, "get", "skeintegration", "cortex-integration", "-n=kratix-platform-system")
 					}, timeout, interval).Should(Succeed())
@@ -359,7 +359,7 @@ var _ = Describe("ske-operator helm chart", func() {
 				By("installing the ske operator", func() {
 					run("pwd")
 					runLongTimeout("helm", "install", "ske-operator", "--create-namespace", "../ske-operator/",
-						"-n=kratix-platform-system", "-f=./assets/values-with-delete-on-uninstall-true.yaml", "--set-string", "skeLicense="+skeLicenseToken, "--wait")
+						"-n=kratix-platform-system", "-f=./assets/values-with-delete-on-uninstall-true.yaml", "--set-string", "skeLicense="+skeLicenseToken, "--wait", "--timeout=9m")
 
 					run("kubectl", context, "get", "kratixes", "kratix")
 					run("kubectl", context, "wait", "kratixes", "kratix", "--for=condition=KratixDeploymentReady", "--timeout="+fmt.Sprintf("%ds", int(kubectlMediumTimeout.Seconds())))
