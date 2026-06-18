@@ -412,7 +412,14 @@ var _ = Describe("ske-operator helm chart", func() {
 })
 
 func validateCertManagerWebhook() {
-	// cert-manager webhook can take >100s to accept connections on slower CI runners
+	// wait for webhook pod to be ready before attempting connections; without this
+	// each dry-run attempt hangs for the full inner timeout (~100s) because Kind
+	// silently drops TCP connections to a service with no ready endpoints
+	run("kubectl", context, "wait", "deployment/cert-manager-webhook",
+		"-n=cert-manager", "--for=condition=available",
+		"--timeout="+formatTimeout(longTimeout))
+	// cert-manager webhook can take time to start accepting connections even after
+	// the pod is ready — retry until the dry-run succeeds
 	Eventually(func(g Gomega) {
 		runGinkgo(g, "kubectl", context, "apply", "-f", "assets/example-issuer.yaml", "--dry-run=server")
 	}, certManagerWebhookTimeout, interval).Should(Succeed())
