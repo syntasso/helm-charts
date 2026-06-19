@@ -98,7 +98,7 @@ jobs:
       - name: Install Ginkgo CLI
         if: ${{ (github.event_name == 'push' && steps.changes.outputs.ske-operator == 'true') || (github.event_name == 'workflow_dispatch' && inputs.helm_chart_name == 'ske-operator') }}
         run: |
-          go install github.com/onsi/ginkgo/v2/ginkgo@latest
+          go install github.com/onsi/ginkgo/v2/ginkgo@v2.21.0
         env:
           PATH: ${{ env.PATH }}:/home/runner/go/bin
 

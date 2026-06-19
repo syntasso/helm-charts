@@ -17,12 +17,12 @@ var (
 	interval = time.Second
 
 	timeout     = time.Second * 100
-	longTimeout = time.Second * 600
+	longTimeout = time.Second * 1200
 
 	kubectlTimeout            = time.Second * 60
 	kubectlMediumTimeout      = time.Second * 120
 	kubectlLongTimeout        = time.Second * 300
-	certManagerWebhookTimeout = time.Second * 180
+	certManagerWebhookTimeout = time.Second * 300
 
 	context = "--context=kind-platform"
 )
@@ -37,6 +37,8 @@ var _ = Describe("ske-operator helm chart", func() {
 		})
 
 		AfterEach(func() {
+			// clean up helm release if test failed before the uninstall step
+			runLongTimeout("helm", "uninstall", "ske-operator", "-n=kratix-platform-system", "--wait", "--ignore-not-found")
 			runLongTimeout("kubectl", context, "delete", "namespace", "kratix-platform-system", "--timeout="+formatTimeout(kubectlLongTimeout), "--ignore-not-found")
 			run("kubectl", context, "delete", "-f=https://github.com/cert-manager/cert-manager/releases/download/v1.15.0/cert-manager.yaml")
 			deleteCRDs(context)
@@ -415,7 +417,7 @@ func validateCertManagerWebhook() {
 	// wait for webhook pod to be ready before attempting connections; without this
 	// each dry-run attempt hangs for the full inner timeout (~100s) because Kind
 	// silently drops TCP connections to a service with no ready endpoints
-	run("kubectl", context, "wait", "deployment/cert-manager-webhook",
+	runLongTimeout("kubectl", context, "wait", "deployment/cert-manager-webhook",
 		"-n=cert-manager", "--for=condition=available",
 		"--timeout="+formatTimeout(longTimeout))
 	// cert-manager webhook can take time to start accepting connections even after
