@@ -49,7 +49,7 @@ on:
 jobs:
   test:
     if: ${{ !startsWith(github.ref, 'refs/tags/') && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && inputs.chart_tag == '' }}
-    runs-on: sprinters:aws:us-east-1:ubuntu-latest:c7i.large
+    runs-on: sprinters:aws:us-east-1:ubuntu-latest:m7i.xlarge
     env:
       GITHUB_EVENT_NAME: ${{ github.event_name }}
       GITHUB_REF: ${{ github.ref }}
@@ -94,6 +94,25 @@ jobs:
         with:
           version: "v0.20.0"
           cluster_name: "platform"
+
+      - name: Pre-load images into Kind
+        if: ${{ (github.event_name == 'push' && steps.changes.outputs.ske-operator == 'true') || (github.event_name == 'workflow_dispatch' && inputs.helm_chart_name == 'ske-operator') }}
+        run: |
+          docker pull quay.io/jetstack/cert-manager-controller:v1.15.0
+          docker pull quay.io/jetstack/cert-manager-webhook:v1.15.0
+          docker pull quay.io/jetstack/cert-manager-cainjector:v1.15.0
+          kind load docker-image quay.io/jetstack/cert-manager-controller:v1.15.0 --name platform
+          kind load docker-image quay.io/jetstack/cert-manager-webhook:v1.15.0 --name platform
+          kind load docker-image quay.io/jetstack/cert-manager-cainjector:v1.15.0 --name platform
+
+          APP_VERSION=$(grep '^appVersion:' ske-operator/Chart.yaml | awk '{print $2}' | tr -d '"')
+          echo "$SKE_LICENSE_TOKEN" | docker login ghcr.io -u syntasso-pkg --password-stdin
+          docker pull ghcr.io/syntasso/ske-operator:${APP_VERSION}
+          docker pull ghcr.io/syntasso/ske-platform:${APP_VERSION}
+          kind load docker-image ghcr.io/syntasso/ske-operator:${APP_VERSION} --name platform
+          kind load docker-image ghcr.io/syntasso/ske-platform:${APP_VERSION} --name platform
+        env:
+          SKE_LICENSE_TOKEN: ${{ secrets.SKE_LICENSE_TOKEN }}
 
       - name: Install Ginkgo CLI
         if: ${{ (github.event_name == 'push' && steps.changes.outputs.ske-operator == 'true') || (github.event_name == 'workflow_dispatch' && inputs.helm_chart_name == 'ske-operator') }}

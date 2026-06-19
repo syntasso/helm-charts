@@ -102,7 +102,7 @@ var _ = Describe("ske-operator helm chart", func() {
 
 			By("uninstalling SKE", func() {
 				run("pwd")
-				runLongTimeout("helm", "uninstall", "ske-operator", "-n=kratix-platform-system", "--wait")
+				runLongTimeout("helm", "uninstall", "ske-operator", "-n=kratix-platform-system", "--wait", "--timeout=9m")
 
 				By("deleting operator", func() {
 					Expect(run("kubectl", context, "get", "deployments", "ske-operator-controller-manager", "--ignore-not-found")).To(BeEmpty())
