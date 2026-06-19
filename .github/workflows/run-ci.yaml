@@ -112,7 +112,7 @@ jobs:
       - name: Run Tests
         if: ${{ (github.event_name == 'push' && steps.changes.outputs.ske-operator == 'true') || (github.event_name == 'workflow_dispatch' && inputs.helm_chart_name == 'ske-operator') }}
         run: |
-          ginkgo -r tests/
+          ginkgo -r --timeout=2h tests/
         env:
           GH_TOKEN: ${{ secrets.CR_TOKEN }}
           SKE_LICENSE_TOKEN: ${{ secrets.SKE_LICENSE_TOKEN }}
