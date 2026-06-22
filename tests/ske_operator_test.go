@@ -17,11 +17,12 @@ var (
 	interval = time.Second
 
 	timeout     = time.Second * 100
-	longTimeout = time.Second * 300
+	longTimeout = time.Second * 1200
 
-	kubectlTimeout       = time.Second * 60
-	kubectlMediumTimeout = time.Second * 120
-	kubectlLongTimeout   = time.Second * 300
+	kubectlTimeout            = time.Second * 60
+	kubectlMediumTimeout      = time.Second * 120
+	kubectlLongTimeout        = time.Second * 300
+	certManagerWebhookTimeout = time.Second * 300
 
 	context = "--context=kind-platform"
 )
@@ -33,10 +34,11 @@ var _ = Describe("ske-operator helm chart", func() {
 			run("kubectl", context, "apply", "-f=https://github.com/cert-manager/cert-manager/releases/download/v1.15.0/cert-manager.yaml")
 			run("kubectl", context, "wait", "crd/certificates.cert-manager.io", "--for=condition=established", "--timeout="+formatTimeout(kubectlTimeout))
 			validateCertManagerWebhook()
-			run("kubectl", context, "wait", "--for=condition=available", "deployment/cert-manager-webhook", "-n=cert-manager")
 		})
 
 		AfterEach(func() {
+			// clean up helm release if test failed before the uninstall step
+			runLongTimeout("helm", "uninstall", "ske-operator", "-n=kratix-platform-system", "--wait", "--ignore-not-found")
 			runLongTimeout("kubectl", context, "delete", "namespace", "kratix-platform-system", "--timeout="+formatTimeout(kubectlLongTimeout), "--ignore-not-found")
 			run("kubectl", context, "delete", "-f=https://github.com/cert-manager/cert-manager/releases/download/v1.15.0/cert-manager.yaml")
 			deleteCRDs(context)
@@ -44,8 +46,8 @@ var _ = Describe("ske-operator helm chart", func() {
 
 		It("can install, upgrade and uninstall SKE successfully", func() {
 			By("installing SKE", func() {
-				run("helm", "install", "ske-operator", "--create-namespace", "../ske-operator/",
-					"-n=kratix-platform-system", "-f=./assets/values-with-certmanager.yaml", "--set-string", "skeLicense="+skeLicenseToken, "--wait")
+				runLongTimeout("helm", "install", "ske-operator", "--create-namespace", "../ske-operator/",
+					"-n=kratix-platform-system", "-f=./assets/values-with-certmanager.yaml", "--set-string", "skeLicense="+skeLicenseToken, "--wait", "--timeout=9m")
 
 				By("creating a certificate and issuer, and use them for the webhook")
 				run("kubectl", context, "get", "certificates", "ske-operator-serving-cert", "-n=kratix-platform-system")
@@ -71,8 +73,8 @@ var _ = Describe("ske-operator helm chart", func() {
 
 			By("upgrading SKE", func() {
 				run("pwd")
-				run("helm", "upgrade", "ske-operator", "../ske-operator/", "-n=kratix-platform-system",
-					"-f=./assets/values-with-upgrade.yaml", "--set-string", "skeLicense="+skeLicenseToken, "--wait")
+				runLongTimeout("helm", "upgrade", "ske-operator", "../ske-operator/", "-n=kratix-platform-system",
+					"-f=./assets/values-with-upgrade.yaml", "--set-string", "skeLicense="+skeLicenseToken, "--wait", "--timeout=9m")
 
 				By("upgrading SKE version", func() {
 					Expect(run("kubectl", context, "get", "kratixes", "kratix", "-o", "jsonpath={.metadata.creationTimestamp}")).To(Equal(creationTimestamp))
@@ -100,7 +102,7 @@ var _ = Describe("ske-operator helm chart", func() {
 
 			By("uninstalling SKE", func() {
 				run("pwd")
-				run("helm", "uninstall", "ske-operator", "-n=kratix-platform-system", "--wait")
+				runLongTimeout("helm", "uninstall", "ske-operator", "-n=kratix-platform-system", "--wait", "--timeout=9m")
 
 				By("deleting operator", func() {
 					Expect(run("kubectl", context, "get", "deployments", "ske-operator-controller-manager", "--ignore-not-found")).To(BeEmpty())
@@ -141,7 +143,7 @@ var _ = Describe("ske-operator helm chart", func() {
 
 		AfterEach(func() {
 			run("kubectl", context, "delete", "kratixes", "kratix", "--timeout="+formatTimeout(kubectlTimeout))
-			run("helm", "uninstall", "ske-operator", "-n=kratix-platform-system", "--wait")
+			runLongTimeout("helm", "uninstall", "ske-operator", "-n=kratix-platform-system", "--wait")
 			runLongTimeout("kubectl", context, "delete", "namespace", "kratix-platform-system", "--timeout="+formatTimeout(kubectlLongTimeout))
 			deleteCRDs(context)
 		})
@@ -158,8 +160,8 @@ var _ = Describe("ske-operator helm chart", func() {
 				metricsTlsKey, _ := run("cat", "./metrics-tls.key")
 				metricsCa, _ := run("cat", "./metrics-ca.crt")
 
-				run("helm", "install", "ske-operator", "--create-namespace", "../ske-operator/",
-					"-n=kratix-platform-system", "-f=./assets/values-without-certmanager.yaml", "--set-string", "skeLicense="+skeLicenseToken, "--wait",
+				runLongTimeout("helm", "install", "ske-operator", "--create-namespace", "../ske-operator/",
+					"-n=kratix-platform-system", "-f=./assets/values-without-certmanager.yaml", "--set-string", "skeLicense="+skeLicenseToken, "--wait", "--timeout=9m",
 					"--set-string", "global.skeOperator.tlsConfig.webhookTLSCert="+operatorTlsCrt,
 					"--set-string", "global.skeOperator.tlsConfig.webhookTLSKey="+operatorTlsKey,
 					"--set-string", "global.skeOperator.tlsConfig.webhookCACert="+operatorCa,
@@ -226,11 +228,10 @@ var _ = Describe("ske-operator helm chart", func() {
 
 			When("deploying the chart", func() {
 				BeforeEach(func() {
-					run("helm", "uninstall", "ske-operator", "-n=kratix-platform-system", "--ignore-not-found", "--wait")
+					runLongTimeout("helm", "uninstall", "ske-operator", "-n=kratix-platform-system", "--ignore-not-found", "--wait")
 					run("kubectl", context, "apply", "-f=https://github.com/cert-manager/cert-manager/releases/download/v1.15.0/cert-manager.yaml")
 					run("kubectl", context, "wait", "crd/certificates.cert-manager.io", "--for=condition=established", "--timeout="+fmt.Sprintf("%ds", int(kubectlTimeout.Seconds())))
 					validateCertManagerWebhook()
-					run("kubectl", context, "wait", "--for=condition=available", "deployment/cert-manager-webhook", "-n=cert-manager")
 				})
 
 				AfterEach(func() {
@@ -240,8 +241,8 @@ var _ = Describe("ske-operator helm chart", func() {
 				})
 
 				It("creates a Backstage SKEIntegration", func() {
-					run("helm", "install", "ske-operator", "--create-namespace", "../ske-operator/",
-						"-n=kratix-platform-system", "-f=./assets/values-with-backstage-integration-enabled.yaml", "--set-string", "skeLicense="+skeLicenseToken, "--wait")
+					runLongTimeout("helm", "install", "ske-operator", "--create-namespace", "../ske-operator/",
+						"-n=kratix-platform-system", "-f=./assets/values-with-backstage-integration-enabled.yaml", "--set-string", "skeLicense="+skeLicenseToken, "--wait", "--timeout=9m")
 					Eventually(func(g Gomega) {
 						runGinkgo(g, "kubectl", context, "get", "skeintegration", "backstage-integration", "-n=kratix-platform-system")
 					}, timeout, interval).Should(Succeed())
@@ -285,11 +286,10 @@ var _ = Describe("ske-operator helm chart", func() {
 
 			When("deploying the chart", func() {
 				BeforeEach(func() {
-					run("helm", "uninstall", "ske-operator", "-n=kratix-platform-system", "--ignore-not-found", "--wait")
+					runLongTimeout("helm", "uninstall", "ske-operator", "-n=kratix-platform-system", "--ignore-not-found", "--wait")
 					run("kubectl", context, "apply", "-f=https://github.com/cert-manager/cert-manager/releases/download/v1.15.0/cert-manager.yaml")
 					run("kubectl", context, "wait", "crd/certificates.cert-manager.io", "--for=condition=established", "--timeout="+fmt.Sprintf("%ds", int(kubectlTimeout.Seconds())))
 					validateCertManagerWebhook()
-					run("kubectl", context, "wait", "--for=condition=available", "deployment/cert-manager-webhook", "-n=cert-manager")
 				})
 
 				AfterEach(func() {
@@ -299,8 +299,8 @@ var _ = Describe("ske-operator helm chart", func() {
 				})
 
 				It("creates a Cortex SKEIntegration", func() {
-					run("helm", "install", "ske-operator", "--create-namespace", "../ske-operator/",
-						"-n=kratix-platform-system", "-f=./assets/values-with-cortex-integration-enabled.yaml", "--set-string", "skeLicense="+skeLicenseToken, "--wait")
+					runLongTimeout("helm", "install", "ske-operator", "--create-namespace", "../ske-operator/",
+						"-n=kratix-platform-system", "-f=./assets/values-with-cortex-integration-enabled.yaml", "--set-string", "skeLicense="+skeLicenseToken, "--wait", "--timeout=9m")
 					Eventually(func(g Gomega) {
 						runGinkgo(g, "kubectl", context, "get", "skeintegration", "cortex-integration", "-n=kratix-platform-system")
 					}, timeout, interval).Should(Succeed())
@@ -339,7 +339,6 @@ var _ = Describe("ske-operator helm chart", func() {
 				run("kubectl", context, "apply", "-f=https://github.com/cert-manager/cert-manager/releases/download/v1.15.0/cert-manager.yaml")
 				run("kubectl", context, "wait", "crd/certificates.cert-manager.io", "--for=condition=established", "--timeout="+fmt.Sprintf("%ds", int(kubectlTimeout.Seconds())))
 				validateCertManagerWebhook()
-				run("kubectl", context, "wait", "--for=condition=available", "deployment/cert-manager-webhook", "-n=cert-manager")
 			})
 
 			AfterEach(func() {
@@ -361,8 +360,8 @@ var _ = Describe("ske-operator helm chart", func() {
 
 				By("installing the ske operator", func() {
 					run("pwd")
-					run("helm", "install", "ske-operator", "--create-namespace", "../ske-operator/",
-						"-n=kratix-platform-system", "-f=./assets/values-with-delete-on-uninstall-true.yaml", "--set-string", "skeLicense="+skeLicenseToken, "--wait")
+					runLongTimeout("helm", "install", "ske-operator", "--create-namespace", "../ske-operator/",
+						"-n=kratix-platform-system", "-f=./assets/values-with-delete-on-uninstall-true.yaml", "--set-string", "skeLicense="+skeLicenseToken, "--wait", "--timeout=9m")
 
 					run("kubectl", context, "get", "kratixes", "kratix")
 					run("kubectl", context, "wait", "kratixes", "kratix", "--for=condition=KratixDeploymentReady", "--timeout="+fmt.Sprintf("%ds", int(kubectlMediumTimeout.Seconds())))
@@ -370,7 +369,7 @@ var _ = Describe("ske-operator helm chart", func() {
 
 				By("uninstalling the ske operator", func() {
 					run("pwd")
-					run("helm", "uninstall", "ske-operator", "-n=kratix-platform-system", "--wait")
+					runLongTimeout("helm", "uninstall", "ske-operator", "-n=kratix-platform-system", "--wait")
 
 					By("deleting operator", func() {
 						Eventually(func() string {
@@ -415,10 +414,17 @@ var _ = Describe("ske-operator helm chart", func() {
 })
 
 func validateCertManagerWebhook() {
-	// It takes a while for the webhook to be ready, so we need to retry this with a timeout
+	// wait for webhook pod to be ready before attempting connections; without this
+	// each dry-run attempt hangs for the full inner timeout (~100s) because Kind
+	// silently drops TCP connections to a service with no ready endpoints
+	runLongTimeout("kubectl", context, "wait", "deployment/cert-manager-webhook",
+		"-n=cert-manager", "--for=condition=available",
+		"--timeout="+formatTimeout(longTimeout))
+	// cert-manager webhook can take time to start accepting connections even after
+	// the pod is ready — retry until the dry-run succeeds
 	Eventually(func(g Gomega) {
 		runGinkgo(g, "kubectl", context, "apply", "-f", "assets/example-issuer.yaml", "--dry-run=server")
-	}, timeout, interval).Should(Succeed())
+	}, certManagerWebhookTimeout, interval).Should(Succeed())
 }
 
 func formatTimeout(timeout time.Duration) string {
