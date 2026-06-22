@@ -56,7 +56,7 @@ jobs:
       CHART_NAME: ${{ inputs.helm_chart_name }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
           token: ${{ secrets.CR_TOKEN }}
@@ -121,7 +121,7 @@ jobs:
   chart-tests:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Check for chart-test changes
         uses: dorny/paths-filter@v4
@@ -171,7 +171,7 @@ jobs:
       CHART_NAME: ${{ inputs.helm_chart_name }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
           token: ${{ secrets.CR_TOKEN }}
@@ -362,7 +362,7 @@ jobs:
       CR_TOKEN: ${{ secrets.CR_TOKEN }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
           token: ${{ secrets.CR_TOKEN }}
