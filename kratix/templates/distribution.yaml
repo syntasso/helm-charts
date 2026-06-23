@@ -72,13 +72,6 @@ rules:
   - apiGroups:
       - ""
     resources:
-      - events
-    verbs:
-      - create
-      - patch
-  - apiGroups:
-      - ""
-    resources:
       - pods
     verbs:
       - delete
@@ -104,6 +97,14 @@ rules:
       - list
       - update
       - watch
+  - apiGroups:
+      - ""
+      - events.k8s.io
+    resources:
+      - events
+    verbs:
+      - create
+      - patch
   - apiGroups:
       - apiextensions.k8s.io
     resources:
@@ -298,7 +299,7 @@ subjects:
 ---
 apiVersion: v1
 data:
-  PIPELINE_ADAPTER_IMG: syntasso-community.docker.reo.dev/syntasso/kratix-platform@sha256:ea618153995bbf4cc5a3dbef9e9d71a63bc6d65bc0aaf638d7964bb693d33803
+  PIPELINE_ADAPTER_IMG: syntasso-community.docker.reo.dev/syntasso/kratix-platform@sha256:7c0e1f22944c09e309f6708cc0294dee248ddf8a93b3213f9b7a3a2512fcb807
 kind: ConfigMap
 metadata:
   labels:
