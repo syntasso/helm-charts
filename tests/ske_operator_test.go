@@ -132,6 +132,58 @@ var _ = Describe("ske-operator helm chart", func() {
 		})
 	})
 
+	Describe("platform manager TLS configuration", func() {
+		When("platformManagerTLSSecretRef is set", func() {
+			It("uses the referenced secret name in the deployment config and does not create a secret", func() {
+				template, _ := run("helm", "template", "ske-operator", "../ske-operator/",
+					"-s=templates/ske-deployment-config.yaml",
+					"-f=./assets/values-without-certmanager.yaml",
+					"--set=skeDeployment.tlsConfig.platformManagerTLSSecretRef.name=my-platform-manager-secret")
+				Expect(template).To(ContainSubstring("platformManagerCertSecretName: my-platform-manager-secret"))
+
+				secretTemplate, _ := run("helm", "template", "ske-operator", "../ske-operator/",
+					"-s=templates/ske-deployment-webhook-secret.yaml",
+					"-f=./assets/values-without-certmanager.yaml",
+					"--set=skeDeployment.tlsConfig.platformManagerTLSSecretRef.name=my-platform-manager-secret")
+				Expect(secretTemplate).ToNot(ContainSubstring("custom-kratix-platform-manager-cert"))
+			})
+		})
+
+		When("inline platform manager cert values are provided", func() {
+			It("creates the platform manager secret and sets the cert secret name in the deployment config", func() {
+				template, _ := run("helm", "template", "ske-operator", "../ske-operator/",
+					"-s=templates/ske-deployment-config.yaml",
+					"-f=./assets/values-without-certmanager.yaml",
+					"--set-string=skeDeployment.tlsConfig.platformManagerCACert=fake-ca",
+					"--set-string=skeDeployment.tlsConfig.platformManagerTLSCert=fake-cert",
+					"--set-string=skeDeployment.tlsConfig.platformManagerTLSKey=fake-key")
+				Expect(template).To(ContainSubstring("platformManagerCertSecretName: custom-kratix-platform-manager-cert"))
+
+				secretTemplate, _ := run("helm", "template", "ske-operator", "../ske-operator/",
+					"-s=templates/ske-deployment-webhook-secret.yaml",
+					"-f=./assets/values-without-certmanager.yaml",
+					"--set-string=skeDeployment.tlsConfig.platformManagerCACert=fake-ca",
+					"--set-string=skeDeployment.tlsConfig.platformManagerTLSCert=fake-cert",
+					"--set-string=skeDeployment.tlsConfig.platformManagerTLSKey=fake-key")
+				Expect(secretTemplate).To(ContainSubstring("custom-kratix-platform-manager-cert"))
+			})
+		})
+
+		When("neither platformManagerTLSSecretRef nor inline values are provided", func() {
+			It("does not set platformManagerCertSecretName in the deployment config or create a secret", func() {
+				template, _ := run("helm", "template", "ske-operator", "../ske-operator/",
+					"-s=templates/ske-deployment-config.yaml",
+					"-f=./assets/values-without-certmanager.yaml")
+				Expect(template).ToNot(ContainSubstring("platformManagerCertSecretName"))
+
+				secretTemplate, _ := run("helm", "template", "ske-operator", "../ske-operator/",
+					"-s=templates/ske-deployment-webhook-secret.yaml",
+					"-f=./assets/values-without-certmanager.yaml")
+				Expect(secretTemplate).ToNot(ContainSubstring("custom-kratix-platform-manager-cert"))
+			})
+		})
+	})
+
 	When("global.skeOperator.tlsConfig.certManager.disabled=true, and certs are provided", func() {
 		BeforeEach(func() {
 			// double check cert-manager is not installed
@@ -139,6 +191,7 @@ var _ = Describe("ske-operator helm chart", func() {
 			Expect(crds).NotTo(ContainSubstring("cert-manager"))
 			run("./assets/generate-certs")
 			run("./assets/generate-metrics-certs")
+			run("./assets/generate-platform-manager-certs")
 		})
 
 		AfterEach(func() {
@@ -149,6 +202,8 @@ var _ = Describe("ske-operator helm chart", func() {
 		})
 
 		It("should use the provided certs for the webhook", func() {
+			hasPlatformManager := chartIncludesPlatformManager()
+
 			By("installing the operator with helm and the provided certs", func() {
 				operatorTlsCrt, _ := run("cat", "./operator-tls.crt")
 				operatorTlsKey, _ := run("cat", "./operator-tls.key")
@@ -160,22 +215,45 @@ var _ = Describe("ske-operator helm chart", func() {
 				metricsTlsKey, _ := run("cat", "./metrics-tls.key")
 				metricsCa, _ := run("cat", "./metrics-ca.crt")
 
-				runLongTimeout("helm", "install", "ske-operator", "--create-namespace", "../ske-operator/",
-					"-n=kratix-platform-system", "-f=./assets/values-without-certmanager.yaml", "--set-string", "skeLicense="+skeLicenseToken, "--wait", "--timeout=9m",
-					"--set-string", "global.skeOperator.tlsConfig.webhookTLSCert="+operatorTlsCrt,
-					"--set-string", "global.skeOperator.tlsConfig.webhookTLSKey="+operatorTlsKey,
-					"--set-string", "global.skeOperator.tlsConfig.webhookCACert="+operatorCa,
-					"--set-string", "skeDeployment.tlsConfig.webhookTLSCert="+deploymentTlsCrt,
-					"--set-string", "skeDeployment.tlsConfig.webhookTLSKey="+deploymentTlsKey,
-					"--set-string", "skeDeployment.tlsConfig.webhookCACert="+deploymentCa,
-					"--set-string", "skeDeployment.tlsConfig.metricsServerTLSCert="+metricsTlsCrt,
-					"--set-string", "skeDeployment.tlsConfig.metricsServerTLSKey="+metricsTlsKey,
-					"--set-string", "skeDeployment.tlsConfig.metricsServerCACert="+metricsCa)
+				args := []string{
+					"helm", "install", "ske-operator", "--create-namespace", "../ske-operator/",
+					"-n=kratix-platform-system", "-f=./assets/values-without-certmanager.yaml",
+					"--set-string", "skeLicense=" + skeLicenseToken, "--wait", "--timeout=9m",
+					"--set-string", "global.skeOperator.tlsConfig.webhookTLSCert=" + operatorTlsCrt,
+					"--set-string", "global.skeOperator.tlsConfig.webhookTLSKey=" + operatorTlsKey,
+					"--set-string", "global.skeOperator.tlsConfig.webhookCACert=" + operatorCa,
+					"--set-string", "skeDeployment.tlsConfig.webhookTLSCert=" + deploymentTlsCrt,
+					"--set-string", "skeDeployment.tlsConfig.webhookTLSKey=" + deploymentTlsKey,
+					"--set-string", "skeDeployment.tlsConfig.webhookCACert=" + deploymentCa,
+					"--set-string", "skeDeployment.tlsConfig.metricsServerTLSCert=" + metricsTlsCrt,
+					"--set-string", "skeDeployment.tlsConfig.metricsServerTLSKey=" + metricsTlsKey,
+					"--set-string", "skeDeployment.tlsConfig.metricsServerCACert=" + metricsCa,
+				}
+
+				if hasPlatformManager {
+					platformManagerTlsCrt, _ := run("cat", "./platform-manager-tls.crt")
+					platformManagerTlsKey, _ := run("cat", "./platform-manager-tls.key")
+					platformManagerCa, _ := run("cat", "./platform-manager-ca.crt")
+					args = append(args,
+						"--set-string", "skeDeployment.tlsConfig.platformManagerTLSCert="+platformManagerTlsCrt,
+						"--set-string", "skeDeployment.tlsConfig.platformManagerTLSKey="+platformManagerTlsKey,
+						"--set-string", "skeDeployment.tlsConfig.platformManagerCACert="+platformManagerCa)
+				}
+
+				runLongTimeout(args...)
 			})
 
 			By("verifying that Kratix got created successfully by helm install", func() {
 				run("kubectl", context, "get", "kratixes", "kratix")
 				run("kubectl", context, "wait", "kratixes", "kratix", "--for=condition=KratixDeploymentReady", "--timeout="+formatTimeout(kubectlMediumTimeout))
+			})
+
+			By("verifying the platform manager is ready if included in this distribution", func() {
+				if hasPlatformManager {
+					run("kubectl", context, "wait", "deployment", "ske-platform-manager",
+						"-n=kratix-platform-system", "--for=condition=Available",
+						"--timeout="+formatTimeout(kubectlMediumTimeout))
+				}
 			})
 
 			By("installing a promise to validate that Kratix is running fine", func() {
@@ -453,6 +531,12 @@ func r(g Gomega, t time.Duration, args ...string) (string, string) {
 	g.ExpectWithOffset(2, err).ShouldNot(HaveOccurred())
 	g.EventuallyWithOffset(2, session, t, interval).Should(gexec.Exit(0))
 	return string(session.Out.Contents()), string(session.Err.Contents())
+}
+
+func chartIncludesPlatformManager() bool {
+	crdSchema, _ := run("helm", "template", "ske-operator", "../ske-operator/",
+		"-f=./assets/values-without-certmanager.yaml")
+	return strings.Contains(crdSchema, "platformManagerCertSecretName")
 }
 
 func deleteCRDs(context string) {

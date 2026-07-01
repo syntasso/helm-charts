@@ -20,7 +20,7 @@ webhooks:
         namespace: kratix-platform-system
         path: /validate-platform-syntasso-io-v1alpha1-kratix
       caBundle: |-
-        {{ .Values.global.skeOperator.tlsConfig.webhookCACert | b64enc }}
+        {{ .Values.global.skeOperator.tlsConfig.webhookCACert | default "" | b64enc }}
     failurePolicy: Fail
     name: vkratix.kb.io
     rules:
@@ -57,9 +57,9 @@ webhooks:
 ---
 apiVersion: v1
 data:
-  ca.crt: {{ .Values.global.skeOperator.tlsConfig.webhookCACert | b64enc }}
-  tls.crt: {{ .Values.global.skeOperator.tlsConfig.webhookTLSCert | b64enc }}
-  tls.key: {{ .Values.global.skeOperator.tlsConfig.webhookTLSKey | b64enc }}
+  ca.crt: {{ .Values.global.skeOperator.tlsConfig.webhookCACert | default "" | b64enc }}
+  tls.crt: {{ .Values.global.skeOperator.tlsConfig.webhookTLSCert | default "" | b64enc }}
+  tls.key: {{ .Values.global.skeOperator.tlsConfig.webhookTLSKey | default "" | b64enc }}
 kind: Secret
 metadata:
   name: ske-operator-webhook-server-cert

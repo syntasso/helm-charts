@@ -18,7 +18,7 @@ spec:
           namespace: kratix-platform-system
           path: /convert
         caBundle: |-
-          {{ .Values.global.skeOperator.tlsConfig.webhookCACert | b64enc }}
+          {{ .Values.global.skeOperator.tlsConfig.webhookCACert | default "" | b64enc }}
       conversionReviewVersions:
         - v1
   group: platform.syntasso.io

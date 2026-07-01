@@ -1,0 +1,64 @@
+#!/usr/bin/env bash
+
+CA_KEY="platform-manager-ca.key"
+CA_CERT="platform-manager-ca.crt"
+TLS_KEY="platform-manager-tls.key"
+TLS_CSR="platform-manager-tls.csr"
+TLS_CERT="platform-manager-tls.crt"
+
+DNS1="ske-platform-webhook-service.kratix-platform-system.svc"
+DNS2="ske-platform-webhook-service.kratix-platform-system.svc.cluster.local"
+
+echo "Generating CA private key and certificate..."
+openssl genpkey -algorithm RSA -out "$CA_KEY" -pkeyopt rsa_keygen_bits:2048
+openssl req -x509 -new -nodes -key "$CA_KEY" -sha256 -days 365 -out "$CA_CERT" -subj "/CN=ske-operator-selfsigned-issuer"
+
+echo "Generating TLS private key..."
+openssl genpkey -algorithm RSA -out "$TLS_KEY" -pkeyopt rsa_keygen_bits:2048
+
+CSR_CONF="platform-manager-tls-csr.conf"
+cat > "$CSR_CONF" << EOF
+[ req ]
+default_bits       = 2048
+distinguished_name = req_distinguished_name
+req_extensions     = req_ext
+prompt             = no
+
+[ req_distinguished_name ]
+CN = $DNS1
+
+[ req_ext ]
+subjectAltName = @alt_names
+
+[ alt_names ]
+DNS.1 = $DNS1
+DNS.2 = $DNS2
+EOF
+
+echo "Generating TLS certificate signing request (CSR)..."
+openssl req -new -key "$TLS_KEY" -out "$TLS_CSR" -config "$CSR_CONF"
+
+CERT_CONF="platform-manager-tls-cert.conf"
+cat > "$CERT_CONF" << EOF
+[ v3_ext ]
+authorityKeyIdentifier=keyid,issuer
+basicConstraints=CA:FALSE
+keyUsage = digitalSignature, keyEncipherment
+extendedKeyUsage = serverAuth
+subjectAltName = @alt_names
+
+[ alt_names ]
+DNS.1 = $DNS1
+DNS.2 = $DNS2
+EOF
+
+echo "Signing the CSR with the CA to generate the TLS certificate..."
+openssl x509 -req -in "$TLS_CSR" -CA "$CA_CERT" -CAkey "$CA_KEY" -CAcreateserial \
+-out "$TLS_CERT" -days 365 -sha256 -extfile "$CERT_CONF" -extensions v3_ext
+
+rm "$TLS_CSR" "$CSR_CONF" "$CERT_CONF"
+
+echo "Certificates and keys generated:"
+echo "  CA Certificate: $CA_CERT"
+echo "  TLS Certificate: $TLS_CERT"
+echo "  TLS Key: $TLS_KEY"
