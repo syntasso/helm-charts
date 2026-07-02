@@ -2797,6 +2797,15 @@ spec:
                         - ca.crt: The Certificate Authority
                         MetricsServerCertSecretName must be set if cert-manager is disabled.
                       type: string
+                    platformManagerCertSecretName:
+                      description: |-
+                        PlatformManagerCertSecretName is the name of the secret containing the TLS Certificate for the SKE Platform Manager webhooks.
+                        The underlying secret must include the following keys:
+                        - tls.crt: The TLS Certificate
+                        - tls.key: The TLS Private Key
+                        - ca.crt: The Certificate Authority
+                        Must be set if cert-manager is disabled.
+                      type: string
                   type: object
                 version:
                   description: |-
