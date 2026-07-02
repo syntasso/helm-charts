@@ -47,6 +47,9 @@ data:
         {{- if ( .tlsConfig.certManager.disabled | default false ) }}
         certSecretName: {{ (.tlsConfig.webhookTLSSecretRef).name | default "custom-kratix-platform-serving-cert" }}
         metricsServerCertSecretName: {{ (.tlsConfig.metricsServerTLSSecretRef).name | default "custom-kratix-platform-metrics-server-cert" }}
+        {{- if or (.tlsConfig.platformManagerTLSSecretRef).name .tlsConfig.platformManagerCACert }}
+        platformManagerCertSecretName: {{ (.tlsConfig.platformManagerTLSSecretRef).name | default "custom-kratix-platform-manager-cert" }}
+        {{- end }}
         {{- end }}
         certManager:
           disabled: {{ .tlsConfig.certManager.disabled | default false }}
