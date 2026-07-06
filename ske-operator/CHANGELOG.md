@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.76.0](https://github.com/syntasso/helm-charts/compare/ske-operator-0.75.0...ske-operator-v0.76.0) (2026-07-06)
+
+
+### Features
+
+* ske-operator supports ske installations with ske-platform-manager ([#191](https://github.com/syntasso/helm-charts/issues/191)) ([654567f](https://github.com/syntasso/helm-charts/commit/654567f6cd44734f33dfc3599c13965960f9f198))
+* **ske-operator:** update appVersion (autorelease) ([9a38735](https://github.com/syntasso/helm-charts/commit/9a38735326083fbe9128b9321f4c5b01414c8e2c))
+
+
+### Chores
+
+* ensure ske-operator-crds template changes are introdcuced by scripts/update-ske-operator ([5acca44](https://github.com/syntasso/helm-charts/commit/5acca44186eef9cc9812182dc66b0dd9853976fe))
+
 ## [0.75.0](https://github.com/syntasso/helm-charts/compare/ske-operator-0.74.0...ske-operator-v0.75.0) (2026-06-22)
 
 
