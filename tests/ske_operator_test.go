@@ -11,6 +11,7 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	"github.com/onsi/gomega/gexec"
+	"golang.org/x/mod/semver"
 )
 
 var (
@@ -202,8 +203,6 @@ var _ = Describe("ske-operator helm chart", func() {
 		})
 
 		It("should use the provided certs for the webhook", func() {
-			hasPlatformManager := chartIncludesPlatformManager()
-
 			By("installing the operator with helm and the provided certs", func() {
 				operatorTlsCrt, _ := run("cat", "./operator-tls.crt")
 				operatorTlsKey, _ := run("cat", "./operator-tls.key")
@@ -214,33 +213,25 @@ var _ = Describe("ske-operator helm chart", func() {
 				metricsTlsCrt, _ := run("cat", "./metrics-tls.crt")
 				metricsTlsKey, _ := run("cat", "./metrics-tls.key")
 				metricsCa, _ := run("cat", "./metrics-ca.crt")
+				platformManagerTlsCrt, _ := run("cat", "./platform-manager-tls.crt")
+				platformManagerTlsKey, _ := run("cat", "./platform-manager-tls.key")
+				platformManagerCa, _ := run("cat", "./platform-manager-ca.crt")
 
-				args := []string{
-					"helm", "install", "ske-operator", "--create-namespace", "../ske-operator/",
+				runLongTimeout("helm", "install", "ske-operator", "--create-namespace", "../ske-operator/",
 					"-n=kratix-platform-system", "-f=./assets/values-without-certmanager.yaml",
-					"--set-string", "skeLicense=" + skeLicenseToken, "--wait", "--timeout=9m",
-					"--set-string", "global.skeOperator.tlsConfig.webhookTLSCert=" + operatorTlsCrt,
-					"--set-string", "global.skeOperator.tlsConfig.webhookTLSKey=" + operatorTlsKey,
-					"--set-string", "global.skeOperator.tlsConfig.webhookCACert=" + operatorCa,
-					"--set-string", "skeDeployment.tlsConfig.webhookTLSCert=" + deploymentTlsCrt,
-					"--set-string", "skeDeployment.tlsConfig.webhookTLSKey=" + deploymentTlsKey,
-					"--set-string", "skeDeployment.tlsConfig.webhookCACert=" + deploymentCa,
-					"--set-string", "skeDeployment.tlsConfig.metricsServerTLSCert=" + metricsTlsCrt,
-					"--set-string", "skeDeployment.tlsConfig.metricsServerTLSKey=" + metricsTlsKey,
-					"--set-string", "skeDeployment.tlsConfig.metricsServerCACert=" + metricsCa,
-				}
-
-				if hasPlatformManager {
-					platformManagerTlsCrt, _ := run("cat", "./platform-manager-tls.crt")
-					platformManagerTlsKey, _ := run("cat", "./platform-manager-tls.key")
-					platformManagerCa, _ := run("cat", "./platform-manager-ca.crt")
-					args = append(args,
-						"--set-string", "skeDeployment.tlsConfig.platformManagerTLSCert="+platformManagerTlsCrt,
-						"--set-string", "skeDeployment.tlsConfig.platformManagerTLSKey="+platformManagerTlsKey,
-						"--set-string", "skeDeployment.tlsConfig.platformManagerCACert="+platformManagerCa)
-				}
-
-				runLongTimeout(args...)
+					"--set-string", "skeLicense="+skeLicenseToken, "--wait", "--timeout=9m",
+					"--set-string", "global.skeOperator.tlsConfig.webhookTLSCert="+operatorTlsCrt,
+					"--set-string", "global.skeOperator.tlsConfig.webhookTLSKey="+operatorTlsKey,
+					"--set-string", "global.skeOperator.tlsConfig.webhookCACert="+operatorCa,
+					"--set-string", "skeDeployment.tlsConfig.webhookTLSCert="+deploymentTlsCrt,
+					"--set-string", "skeDeployment.tlsConfig.webhookTLSKey="+deploymentTlsKey,
+					"--set-string", "skeDeployment.tlsConfig.webhookCACert="+deploymentCa,
+					"--set-string", "skeDeployment.tlsConfig.metricsServerTLSCert="+metricsTlsCrt,
+					"--set-string", "skeDeployment.tlsConfig.metricsServerTLSKey="+metricsTlsKey,
+					"--set-string", "skeDeployment.tlsConfig.metricsServerCACert="+metricsCa,
+					"--set-string", "skeDeployment.tlsConfig.platformManagerTLSCert="+platformManagerTlsCrt,
+					"--set-string", "skeDeployment.tlsConfig.platformManagerTLSKey="+platformManagerTlsKey,
+					"--set-string", "skeDeployment.tlsConfig.platformManagerCACert="+platformManagerCa)
 			})
 
 			By("verifying that Kratix got created successfully by helm install", func() {
@@ -249,7 +240,7 @@ var _ = Describe("ske-operator helm chart", func() {
 			})
 
 			By("verifying the platform manager is ready if included in this distribution", func() {
-				if hasPlatformManager {
+				if skeVersionSupportsPlatformManager() {
 					run("kubectl", context, "wait", "deployment", "ske-platform-manager",
 						"-n=kratix-platform-system", "--for=condition=Available",
 						"--timeout="+formatTimeout(kubectlMediumTimeout))
@@ -533,10 +524,17 @@ func r(g Gomega, t time.Duration, args ...string) (string, string) {
 	return string(session.Out.Contents()), string(session.Err.Contents())
 }
 
-func chartIncludesPlatformManager() bool {
-	crdSchema, _ := run("helm", "template", "ske-operator", "../ske-operator/",
-		"-f=./assets/values-without-certmanager.yaml")
-	return strings.Contains(crdSchema, "platformManagerCertSecretName")
+// platformManagerMinSkeVersion is the earliest SKE version whose distribution
+// ships the ske-platform-manager component. Older SKE versions don't include
+// it regardless of which ske-operator version is installed, so this must be
+// checked against the version Kratix actually applied, not any chart or
+// operator version.
+const platformManagerMinSkeVersion = "v0.52.0"
+
+func skeVersionSupportsPlatformManager() bool {
+	lastAppliedVersion, _ := run("kubectl", context, "get", "kratixes", "kratix",
+		"-o=jsonpath={.status.lastAppliedVersion}")
+	return semver.Compare(strings.TrimSpace(lastAppliedVersion), platformManagerMinSkeVersion) >= 0
 }
 
 func deleteCRDs(context string) {

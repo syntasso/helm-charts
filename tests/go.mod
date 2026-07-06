@@ -5,6 +5,7 @@ go 1.23.2
 require (
 	github.com/onsi/ginkgo/v2 v2.21.0
 	github.com/onsi/gomega v1.35.1
+	golang.org/x/mod v0.21.0
 )
 
 require (
