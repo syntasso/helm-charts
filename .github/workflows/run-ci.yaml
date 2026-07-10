@@ -108,9 +108,7 @@ jobs:
           APP_VERSION=$(grep '^appVersion:' ske-operator/Chart.yaml | awk '{print $2}' | tr -d '"')
           echo "$SKE_LICENSE_TOKEN" | docker login ghcr.io -u syntasso-pkg --password-stdin
           docker pull ghcr.io/syntasso/ske-operator:${APP_VERSION}
-          docker pull ghcr.io/syntasso/ske-platform:${APP_VERSION}
           kind load docker-image ghcr.io/syntasso/ske-operator:${APP_VERSION} --name platform
-          kind load docker-image ghcr.io/syntasso/ske-platform:${APP_VERSION} --name platform
         env:
           SKE_LICENSE_TOKEN: ${{ secrets.SKE_LICENSE_TOKEN }}
 
