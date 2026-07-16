@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.24.1](https://github.com/syntasso/helm-charts/compare/ske-gui-0.24.0...ske-gui-v0.24.1) (2026-07-16)
+
+
+### Bug Fixes
+
+* deploy Ingress to the same namespace as the Service ([#195](https://github.com/syntasso/helm-charts/issues/195)) ([d743f86](https://github.com/syntasso/helm-charts/commit/d743f86dfc008be870b4998e932e86ec35346ec3))
+
 ## [0.24.0](https://github.com/syntasso/helm-charts/compare/ske-gui-0.23.0...ske-gui-v0.24.0) (2026-06-15)
 
 
