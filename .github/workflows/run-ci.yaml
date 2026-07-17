@@ -315,6 +315,9 @@ jobs:
           if [ -n "${{ inputs.update_component }}" ] && [ "${CHART_NAME}" = "ske-operator" ] && [ "${{ inputs.update_component }}" = "backstage-controller" ]; then
             update_script="./scripts/update-ske-operator-backstage-controller"
           fi
+          if [ -n "${{ inputs.update_component }}" ] && [ "${CHART_NAME}" = "ske-operator" ] && [ "${{ inputs.update_component }}" = "ske-portal-controller" ]; then
+            update_script="./scripts/update-ske-operator-portal-controller"
+          fi
 
           echo "Looking for update script in ${update_script}..."
           if [ -f "${update_script}" ]; then
@@ -329,6 +332,9 @@ jobs:
           message="feat(${CHART_NAME}): update appVersion"
           if [ -n "${{ inputs.update_component }}" ] && [ "${CHART_NAME}" = "ske-operator" ] && [ "${{ inputs.update_component }}" = "backstage-controller" ]; then
             message="feat(${CHART_NAME}): update backstage-controller version"
+          fi
+          if [ -n "${{ inputs.update_component }}" ] && [ "${CHART_NAME}" = "ske-operator" ] && [ "${{ inputs.update_component }}" = "ske-portal-controller" ]; then
+            message="feat(${CHART_NAME}): update ske-portal-controller version"
           fi
           if [ "${{ inputs.merge_release_pr }}" == "true" ]; then
             message=$(echo "${message} (autorelease)")

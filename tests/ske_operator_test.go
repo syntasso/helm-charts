@@ -378,6 +378,51 @@ var _ = Describe("ske-operator helm chart", func() {
 		})
 	})
 
+	Describe("portalIntegration", func() {
+		When("the portalIntegration block is absent", func() {
+			It("does not template the post deploy job or configmap", func() {
+				template, _ := run("helm", "template", "ske-operator", "../ske-operator/", "-f=./assets/values-with-certmanager.yaml")
+				Expect(template).ToNot(ContainSubstring("deploy-portal-integration"))
+				Expect(template).ToNot(ContainSubstring("portal-integration-config"))
+			})
+		})
+
+		When("portalIntegration.enabled is false", func() {
+			It("does not template the post deploy job or configmap", func() {
+				template, _ := run("helm", "template", "ske-operator", "../ske-operator/", "-f=./assets/values-with-portal-integration-disabled.yaml")
+				Expect(template).ToNot(ContainSubstring("deploy-portal-integration"))
+				Expect(template).ToNot(ContainSubstring("portal-integration-config"))
+			})
+		})
+
+		When("portalIntegration.enabled is true", func() {
+			When("templating the chart", func() {
+				It("templates the post deploy job", func() {
+					template, _ := run("helm", "template", "ske-operator", "../ske-operator/", "-s=templates/post-install-portal-integration.yaml", "-f=./assets/values-with-portal-integration-enabled.yaml")
+					Expect(template).To(ContainSubstring("deploy-portal-integration"))
+				})
+
+				It("templates the deployment config job", func() {
+					template, _ := run("helm", "template", "ske-operator", "../ske-operator/", "-s=templates/portal-integration-deployment-config.yaml", "-f=./assets/values-with-portal-integration-enabled.yaml")
+					Expect(template).To(ContainSubstring("portal-integration-config"))
+					Expect(template).To(ContainSubstring("memory: 512Mi"))
+					Expect(template).To(ContainSubstring("cpu: 100m"))
+					Expect(template).To(ContainSubstring("memory: 256Mi"))
+					Expect(template).To(ContainSubstring("cpu: 400m"))
+				})
+
+				It("passes the portals[] entries through into the rendered SKEIntegration", func() {
+					template, _ := run("helm", "template", "ske-operator", "../ske-operator/", "-s=templates/portal-integration-deployment-config.yaml", "-f=./assets/values-with-portal-integration-enabled.yaml")
+					Expect(template).To(ContainSubstring("type: portal-controller"))
+					Expect(template).To(ContainSubstring("name: prod"))
+					Expect(template).To(ContainSubstring("type: backstage"))
+					Expect(template).To(ContainSubstring("repositoryName: platform-catalog"))
+					Expect(template).To(ContainSubstring("name: backstage-token"))
+				})
+			})
+		})
+	})
+
 	Describe("deleteOnUninstall", func() {
 		When("deleteOnUninstall is not set", func() {
 			It("the secret template sets the resource-policy to 'keep'", func() {

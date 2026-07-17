@@ -1,0 +1,63 @@
+{{- if and
+    (hasKey .Values "portalIntegration")
+    (eq (default false .Values.portalIntegration.enabled) true)
+}}
+{{- $root := . }}
+{{- with $root.Values.portalIntegration }}
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: deploy-portal-integration
+  namespace: kratix-platform-system
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-weight": "4"
+spec:
+  template:
+    spec:
+      serviceAccountName: ske-operator-controller-manager
+      restartPolicy: Never
+      {{- $pullSecret := (include "ske-operator.effectivePullSecretName" $root | trim) -}}
+      {{- if $pullSecret }}
+      imagePullSecrets:
+        - name: {{ $pullSecret | quote }}
+      {{- end }}
+      containers:
+        - name: deploy-ske
+          image: {{ $root.Values.imageRegistry.host }}/{{ $root.Values.imageRegistry.skeOperatorImage.name }}:{{ $root.Chart.AppVersion }}
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              set -exu
+              kubectl wait --for=condition=KratixDeploymentReady kratixes/kratix --timeout=300s
+              kubectl apply -f /etc/config/portal-integration/portal-integration.yaml
+          volumeMounts:
+            - name: portal-integration-config-volume
+              mountPath: /etc/config/portal-integration
+          resources:
+            requests:
+              cpu: 100m
+              memory: 100Mi
+              ephemeral-storage: 100Mi
+            limits:
+              cpu: 200m
+              memory: 200Mi
+              ephemeral-storage: 200Mi
+      volumes:
+        - name: portal-integration-config-volume
+          configMap:
+            name: portal-integration-config
+            items:
+              - key: portal-integration
+                path: portal-integration.yaml
+      {{- with $root.Values.nodeSelector }}
+      nodeSelector:
+        {{- . | toYaml | nindent 8 }}
+      {{- end }}
+      {{- with $root.Values.tolerations }}
+      tolerations:
+        {{- . | toYaml | nindent 8 }}
+      {{- end }}
+{{- end -}}
+{{- end -}}
