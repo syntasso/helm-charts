@@ -229,6 +229,13 @@ skeDeployment:
 #        name: minio-credentials
 #        namespace: default
 
+# backstageIntegration deploys the legacy standalone backstage-controller. New installs
+# should use portalIntegration (below) instead — it deploys the unified ske-portal-controller,
+# which covers Backstage plus other portal types through one controller. backstageIntegration
+# is kept for existing installs and is not removed by enabling portalIntegration; the two can
+# run side by side during migration (they act on disjoint Promise labels). See
+# ske-portal-controller/docs/backstage-migration.md in enterprise-kratix for the field-by-field
+# BackstageEntityCustomization -> PortalCustomization mapping.
 backstageIntegration:
   # Set to true if you want to deploy the SKE Backstage Controller
   enabled: false
@@ -242,6 +249,13 @@ backstageIntegration:
       requests:
         memory: "256Mi"
         cpu: "100m"
+# cortexIntegration deploys the legacy standalone ske-cortex-controller. New installs should
+# use portalIntegration (below) instead — it deploys the unified ske-portal-controller, which
+# covers Cortex plus other portal types through one controller. cortexIntegration is kept for
+# existing installs and is not removed by enabling portalIntegration; the two can run side by
+# side during migration (they act on disjoint Promise labels). See
+# ske-portal-controller/docs/cortex-migration.md in enterprise-kratix for the
+# cortex-config ConfigMap -> portals[].config mapping.
 cortexIntegration:
   # Set to true if you want to deploy the SKE Cortex integration
   enabled: false
@@ -271,6 +285,11 @@ cortexIntegration:
     # optional existing Secret reference (used only when token/url are not set)
     # secretRef:
     #   name: "cortex-credentials"
+# portalIntegration deploys ske-portal-controller, the unified successor to the standalone
+# backstageIntegration/cortexIntegration controllers above (and the install path for any new
+# portal type going forward). Prefer this for new installs. Existing backstageIntegration /
+# cortexIntegration installs are unaffected by enabling this — see the migration notes on
+# those blocks above for moving Promises across.
 portalIntegration:
   # Set to true if you want to deploy the SKE Portal Controller
   enabled: false
