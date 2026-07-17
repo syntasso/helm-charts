@@ -271,5 +271,34 @@ cortexIntegration:
     # optional existing Secret reference (used only when token/url are not set)
     # secretRef:
     #   name: "cortex-credentials"
+portalIntegration:
+  # Set to true if you want to deploy the SKE Portal Controller
+  enabled: false
+  # The version of the controller to deploy (moves the bundled adapter image too)
+  version: "latest"
+  deploymentConfig:
+    resources:
+      limits:
+        memory: "256Mi"
+        cpu: "100m"
+      requests:
+        memory: "256Mi"
+        cpu: "100m"
+  # Each entry is passed through verbatim as one SKEIntegration spec.portals[] item — see
+  # ske-operator/docs/skeintegration-portal-controller.md in enterprise-kratix for the full
+  # field reference (name, type, url, secretRef, config, adapterConfig). Freeform by design:
+  # portal types (backstage, cortex, and future ones) each bring their own config shape, so
+  # this chart does not hand-model them.
+  portals: []
+  # Example:
+  # portals:
+  #   - name: prod
+  #     type: backstage
+  #     url: https://backstage.example.com
+  #     secretRef:
+  #       name: backstage-token
+  #     config:
+  #       provider: github
+  #       repositoryName: platform-catalog
 additionalResources: []
 # Any additional k8s resources, such as Secrets, Configmaps

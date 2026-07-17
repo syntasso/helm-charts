@@ -1,0 +1,30 @@
+{{- if and
+    (hasKey .Values "portalIntegration")
+    (eq (default false .Values.portalIntegration.enabled) true)
+}}
+{{- with .Values.portalIntegration }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: portal-integration-config
+  namespace: kratix-platform-system
+data:
+  portal-integration: |
+    apiVersion: platform.syntasso.io/v1alpha1
+    kind: SKEIntegration
+    metadata:
+      name: portal-integration
+    spec:
+      type: portal-controller
+      version: {{ .version | default "latest" }}
+      {{- with .portals }}
+      portals:
+{{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .deploymentConfig.resources }}
+      deploymentConfig:
+        resources:
+{{- toYaml . | nindent 10 }}
+      {{- end }}
+{{- end }}
+{{- end }}
