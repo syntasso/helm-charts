@@ -4,6 +4,10 @@
 
 image: null
 
+# Additional args appended to the controller-manager container's args,
+# e.g. for flags not otherwise exposed as values (--kube-api-qps, --kube-api-burst, etc.)
+extraArgs: []
+
 resources:
   limits:
     cpu: 100m
