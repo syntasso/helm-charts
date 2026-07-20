@@ -84,7 +84,7 @@ jobs:
 
       - name: Set up Go
         if: ${{ (github.event_name == 'push' && steps.changes.outputs.ske-operator == 'true') || (github.event_name == 'workflow_dispatch' && inputs.helm_chart_name == 'ske-operator') }}
-        uses: actions/setup-go@v6
+        uses: actions/setup-go@v7
         with:
           go-version: 1.26
 
@@ -224,7 +224,7 @@ jobs:
           echo "K8S_HEALTH_AGENT_CHANGED=${{ steps.changes.outputs.k8s-health-agent }}" >> $GITHUB_ENV
 
       - name: Set up Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: 18
 
