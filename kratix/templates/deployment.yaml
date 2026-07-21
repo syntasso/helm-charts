@@ -31,6 +31,9 @@ resources:
 {{- $manifest := tpl (.Files.Get "files/deployment.yaml") . | fromYaml }}
 {{- $container := index $manifest.spec.template.spec.containers 0
                     | merge (include "containerPatch" . | fromYaml) }}
+{{- with .Values.extraArgs }}
+{{- $_ := set $container "args" (concat $container.args .) }}
+{{- end }}
 {{- $_ := set $manifest.spec.template "spec"
               (omit $manifest.spec.template.spec "containers") }}
 
