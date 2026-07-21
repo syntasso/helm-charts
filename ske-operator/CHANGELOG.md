@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.78.0](https://github.com/syntasso/helm-charts/compare/ske-operator-0.77.0...ske-operator-v0.78.0) (2026-07-21)
+
+
+### Features
+
+* add portalIntegration values block for ske-portal-controller ([51aabb7](https://github.com/syntasso/helm-charts/commit/51aabb72fe254949452b5c179f2b335812f205b6))
+* **ske-operator:** render SKEIntegration type portal-controller from values ([fbe3609](https://github.com/syntasso/helm-charts/commit/fbe36090590f10775102ab42fbbda7acf8eda5b6))
+* **ske-operator:** update appVersion (autorelease) ([26bd828](https://github.com/syntasso/helm-charts/commit/26bd8286107e047faac057402b97e12664ea891d))
+
 ## [0.77.0](https://github.com/syntasso/helm-charts/compare/ske-operator-0.76.0...ske-operator-v0.77.0) (2026-07-10)
 
 
