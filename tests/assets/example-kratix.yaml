@@ -1,0 +1,6 @@
+apiVersion: platform.syntasso.io/v1alpha1
+kind: Kratix
+metadata:
+  name: kratix
+spec:
+  version: latest

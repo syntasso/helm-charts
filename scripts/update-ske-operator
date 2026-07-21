@@ -6,11 +6,24 @@ function generate_resources_without_certmanager(){
   CHART_CRDS_WITHOUT_CERT_MANAGER=$root/ske-operator/charts/ske-operator-crds/templates/crds-without-cert-manager.yaml
   CHART_DIST_WITHOUT_CERT_MANAGER=$root/ske-operator/templates/without-cert-manager.yaml
 
-  echo "{{ if .Values.global.skeOperator.tlsConfig.certManager.disabled }}" > "${CHART_DIST_WITHOUT_CERT_MANAGER}"
+  cat <<'EOF' > "${CHART_DIST_WITHOUT_CERT_MANAGER}"
+{{ if .Values.global.skeOperator.tlsConfig.certManager.disabled }}
+{{- $tlsConfig := .Values.global.skeOperator.tlsConfig }}
+{{- $webhookCABundle := $tlsConfig.webhookCACert | default "" | b64enc }}
+{{- with $tlsConfig.webhookTLSSecretRef }}
+{{- $secretName := required "global.skeOperator.tlsConfig.webhookTLSSecretRef.name is required" .name }}
+{{- $secret := lookup "v1" "Secret" "kratix-platform-system" $secretName }}
+{{- if not $secret }}
+{{- fail (printf "global.skeOperator.tlsConfig.webhookTLSSecretRef: Secret %q was not found in namespace %q" $secretName "kratix-platform-system") }}
+{{- end }}
+{{- $webhookCABundle = required (printf "global.skeOperator.tlsConfig.webhookTLSSecretRef: Secret %q in namespace %q must contain ca.crt" $secretName "kratix-platform-system") (dig "data" "ca.crt" "" $secret) }}
+{{- end }}
+EOF
   yq 'select(.kind == "ValidatingWebhookConfiguration")' ${MANIFEST_NAME} |
       yq 'del(.metadata.annotations."cert-manager.io/inject-ca-from")' |
-      yq '.webhooks[0].clientConfig.caBundle= "{{ .Values.global.skeOperator.tlsConfig.webhookCACert | default \"\" | b64enc }}" | .webhooks[0].clientConfig.caBundle style="literal"' >> "${CHART_DIST_WITHOUT_CERT_MANAGER}"
+      yq '.webhooks[].clientConfig.caBundle= "{{ $webhookCABundle }}" | .webhooks[].clientConfig.caBundle style="literal"' >> "${CHART_DIST_WITHOUT_CERT_MANAGER}"
   cat <<EOF >> "${CHART_DIST_WITHOUT_CERT_MANAGER}"
+{{- if not \$tlsConfig.webhookTLSSecretRef }}
 ---
 apiVersion: v1
 data:
@@ -22,15 +35,28 @@ metadata:
   name: ske-operator-webhook-server-cert
   namespace: kratix-platform-system
 type: kubernetes.io/tls
+{{- end }}
 
 EOF
   echo "{{ end }}" >> "${CHART_DIST_WITHOUT_CERT_MANAGER}"
 
 
-  echo "{{ if .Values.global.skeOperator.tlsConfig.certManager.disabled }}" > "${CHART_CRDS_WITHOUT_CERT_MANAGER}"
+  cat <<'EOF' > "${CHART_CRDS_WITHOUT_CERT_MANAGER}"
+{{ if .Values.global.skeOperator.tlsConfig.certManager.disabled }}
+{{- $tlsConfig := .Values.global.skeOperator.tlsConfig }}
+{{- $webhookCABundle := $tlsConfig.webhookCACert | default "" | b64enc }}
+{{- with $tlsConfig.webhookTLSSecretRef }}
+{{- $secretName := required "global.skeOperator.tlsConfig.webhookTLSSecretRef.name is required" .name }}
+{{- $secret := lookup "v1" "Secret" "kratix-platform-system" $secretName }}
+{{- if not $secret }}
+{{- fail (printf "global.skeOperator.tlsConfig.webhookTLSSecretRef: Secret %q was not found in namespace %q" $secretName "kratix-platform-system") }}
+{{- end }}
+{{- $webhookCABundle = required (printf "global.skeOperator.tlsConfig.webhookTLSSecretRef: Secret %q in namespace %q must contain ca.crt" $secretName "kratix-platform-system") (dig "data" "ca.crt" "" $secret) }}
+{{- end }}
+EOF
   yq 'select(.kind == "CustomResourceDefinition" and (.spec.conversion // {} | length > 0))' ${MANIFEST_NAME} |
     yq 'del(.metadata.annotations."cert-manager.io/inject-ca-from")' |
-    yq '.spec.conversion.webhook.clientConfig.caBundle= "{{ .Values.global.skeOperator.tlsConfig.webhookCACert | default \"\" | b64enc }}" | .spec.conversion.webhook.clientConfig.caBundle style="literal"' >> "${CHART_CRDS_WITHOUT_CERT_MANAGER}"
+    yq '.spec.conversion.webhook.clientConfig.caBundle= "{{ $webhookCABundle }}" | .spec.conversion.webhook.clientConfig.caBundle style="literal"' >> "${CHART_CRDS_WITHOUT_CERT_MANAGER}"
   echo "---" >> "${CHART_CRDS_WITHOUT_CERT_MANAGER}"
   yq 'select(.kind == "CustomResourceDefinition" and (.spec.conversion // {} | length == 0))' ${MANIFEST_NAME} |
     yq 'del(.metadata.annotations."cert-manager.io/inject-ca-from")' >> "${CHART_CRDS_WITHOUT_CERT_MANAGER}"

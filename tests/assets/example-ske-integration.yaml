@@ -1,0 +1,7 @@
+apiVersion: platform.syntasso.io/v1alpha1
+kind: SKEIntegration
+metadata:
+  name: webhook-tls-test
+spec:
+  type: backstage
+  version: latest

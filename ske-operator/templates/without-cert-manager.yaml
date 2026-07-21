@@ -1,4 +1,14 @@
 {{ if .Values.global.skeOperator.tlsConfig.certManager.disabled }}
+{{- $tlsConfig := .Values.global.skeOperator.tlsConfig }}
+{{- $webhookCABundle := $tlsConfig.webhookCACert | default "" | b64enc }}
+{{- with $tlsConfig.webhookTLSSecretRef }}
+{{- $secretName := required "global.skeOperator.tlsConfig.webhookTLSSecretRef.name is required" .name }}
+{{- $secret := lookup "v1" "Secret" "kratix-platform-system" $secretName }}
+{{- if not $secret }}
+{{- fail (printf "global.skeOperator.tlsConfig.webhookTLSSecretRef: Secret %q was not found in namespace %q" $secretName "kratix-platform-system") }}
+{{- end }}
+{{- $webhookCABundle = required (printf "global.skeOperator.tlsConfig.webhookTLSSecretRef: Secret %q in namespace %q must contain ca.crt" $secretName "kratix-platform-system") (dig "data" "ca.crt" "" $secret) }}
+{{- end }}
 apiVersion: admissionregistration.k8s.io/v1
 kind: ValidatingWebhookConfiguration
 metadata:
@@ -20,7 +30,7 @@ webhooks:
         namespace: kratix-platform-system
         path: /validate-platform-syntasso-io-v1alpha1-kratix
       caBundle: |-
-        {{ .Values.global.skeOperator.tlsConfig.webhookCACert | default "" | b64enc }}
+        {{ $webhookCABundle }}
     failurePolicy: Fail
     name: vkratix.kb.io
     rules:
@@ -41,6 +51,8 @@ webhooks:
         name: ske-operator-webhook-service
         namespace: kratix-platform-system
         path: /validate-platform-syntasso-io-v1alpha1-skeintegration
+      caBundle: |-
+        {{ $webhookCABundle }}
     failurePolicy: Fail
     name: vskeintegration-v1alpha1.kb.io
     rules:
@@ -54,6 +66,7 @@ webhooks:
         resources:
           - skeintegrations
     sideEffects: None
+{{- if not $tlsConfig.webhookTLSSecretRef }}
 ---
 apiVersion: v1
 data:
@@ -65,5 +78,6 @@ metadata:
   name: ske-operator-webhook-server-cert
   namespace: kratix-platform-system
 type: kubernetes.io/tls
+{{- end }}
 
 {{ end }}

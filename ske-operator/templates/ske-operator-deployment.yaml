@@ -34,6 +34,17 @@ resources:
 {{- $container := index $manifest.spec.template.spec.containers 0
                     | merge (include "containerPatch" . | fromYaml) }}
 
+{{- if .Values.global.skeOperator.tlsConfig.certManager.disabled }}
+{{- with .Values.global.skeOperator.tlsConfig.webhookTLSSecretRef }}
+{{- $secretName := required "global.skeOperator.tlsConfig.webhookTLSSecretRef.name is required" .name }}
+{{- range $volume := $manifest.spec.template.spec.volumes }}
+{{- if eq $volume.name "cert" }}
+{{- $_ := set $volume.secret "secretName" $secretName }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
+
 {{- if and (.Values.releaseStorage) (.Values.releaseStorage.customCaCert) (.Values.releaseStorage.customCaCert.name) }}
 {{- $caMountPath := "/tmp/certs/release-storage-ca" }}
 {{- $caVolumeMount := dict "name" "release-storage-ca" "mountPath" $caMountPath "readOnly" true }}

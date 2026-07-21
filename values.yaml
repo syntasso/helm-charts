@@ -16,10 +16,14 @@ global:
       # issuerRef:
       #   kind: ClusterIssuer
       #   name: custom-selfsigned-issuer
-    # if certManager.disabled is set to true, the following values are required
-    # global.skeOperator.tlsConfig.webhookCACert:
-    # global.skeOperator.tlsConfig.webhookTLSKey:
-    # global.skeOperator.tlsConfig.webhookTLSCert:
+      # if certManager.disabled is set to true, provide either inline cert values or a secretRef.
+      # Inline values (chart creates the Secret from these plaintext values):
+      # webhookCACert:
+      # webhookTLSKey:
+      # webhookTLSCert:
+      # Secret reference (the pre-existing Secret must be in kratix-platform-system and contain ca.crt, tls.crt, and tls.key):
+      # webhookTLSSecretRef:
+      #   name: "my-ske-operator-webhook-tls-secret"
   # skeDeployment:
   # WARNING: when skeDeployment.deleteOnUninstall is true, uninstalling this helm chart will delete your SKE platform
   # only set to true for dev or testing environments
