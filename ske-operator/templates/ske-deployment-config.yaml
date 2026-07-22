@@ -43,6 +43,32 @@ data:
 {{- toYaml . | nindent 10 }}
         {{- end }}
       {{- end }}
+      {{- $pmdc := .platformManagerDeploymentConfig }}
+      {{- with $pmdc.resources }}
+      platformManagerDeploymentConfig:
+        resources:
+{{- toYaml . | nindent 10 }}
+        {{- with $pmdc.nodeSelector }}
+        nodeSelector:
+{{- toYaml . | nindent 10 }}
+        {{- end }}
+        {{- with $pmdc.tolerations }}
+        tolerations:
+{{- toYaml . | nindent 10 }}
+        {{- end }}
+        {{- with $pmdc.affinity }}
+        affinity:
+{{- toYaml . | nindent 10 }}
+        {{- end }}
+        {{- with $pmdc.volumes }}
+        volumes:
+{{- toYaml . | nindent 10 }}
+        {{- end }}
+        {{- with $pmdc.volumeMounts }}
+        volumeMounts:
+{{- toYaml . | nindent 10 }}
+        {{- end }}
+      {{- end }}
       tlsConfig:
         {{- if ( .tlsConfig.certManager.disabled | default false ) }}
         certSecretName: {{ (.tlsConfig.webhookTLSSecretRef).name | default "custom-kratix-platform-serving-cert" }}
