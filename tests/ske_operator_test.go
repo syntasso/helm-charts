@@ -261,6 +261,96 @@ var _ = Describe("ske-operator helm chart", func() {
 		})
 	})
 
+	When("global.skeOperator.tlsConfig.certManager.disabled=true, and a pre-existing operator TLS Secret is provided", func() {
+		BeforeEach(func() {
+			crds, _ := run("kubectl", context, "get", "crds")
+			Expect(crds).NotTo(ContainSubstring("cert-manager"))
+			run("./assets/generate-certs")
+		})
+
+		AfterEach(func() {
+			runLongTimeout("helm", "uninstall", "ske-operator", "-n=kratix-platform-system", "--wait", "--ignore-not-found")
+			runLongTimeout("kubectl", context, "delete", "namespace", "kratix-platform-system", "--timeout="+formatTimeout(kubectlLongTimeout), "--ignore-not-found")
+			deleteCRDs(context)
+		})
+
+		It("rejects a referenced Secret missing a TLS certificate or private key", func() {
+			run("kubectl", context, "create", "namespace", "kratix-platform-system")
+
+			assertMissingKeyRejected := func(missingKey string, secretArgs ...string) {
+				secretName := "incomplete-ske-operator-webhook-tls"
+				args := []string{context, "create", "secret", "generic", secretName, "-n=kratix-platform-system"}
+				args = append(args, secretArgs...)
+				run(append([]string{"kubectl"}, args...)...)
+
+				command := exec.Command("helm", "install", "ske-operator", "../ske-operator/",
+					"--kube-context=kind-platform",
+					"-n=kratix-platform-system", "-f=./assets/values-without-certmanager.yaml",
+					"--set-string", "skeLicense="+skeLicenseToken,
+					"--set", "skeDeployment.enabled=false",
+					"--set", "global.skeOperator.tlsConfig.webhookTLSSecretRef.name="+secretName,
+					"--dry-run=server")
+				output, err := command.CombinedOutput()
+				Expect(err).To(HaveOccurred())
+				Expect(string(output)).To(ContainSubstring("must contain " + missingKey))
+
+				run("kubectl", context, "delete", "secret", secretName, "-n=kratix-platform-system")
+			}
+
+			assertMissingKeyRejected("tls.crt",
+				"--from-file=ca.crt=./operator-ca.crt",
+				"--from-file=tls.key=./operator-tls.key")
+			assertMissingKeyRejected("tls.key",
+				"--from-file=ca.crt=./operator-ca.crt",
+				"--from-file=tls.crt=./operator-tls.crt")
+		})
+
+		It("uses the referenced Secret for the operator webhook", func() {
+			By("installing only the operator with a pre-existing TLS Secret", func() {
+				run("kubectl", context, "create", "namespace", "kratix-platform-system")
+				run("kubectl", context, "create", "secret", "generic", "example-ske-operator-webhook-tls",
+					"-n=kratix-platform-system", "--type=kubernetes.io/tls",
+					"--from-file=ca.crt=./operator-ca.crt",
+					"--from-file=tls.crt=./operator-tls.crt",
+					"--from-file=tls.key=./operator-tls.key")
+
+				runLongTimeout("helm", "install", "ske-operator", "../ske-operator/",
+					"-n=kratix-platform-system", "-f=./assets/values-without-certmanager.yaml",
+					"--set-string", "skeLicense="+skeLicenseToken,
+					"--set", "skeDeployment.enabled=false",
+					"--set", "global.skeOperator.tlsConfig.webhookTLSSecretRef.name=example-ske-operator-webhook-tls",
+					"--wait", "--timeout=9m")
+			})
+
+			By("verifying the referenced Secret and CA bundle are used", func() {
+				secretName, _ := run("kubectl", context, "get", "deployment", "ske-operator-controller-manager",
+					"-n=kratix-platform-system", `-o=jsonpath={.spec.template.spec.volumes[?(@.name=="cert")].secret.secretName}`)
+				Expect(secretName).To(Equal("example-ske-operator-webhook-tls"))
+
+				generatedSecret, _ := run("kubectl", context, "get", "secret", "ske-operator-webhook-server-cert",
+					"-n=kratix-platform-system", "--ignore-not-found", "-o=name")
+				Expect(generatedSecret).To(BeEmpty())
+
+				secretCABundle, _ := run("kubectl", context, "get", "secret", "example-ske-operator-webhook-tls",
+					"-n=kratix-platform-system", `-o=jsonpath={.data.ca\.crt}`)
+				for _, webhookIndex := range []string{"0", "1"} {
+					webhookCABundle, _ := run("kubectl", context, "get", "validatingwebhookconfiguration", "ske-operator-validating-webhook-configuration",
+						"-o=jsonpath={.webhooks["+webhookIndex+"].clientConfig.caBundle}")
+					Expect(webhookCABundle).To(Equal(secretCABundle))
+				}
+
+				conversionCABundle, _ := run("kubectl", context, "get", "crd", "kratixes.platform.syntasso.io",
+					`-o=jsonpath={.spec.conversion.webhook.clientConfig.caBundle}`)
+				Expect(conversionCABundle).To(Equal(secretCABundle))
+			})
+
+			By("validating resources through both operator webhooks", func() {
+				run("kubectl", context, "apply", "--dry-run=server", "-f=assets/example-kratix.yaml")
+				run("kubectl", context, "apply", "--dry-run=server", "-f=assets/example-ske-integration.yaml")
+			})
+		})
+	})
+
 	Describe("backstageIntegration", func() {
 		When("the backstageIntegration block is absent", func() {
 			It("does not template the post deploy job or configmap", func() {

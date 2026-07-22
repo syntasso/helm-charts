@@ -2,6 +2,35 @@
 
 load helpers
 
+@test "SKE Operator certManager disabled: inline TLS values populate all webhook CA bundles" {
+  run helm_ske_operator \
+    --set global.skeOperator.tlsConfig.certManager.disabled=true \
+    --set-string global.skeOperator.tlsConfig.webhookCACert=ca \
+    --set-string global.skeOperator.tlsConfig.webhookTLSCert=cert \
+    --set-string global.skeOperator.tlsConfig.webhookTLSKey=key
+  [ "$status" -eq 0 ]
+
+  local webhook_ca_bundles
+  webhook_ca_bundles=$(printf '%s\n' "$output" | yq 'select(.kind == "ValidatingWebhookConfiguration") | .webhooks[].clientConfig.caBundle')
+  [[ "$webhook_ca_bundles" == $'Y2E=\nY2E=' ]]
+
+  local conversion_ca_bundle
+  conversion_ca_bundle=$(printf '%s\n' "$output" | yq 'select(.kind == "CustomResourceDefinition" and .metadata.name == "kratixes.platform.syntasso.io") | .spec.conversion.webhook.clientConfig.caBundle')
+  [[ "$conversion_ca_bundle" == "Y2E=" ]]
+
+  local operator_tls_secret
+  operator_tls_secret=$(printf '%s\n' "$output" | yq 'select(.kind == "Secret" and .metadata.name == "ske-operator-webhook-server-cert") | .metadata.name')
+  [[ "$operator_tls_secret" == "ske-operator-webhook-server-cert" ]]
+}
+
+@test "SKE Operator webhookTLSSecretRef: reports a missing pre-existing Secret" {
+  run helm_ske_operator \
+    --set global.skeOperator.tlsConfig.certManager.disabled=true \
+    --set global.skeOperator.tlsConfig.webhookTLSSecretRef.name=missing-ske-operator-webhook-tls
+  [ "$status" -ne 0 ]
+  [[ "$output" == *'Secret "missing-ske-operator-webhook-tls" was not found in namespace "kratix-platform-system"'* ]]
+}
+
 @test "certManager disabled: both TLS secrets rendered when no secretRefs set" {
   run helm_ske_operator \
     --set skeDeployment.tlsConfig.certManager.disabled=true \
