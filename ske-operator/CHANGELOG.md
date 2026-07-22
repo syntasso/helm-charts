@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.80.0](https://github.com/syntasso/helm-charts/compare/ske-operator-0.79.0...ske-operator-v0.80.0) (2026-07-22)
+
+
+### Features
+
+* reference secrets for SKE Operator webhook ([#204](https://github.com/syntasso/helm-charts/issues/204)) ([c9708d4](https://github.com/syntasso/helm-charts/commit/c9708d42de16179130cb6b9b2c3473e0f8e47a46))
+
 ## [0.79.0](https://github.com/syntasso/helm-charts/compare/ske-operator-0.78.0...ske-operator-v0.79.0) (2026-07-22)
 
 
