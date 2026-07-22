@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.79.0](https://github.com/syntasso/helm-charts/compare/ske-operator-0.78.0...ske-operator-v0.79.0) (2026-07-22)
+
+
+### Features
+
+* allow setting ske platform manager fields ([#203](https://github.com/syntasso/helm-charts/issues/203)) ([48067be](https://github.com/syntasso/helm-charts/commit/48067be99df2b67387cc62d5d02a6c88b793ec18))
+
 ## [0.78.0](https://github.com/syntasso/helm-charts/compare/ske-operator-0.77.0...ske-operator-v0.78.0) (2026-07-21)
 
 
