@@ -8,6 +8,8 @@
 {{- fail (printf "global.skeOperator.tlsConfig.webhookTLSSecretRef: Secret %q was not found in namespace %q" $secretName "kratix-platform-system") }}
 {{- end }}
 {{- $webhookCABundle = required (printf "global.skeOperator.tlsConfig.webhookTLSSecretRef: Secret %q in namespace %q must contain ca.crt" $secretName "kratix-platform-system") (dig "data" "ca.crt" "" $secret) }}
+{{- $_ := required (printf "global.skeOperator.tlsConfig.webhookTLSSecretRef: Secret %q in namespace %q must contain tls.crt" $secretName "kratix-platform-system") (dig "data" "tls.crt" "" $secret) }}
+{{- $_ := required (printf "global.skeOperator.tlsConfig.webhookTLSSecretRef: Secret %q in namespace %q must contain tls.key" $secretName "kratix-platform-system") (dig "data" "tls.key" "" $secret) }}
 {{- end }}
 apiVersion: admissionregistration.k8s.io/v1
 kind: ValidatingWebhookConfiguration

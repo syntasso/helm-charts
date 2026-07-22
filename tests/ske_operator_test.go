@@ -274,6 +274,37 @@ var _ = Describe("ske-operator helm chart", func() {
 			deleteCRDs(context)
 		})
 
+		It("rejects a referenced Secret missing a TLS certificate or private key", func() {
+			run("kubectl", context, "create", "namespace", "kratix-platform-system")
+
+			assertMissingKeyRejected := func(missingKey string, secretArgs ...string) {
+				secretName := "incomplete-ske-operator-webhook-tls"
+				args := []string{context, "create", "secret", "generic", secretName, "-n=kratix-platform-system"}
+				args = append(args, secretArgs...)
+				run(append([]string{"kubectl"}, args...)...)
+
+				command := exec.Command("helm", "install", "ske-operator", "../ske-operator/",
+					"--kube-context=kind-platform",
+					"-n=kratix-platform-system", "-f=./assets/values-without-certmanager.yaml",
+					"--set-string", "skeLicense="+skeLicenseToken,
+					"--set", "skeDeployment.enabled=false",
+					"--set", "global.skeOperator.tlsConfig.webhookTLSSecretRef.name="+secretName,
+					"--dry-run=server")
+				output, err := command.CombinedOutput()
+				Expect(err).To(HaveOccurred())
+				Expect(string(output)).To(ContainSubstring("must contain " + missingKey))
+
+				run("kubectl", context, "delete", "secret", secretName, "-n=kratix-platform-system")
+			}
+
+			assertMissingKeyRejected("tls.crt",
+				"--from-file=ca.crt=./operator-ca.crt",
+				"--from-file=tls.key=./operator-tls.key")
+			assertMissingKeyRejected("tls.key",
+				"--from-file=ca.crt=./operator-ca.crt",
+				"--from-file=tls.crt=./operator-tls.crt")
+		})
+
 		It("uses the referenced Secret for the operator webhook", func() {
 			By("installing only the operator with a pre-existing TLS Secret", func() {
 				run("kubectl", context, "create", "namespace", "kratix-platform-system")
