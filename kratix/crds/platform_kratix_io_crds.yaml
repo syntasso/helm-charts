@@ -1387,7 +1387,7 @@ spec:
                         description: Current state of the required Promise (e.g. "Available", "Unavailable")
                         type: string
                       version:
-                        description: Installed version of the required Promise
+                        description: Version of the required Promise that this Promise requires
                         type: string
                     type: object
                   type: array
