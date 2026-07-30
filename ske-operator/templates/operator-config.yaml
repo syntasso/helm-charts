@@ -37,6 +37,8 @@ data:
       pipelineImage: {{ .skePlatformPipelineAdapterImage.name }}
       backstageControllerImage: {{ .backstageControllerImage.name }}
       cortexControllerImage: {{ .cortexControllerImage.name }}
+      portalControllerImage: {{ .portalControllerImage.name }}
+      portalAdapterImage: {{ .portalAdapterImage.name }}
     {{- end }}
 
 {{ if and (.Values.releaseStorage) (.Values.releaseStorage.git) (.Values.releaseStorage.git.secret) (.Values.releaseStorage.git.secret.values) }}

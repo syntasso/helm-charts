@@ -509,6 +509,22 @@ var _ = Describe("ske-operator helm chart", func() {
 					Expect(template).To(ContainSubstring("repositoryName: platform-catalog"))
 					Expect(template).To(ContainSubstring("name: backstage-token"))
 				})
+
+				It("templates the default portal images in the Operator Config", func() {
+					template, _ := run("helm", "template", "ske-operator", "../ske-operator/", "-s=templates/operator-config.yaml", "-f=./assets/values-with-portal-integration-enabled.yaml")
+					Expect(template).To(ContainSubstring("portalControllerImage: syntasso/ske-portal-controller"))
+					Expect(template).To(ContainSubstring("portalAdapterImage: syntasso/ske-portal-controller"))
+				})
+
+				When("specifying custom portal images", func() {
+					It("templates the imageRegistry portal images in the Operator Config", func() {
+						template, _ := run("helm", "template", "ske-operator", "../ske-operator/", "-s=templates/operator-config.yaml", "-f=./assets/values-with-portal-integration-enabled.yaml",
+							"--set=imageRegistry.portalControllerImage.name=my-path/portal-controller",
+							"--set=imageRegistry.portalAdapterImage.name=my-path/portal-adapter")
+						Expect(template).To(ContainSubstring("portalControllerImage: my-path/portal-controller"))
+						Expect(template).To(ContainSubstring("portalAdapterImage: my-path/portal-adapter"))
+					})
+				})
 			})
 		})
 	})
