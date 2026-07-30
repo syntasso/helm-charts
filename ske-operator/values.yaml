@@ -86,6 +86,15 @@ imageRegistry:
   cortexControllerImage:
     # The name of the Cortex Controller image
     name: "syntasso/ske-cortex-controller"
+  portalControllerImage:
+    # The name of the SKE Portal Controller image
+    name: "syntasso/ske-portal-controller"
+  portalAdapterImage:
+    # The name of the portal adapter image. The adapter is a second entrypoint in the
+    # Portal Controller image, so this normally matches portalControllerImage; set it
+    # only to point every portal connection at a different adapter build.
+    # Individual connections can override it via portalIntegration.portals[].adapterConfig.image.
+    name: "syntasso/ske-portal-controller"
 # Syntasso Enterprise manifests are available in the S3 bucket below
 # If you are using a custom bucket, update the values accordingly
 releaseStorage:
