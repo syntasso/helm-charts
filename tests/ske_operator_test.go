@@ -25,6 +25,11 @@ var (
 	kubectlLongTimeout        = time.Second * 300
 	certManagerWebhookTimeout = time.Second * 300
 
+	// Uninstalling with deleteOnUninstall removes the CRDs, so the Kratix Deployment is left to
+	// Kubernetes' garbage collector as a dependent whose owner's CRD is gone. That collection is
+	// discovery-driven, so its tail latency is far longer than a normal owner-triggered delete.
+	gcTimeout = time.Second * 300
+
 	context = "--context=kind-platform"
 )
 
@@ -602,7 +607,7 @@ var _ = Describe("ske-operator helm chart", func() {
 						Eventually(func() string {
 							out, _ := run("kubectl", context, "get", "deployments", "kratix-platform-controller-manager", "-n=kratix-platform-system", "--ignore-not-found")
 							return out
-						}, timeout, interval).Should(BeEmpty())
+						}, gcTimeout, interval).Should(BeEmpty())
 					})
 
 					By("deleting the crds", func() { // if the crds are deleted, so are the Kratix custom resources
