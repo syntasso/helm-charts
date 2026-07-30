@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.82.0](https://github.com/syntasso/helm-charts/compare/ske-operator-0.81.0...ske-operator-v0.82.0) (2026-07-30)
+
+
+### Features
+
+* **ske-operator:** allow overriding the portal-controller images via imageRegistry ([b52e9cb](https://github.com/syntasso/helm-charts/commit/b52e9cb35635428b245ae834e5c5e7690dfb01bc))
+* **ske-operator:** allow overriding the portal-controller images via imageRegistry ([31f11a3](https://github.com/syntasso/helm-charts/commit/31f11a38e66655f90e4b5f9aa72a384b759027c5))
+* **ske-operator:** update ske-portal-controller version (autorelease) ([5c3fc3b](https://github.com/syntasso/helm-charts/commit/5c3fc3bd44268c3f3d31848321196f42fd1eef2e))
+
 ## [0.81.0](https://github.com/syntasso/helm-charts/compare/ske-operator-0.80.0...ske-operator-v0.81.0) (2026-07-24)
 
 
