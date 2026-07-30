@@ -343,7 +343,7 @@ portalIntegration:
   # Set to true if you want to deploy the SKE Portal Controller
   enabled: false
   # The version of the controller to deploy (moves the bundled adapter image too)
-  version: "latest"
+  version: "v0.2.0"
   deploymentConfig:
     resources:
       limits:
