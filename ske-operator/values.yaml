@@ -158,6 +158,17 @@ skeDeployment:
   enabled: true
   # The version of ske to deploy
   version: "latest"
+  # Opt in to preview features on the deployed SKE platform. Each entry is passed
+  # through verbatim as one Kratix spec.featureFlags key, so a flag added by a newer
+  # SKE release needs no chart change; the Kratix CRD is what validates the names.
+  # Every flag here is a PREVIEW feature: not production ready, off unless set, and
+  # subject to change or removal in any release. Flags also require an SKE version
+  # that supports them — the operator webhook rejects the combination otherwise.
+  featureFlags: {}
+  # featureFlags:
+  #   # Gates the DryRun controller and the dryruns CRD. Setting this to false again
+  #   # disables the feature but leaves the CRD in place.
+  #   dryRun: true
   deploymentConfig:
     resources:
       limits:
