@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.84.0](https://github.com/syntasso/helm-charts/compare/ske-operator-0.83.0...ske-operator-v0.84.0) (2026-08-05)
+
+
+### Features
+
+* **ske-operator:** expose featureFlags config in the ske-operator chart ([#217](https://github.com/syntasso/helm-charts/issues/217)) ([f926e37](https://github.com/syntasso/helm-charts/commit/f926e37b7bbd2a26803bb555ba5475a8274f8604))
+* **ske-operator:** update appVersion (autorelease) ([8cb4265](https://github.com/syntasso/helm-charts/commit/8cb4265cd1f716fd8dafc98bb5ce801e6f826edb))
+
 ## [0.83.0](https://github.com/syntasso/helm-charts/compare/ske-operator-0.82.0...ske-operator-v0.83.0) (2026-07-30)
 
 
