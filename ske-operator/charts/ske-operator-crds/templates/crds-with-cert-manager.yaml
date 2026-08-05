@@ -2896,6 +2896,18 @@ spec:
                         type: object
                       type: array
                   type: object
+                featureFlags:
+                  description: FeatureFlags opts in to Kratix features that are off by default.
+                  properties:
+                    dryRun:
+                      description: |-
+                        DryRun enables the Kratix dry-run feature. When set, the operator writes
+                        featureFlags.dryRun into the kratix ConfigMap and installs the dryruns CRD.
+
+                        PREVIEW: dry run is not production ready and its API is subject to breaking
+                        changes. Do not use it in production.
+                      type: boolean
+                  type: object
                 platformManagerDeploymentConfig:
                   description: PlatformManagerDeploymentConfig is the deployment configuration for the SKE Platform Manager.
                   properties:
