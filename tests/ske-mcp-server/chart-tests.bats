@@ -41,13 +41,58 @@ setup_file() {
   [ "$(printf '%s\n' "$deployment" | yq '.spec.template.spec.containers[0].resources.requests.memory')" = "32Mi" ]
   [ "$(printf '%s\n' "$deployment" | yq '.spec.template.spec.containers[0].resources.limits.memory')" = "128Mi" ]
 
-  local service wildcard_rules
+  local service
   service="$(printf '%s\n' "$output" | yq 'select(.kind == "Service")')"
-  wildcard_rules="$(printf '%s\n' "$output" | yq 'select(.kind == "ClusterRole") | .rules[] | select(.apiGroups[0] == "*" and .resources[0] == "*") | .verbs[0]')"
   [ "$(printf '%s\n' "$service" | yq '.spec.ports[0].port')" = "80" ]
   [ "$(printf '%s\n' "$service" | yq '.spec.ports[0].targetPort')" = "http" ]
-  [[ "$wildcard_rules" == *"list"* ]]
-  [[ "$wildcard_rules" == *"create"* ]]
+}
+
+@test "ske-mcp-server grants no wildcard and cannot read secrets by default" {
+  # The assertion this chart most needs. `apiGroups: ["*"]` also matches the core group, and `list`
+  # on core secrets returns their values — so a wildcard makes the ServiceAccount a cluster-wide
+  # credential reader. RBAC has no exception to walk that back.
+  run helm template test "$CHART" --set-string auth.token=test-token
+
+  [ "$status" -eq 0 ]
+  # Matched as whole lines with grep rather than inside yq: `select(.apiGroups[] == "*")` emits the
+  # rule regardless of the comparison's result, so it silently passes.
+  local wildcard_groups wildcard_resources core_resources
+  wildcard_groups="$(printf '%s\n' "$output" | yq 'select(.kind == "ClusterRole") | .rules[].apiGroups[]' | grep -Fx '*' || true)"
+  wildcard_resources="$(printf '%s\n' "$output" | yq 'select(.kind == "ClusterRole") | .rules[].resources[]' | grep -Fx '*' || true)"
+  core_resources="$(printf '%s\n' "$output" | yq 'select(.kind == "ClusterRole") | .rules[] | select(.apiGroups[0] == "") | .resources[]' | sort | tr '\n' ' ')"
+
+  [ -z "$wildcard_groups" ]
+  [ -z "$wildcard_resources" ]
+  # Namespaces and events only. Anything else in the core group is a finding, secrets above all.
+  [ "$core_resources" = "events namespaces " ]
+}
+
+@test "ske-mcp-server grants promise request access per API group, never by wildcard group" {
+  run helm template test "$CHART" \
+    --set-string auth.token=test-token \
+    --set 'rbac.requestApiGroups[0]=testing.kratix.io' \
+    --set 'rbac.requestApiGroups[1]=lre.kratix.io'
+
+  [ "$status" -eq 0 ]
+  local rule core_resources
+  rule="$(printf '%s\n' "$output" | yq 'select(.kind == "ClusterRole") | .rules[] | select(.resources[0] == "*")')"
+  core_resources="$(printf '%s\n' "$output" | yq 'select(.kind == "ClusterRole") | .rules[] | select(.apiGroups[0] == "") | .resources[]' | sort | tr '\n' ' ')"
+
+  [ "$(printf '%s\n' "$rule" | yq '.apiGroups | length')" = "2" ]
+  [ "$(printf '%s\n' "$rule" | yq '.apiGroups[0]')" = "testing.kratix.io" ]
+  [ "$(printf '%s\n' "$rule" | yq '.verbs | sort | join(",")')" = "create,list" ]
+  # `resources: ["*"]` is only safe because the groups above hold nothing but Promise-defined CRs.
+  # The core group must be untouched by the allowlist.
+  [ "$core_resources" = "events namespaces " ]
+}
+
+@test "ske-mcp-server refuses a wildcard API group" {
+  run helm template test "$CHART" \
+    --set-string auth.token=test-token \
+    --set 'rbac.requestApiGroups[0]=*'
+
+  [ "$status" -ne 0 ]
+  [[ "$output" == *"requestApiGroups"* ]]
 }
 
 @test "ske-mcp-server keeps selector labels authoritative and supports full probe settings" {
@@ -99,16 +144,71 @@ setup_file() {
   [ "$(printf '%s\n' "$token_env" | yq '.valueFrom.secretKeyRef.key')" = "bearer-token" ]
 }
 
-@test "ske-mcp-server rejects missing or conflicting auth configuration" {
+@test "ske-mcp-server refuses to render an unauthenticated endpoint" {
+  # With no mechanism configured the server registers no bearer-token middleware on /mcp, so it
+  # answers unauthenticated callers. Failing to render is the only way that does not reach a
+  # cluster quietly.
   run helm template test "$CHART"
   [ "$status" -ne 0 ]
-  [[ "$output" == *"exactly one"* ]]
+  [[ "$output" == *"at least one mechanism"* ]]
+  [[ "$output" == *"no authentication"* ]]
+}
 
+@test "ske-mcp-server rejects conflicting static token configuration" {
   run helm template test "$CHART" \
     --set-string auth.token=test-token \
     --set auth.existingSecret.name=external-auth
   [ "$status" -ne 0 ]
   [[ "$output" == *"exactly one"* ]]
+}
+
+@test "ske-mcp-server requires the OIDC issuer and resource URL together" {
+  # The resource URL is the audience the server demands in every token. With the issuer alone the
+  # server refuses to start, so failing here turns a CrashLoopBackOff into a render error.
+  run helm template test "$CHART" --set auth.oidc.issuer=https://keycloak.example.com/realms/mcp
+  [ "$status" -ne 0 ]
+  [[ "$output" == *"auth.oidc.resourceURL"* ]]
+
+  run helm template test "$CHART" --set auth.oidc.resourceURL=https://mcp.example.com/mcp
+  [ "$status" -ne 0 ]
+  [[ "$output" == *"auth.oidc.issuer"* ]]
+}
+
+@test "ske-mcp-server configures OIDC without a static token" {
+  run helm template test "$CHART" \
+    --set auth.oidc.issuer=https://keycloak.example.com/realms/mcp \
+    --set auth.oidc.resourceURL=https://mcp.example.com/mcp \
+    --set auth.oidc.subjectClaim=preferred_username
+
+  [ "$status" -eq 0 ]
+  # One yq pass per lookup: piping a stream of env entries into a second yq re-parses them as a
+  # single document, which silently matches nothing.
+  local names
+  names="$(printf '%s\n' "$output" | yq 'select(.kind == "Deployment") | .spec.template.spec.containers[0].env[].name' | tr '\n' ' ')"
+
+  [ "$(printf '%s\n' "$output" | yq 'select(.kind == "Deployment") | .spec.template.spec.containers[0].env[] | select(.name == "OIDC_ISSUER") | .value')" = "https://keycloak.example.com/realms/mcp" ]
+  [ "$(printf '%s\n' "$output" | yq 'select(.kind == "Deployment") | .spec.template.spec.containers[0].env[] | select(.name == "MCP_RESOURCE_URL") | .value')" = "https://mcp.example.com/mcp" ]
+  [ "$(printf '%s\n' "$output" | yq 'select(.kind == "Deployment") | .spec.template.spec.containers[0].env[] | select(.name == "OIDC_SUBJECT_CLAIM") | .value')" = "preferred_username" ]
+  # No token means no MCP_AUTH_TOKEN and no chart-managed Secret at all.
+  [[ "$names" != *"MCP_AUTH_TOKEN"* ]]
+  [ -z "$(printf '%s\n' "$output" | yq 'select(.kind == "Secret") | .metadata.name')" ]
+  # Unset optional overrides must not render as empty env vars, which the server would reject.
+  [[ "$names" != *"OIDC_JWKS_URI"* ]]
+  [[ "$names" != *"OIDC_CLOCK_SKEW"* ]]
+}
+
+@test "ske-mcp-server supports OIDC and a static token together" {
+  # The two are not exclusive: an installation can carry a legacy token while callers migrate.
+  run helm template test "$CHART" \
+    --set-string auth.token=test-token \
+    --set auth.oidc.issuer=https://keycloak.example.com/realms/mcp \
+    --set auth.oidc.resourceURL=https://mcp.example.com/mcp
+
+  [ "$status" -eq 0 ]
+  local names
+  names="$(printf '%s\n' "$output" | yq 'select(.kind == "Deployment") | .spec.template.spec.containers[0].env[] | .name' | tr '\n' ' ')"
+  [[ "$names" == *"MCP_AUTH_TOKEN"* ]]
+  [[ "$names" == *"OIDC_ISSUER"* ]]
 }
 
 @test "ske-mcp-server rejects multiple replicas" {
@@ -135,7 +235,7 @@ setup_file() {
   [ "$service_account" = "platform-mcp" ]
 }
 
-@test "ske-mcp-server ingress exposes only mcp and requires TLS" {
+@test "ske-mcp-server ingress exposes only mcp with a static token" {
   run helm template test "$CHART" \
     --set-string auth.token=test-token \
     --set ingress.enabled=true \
@@ -144,18 +244,56 @@ setup_file() {
     --set ingress.tls.secretName=mcp-tls
 
   [ "$status" -eq 0 ]
-  local ingress
+  local ingress paths
   ingress="$(printf '%s\n' "$output" | yq 'select(.kind == "Ingress")')"
-  [ "$(printf '%s\n' "$ingress" | yq '.spec.rules[0].http.paths[0].path')" = "/mcp" ]
+  paths="$(printf '%s\n' "$ingress" | yq '.spec.rules[0].http.paths[].path' | tr '\n' ' ')"
   [ "$(printf '%s\n' "$ingress" | yq '.spec.rules[0].http.paths[0].pathType')" = "Exact" ]
   [ "$(printf '%s\n' "$ingress" | yq '.spec.tls[0].secretName')" = "mcp-tls" ]
+  # No OIDC means the server registers no metadata handlers, so routing them would be a 404.
+  [ "$paths" = "/mcp " ]
+}
 
+@test "ske-mcp-server ingress routes the OIDC discovery documents" {
+  # An MCP client fetches RFC 9728 protected-resource metadata to find the authorization server.
+  # Routing only /mcp leaves both paths 404 through the ingress, so the client cannot start the
+  # flow even though the server answers correctly behind it.
+  run helm template test "$CHART" \
+    --set auth.oidc.issuer=https://keycloak.example.com/realms/mcp \
+    --set auth.oidc.resourceURL=https://mcp.example.com/mcp \
+    --set ingress.enabled=true \
+    --set ingress.className=nginx \
+    --set ingress.host=mcp.example.com \
+    --set ingress.tls.secretName=mcp-tls
+
+  [ "$status" -eq 0 ]
+  local paths
+  paths="$(printf '%s\n' "$output" | yq 'select(.kind == "Ingress") | .spec.rules[0].http.paths[].path' | tr '\n' ' ')"
+  [ "$paths" = "/mcp /.well-known/oauth-protected-resource /.well-known/oauth-protected-resource/mcp " ]
+}
+
+@test "ske-mcp-server ingress omits tls where it terminates upstream" {
+  # A load balancer holding its own certificate — ACM on an AWS ALB, say — has no TLS Secret to
+  # name. Requiring one made the chart impossible to install there, and rendering `secretName: ""`
+  # names a Secret that cannot exist.
   run helm template test "$CHART" \
     --set-string auth.token=test-token \
     --set ingress.enabled=true \
+    --set ingress.className=alb \
     --set ingress.host=mcp.example.com
+
+  [ "$status" -eq 0 ]
+  local ingress
+  ingress="$(printf '%s\n' "$output" | yq 'select(.kind == "Ingress")')"
+  [ "$(printf '%s\n' "$ingress" | yq '.spec.tls')" = "null" ]
+  [ "$(printf '%s\n' "$ingress" | yq '.spec.rules[0].host')" = "mcp.example.com" ]
+}
+
+@test "ske-mcp-server still requires an ingress host" {
+  run helm template test "$CHART" \
+    --set-string auth.token=test-token \
+    --set ingress.enabled=true
   [ "$status" -ne 0 ]
-  [[ "$output" == *"TLS"* ]]
+  [[ "$output" == *"ingress.host"* ]]
 }
 
 @test "ske-mcp-server supports immutable image selection" {

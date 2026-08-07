@@ -55,11 +55,43 @@ spec:
               value: {{ .Values.config.logLevel | quote }}
             - name: READINESS_MODE
               value: {{ .Values.config.readinessMode | quote }}
+            {{- if include "ske-mcp-server.staticTokenEnabled" . }}
             - name: MCP_AUTH_TOKEN
               valueFrom:
                 secretKeyRef:
                   name: {{ include "ske-mcp-server.authSecretName" . }}
                   key: {{ if .Values.auth.existingSecret.name }}{{ .Values.auth.existingSecret.key }}{{ else }}token{{ end }}
+            {{- end }}
+            {{- if include "ske-mcp-server.oidcEnabled" . }}
+            - name: OIDC_ISSUER
+              value: {{ .Values.auth.oidc.issuer | quote }}
+            - name: MCP_RESOURCE_URL
+              value: {{ .Values.auth.oidc.resourceURL | quote }}
+            {{- with .Values.auth.oidc.jwksURI }}
+            - name: OIDC_JWKS_URI
+              value: {{ . | quote }}
+            {{- end }}
+            {{- with .Values.auth.oidc.subjectClaim }}
+            - name: OIDC_SUBJECT_CLAIM
+              value: {{ . | quote }}
+            {{- end }}
+            {{- with .Values.auth.oidc.groupsClaim }}
+            - name: OIDC_GROUPS_CLAIM
+              value: {{ . | quote }}
+            {{- end }}
+            {{- with .Values.auth.oidc.nameClaims }}
+            - name: OIDC_NAME_CLAIMS
+              value: {{ join "," . | quote }}
+            {{- end }}
+            {{- with .Values.auth.oidc.allowedAlgorithms }}
+            - name: OIDC_ALLOWED_ALGORITHMS
+              value: {{ join "," . | quote }}
+            {{- end }}
+            {{- with .Values.auth.oidc.clockSkew }}
+            - name: OIDC_CLOCK_SKEW
+              value: {{ . | quote }}
+            {{- end }}
+            {{- end }}
           {{- if .Values.startupProbe.enabled }}
           startupProbe:
             {{- omit .Values.startupProbe "enabled" | toYaml | nindent 12 }}

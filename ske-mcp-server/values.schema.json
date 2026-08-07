@@ -46,9 +46,39 @@
           },
           "required": ["name", "key"],
           "additionalProperties": false
+        },
+        "oidc": {
+          "type": "object",
+          "properties": {
+            "issuer": {
+              "type": "string",
+              "pattern": "^(|https://.+)$",
+              "description": "Absolute https URL of the authorization server. Must equal the iss claim exactly."
+            },
+            "resourceURL": {
+              "type": "string",
+              "pattern": "^(|https://[^?#]*[^/?#])$",
+              "description": "This server's canonical resource URI and required audience: lowercase https, no query, no fragment, no trailing slash."
+            },
+            "jwksURI": { "type": "string", "pattern": "^(|https://.+)$" },
+            "subjectClaim": { "type": "string" },
+            "groupsClaim": { "type": "string" },
+            "nameClaims": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+            "allowedAlgorithms": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+            "clockSkew": {
+              "type": "string",
+              "pattern": "^(|[0-9]+(ns|us|ms|s|m|h))$",
+              "description": "Go duration, e.g. 60s. Empty means the server default."
+            }
+          },
+          "required": [
+            "issuer", "resourceURL", "jwksURI", "subjectClaim", "groupsClaim",
+            "nameClaims", "allowedAlgorithms", "clockSkew"
+          ],
+          "additionalProperties": false
         }
       },
-      "required": ["token", "existingSecret"],
+      "required": ["token", "existingSecret", "oidc"],
       "additionalProperties": false
     },
     "config": {
@@ -74,8 +104,20 @@
     },
     "rbac": {
       "type": "object",
-      "properties": { "create": { "type": "boolean" } },
-      "required": ["create"],
+      "properties": {
+        "create": { "type": "boolean" },
+        "requestApiGroups": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "not": { "const": "*" },
+            "description": "A named API group. \"*\" is rejected because it also matches the core group, where list on secrets returns their values."
+          },
+          "description": "API groups holding Promise-defined request resources. Empty means requests cannot be submitted."
+        }
+      },
+      "required": ["create", "requestApiGroups"],
       "additionalProperties": false
     },
     "podAnnotations": { "type": "object" },
