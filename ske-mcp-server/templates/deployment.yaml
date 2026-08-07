@@ -15,20 +15,18 @@ spec:
       {{- include "ske-mcp-server.selectorLabels" . | nindent 6 }}
   template:
     metadata:
-      {{- if or .Values.auth.token .Values.podAnnotations }}
+      {{- $podAnnotations := deepCopy .Values.podAnnotations }}
+      {{- if .Values.auth.token }}
+      {{- $_ := set $podAnnotations "checksum/auth-secret" (include (print $.Template.BasePath "/secret.yaml") . | sha256sum) }}
+      {{- end }}
+      {{- with $podAnnotations }}
       annotations:
-        {{- if .Values.auth.token }}
-        checksum/auth-secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
-        {{- end }}
-        {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
-        {{- end }}
       {{- end }}
       labels:
-        {{- include "ske-mcp-server.labels" . | nindent 8 }}
-        {{- with .Values.podLabels }}
-        {{- toYaml . | nindent 8 }}
-        {{- end }}
+        {{- $requiredPodLabels := include "ske-mcp-server.labels" . | fromYaml }}
+        {{- $podLabels := merge $requiredPodLabels .Values.podLabels }}
+        {{- toYaml $podLabels | nindent 8 }}
     spec:
       serviceAccountName: {{ include "ske-mcp-server.serviceAccountName" . }}
       automountServiceAccountToken: {{ .Values.serviceAccount.automount }}
@@ -64,28 +62,15 @@ spec:
                   key: {{ if .Values.auth.existingSecret.name }}{{ .Values.auth.existingSecret.key }}{{ else }}token{{ end }}
           {{- if .Values.startupProbe.enabled }}
           startupProbe:
-            httpGet:
-              path: /healthz
-              port: http
-            periodSeconds: {{ .Values.startupProbe.periodSeconds }}
-            timeoutSeconds: {{ .Values.startupProbe.timeoutSeconds }}
-            failureThreshold: {{ .Values.startupProbe.failureThreshold }}
+            {{- omit .Values.startupProbe "enabled" | toYaml | nindent 12 }}
           {{- end }}
           {{- if .Values.livenessProbe.enabled }}
           livenessProbe:
-            httpGet:
-              path: /healthz
-              port: http
-            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
-            timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+            {{- omit .Values.livenessProbe "enabled" | toYaml | nindent 12 }}
           {{- end }}
           {{- if .Values.readinessProbe.enabled }}
           readinessProbe:
-            httpGet:
-              path: /readyz
-              port: http
-            periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
-            timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+            {{- omit .Values.readinessProbe "enabled" | toYaml | nindent 12 }}
           {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}

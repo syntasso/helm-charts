@@ -131,13 +131,10 @@
     "probe": {
       "type": "object",
       "properties": {
-        "enabled": { "type": "boolean" },
-        "periodSeconds": { "type": "integer", "minimum": 1 },
-        "timeoutSeconds": { "type": "integer", "minimum": 1 },
-        "failureThreshold": { "type": "integer", "minimum": 1 }
+        "enabled": { "type": "boolean" }
       },
-      "required": ["enabled", "periodSeconds", "timeoutSeconds"],
-      "additionalProperties": false
+      "required": ["enabled"],
+      "additionalProperties": true
     }
   }
 }

@@ -71,17 +71,26 @@ resources:
 
 startupProbe:
   enabled: true
+  httpGet:
+    path: /healthz
+    port: http
   periodSeconds: 2
   timeoutSeconds: 2
   failureThreshold: 15
 
 livenessProbe:
   enabled: true
+  httpGet:
+    path: /healthz
+    port: http
   periodSeconds: 10
   timeoutSeconds: 2
 
 readinessProbe:
   enabled: true
+  httpGet:
+    path: /readyz
+    port: http
   periodSeconds: 10
   timeoutSeconds: 2
 
@@ -90,4 +99,3 @@ nodeSelector: {}
 tolerations: []
 affinity: {}
 topologySpreadConstraints: []
-
