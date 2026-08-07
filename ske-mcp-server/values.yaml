@@ -1,0 +1,93 @@
+replicaCount: 1
+
+image:
+  repository: ghcr.io/syntasso/ske-mcp-server
+  pullPolicy: IfNotPresent
+  tag: ""
+  digest: ""
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+auth:
+  # For simple installations only. Prefer existingSecret for production and
+  # GitOps workflows because Helm stores values in the release Secret.
+  token: ""
+  existingSecret:
+    name: ""
+    key: token
+
+config:
+  port: 8080
+  logLevel: info
+  readinessMode: kubernetes
+
+serviceAccount:
+  create: true
+  automount: true
+  annotations: {}
+  name: ""
+
+rbac:
+  create: true
+
+podAnnotations: {}
+podLabels: {}
+
+podSecurityContext:
+  seccompProfile:
+    type: RuntimeDefault
+
+securityContext:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+      - ALL
+  readOnlyRootFilesystem: true
+  runAsNonRoot: true
+  runAsUser: 65532
+  runAsGroup: 65532
+
+service:
+  type: ClusterIP
+  port: 80
+  annotations: {}
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  host: ""
+  tls:
+    secretName: ""
+
+resources:
+  requests:
+    cpu: 10m
+    memory: 32Mi
+  limits:
+    memory: 128Mi
+
+startupProbe:
+  enabled: true
+  periodSeconds: 2
+  timeoutSeconds: 2
+  failureThreshold: 15
+
+livenessProbe:
+  enabled: true
+  periodSeconds: 10
+  timeoutSeconds: 2
+
+readinessProbe:
+  enabled: true
+  periodSeconds: 10
+  timeoutSeconds: 2
+
+priorityClassName: ""
+nodeSelector: {}
+tolerations: []
+affinity: {}
+topologySpreadConstraints: []
+

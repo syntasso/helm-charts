@@ -1,0 +1,45 @@
+{{- if .Values.rbac.create }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ include "ske-mcp-server.fullname" . }}
+  labels:
+    {{- include "ske-mcp-server.labels" . | nindent 4 }}
+rules:
+  - apiGroups: [platform.kratix.io]
+    resources: [promises]
+    verbs: [list, get]
+  - apiGroups: [platform.kratix.io]
+    resources: [destinations]
+    verbs: [list]
+  - apiGroups: [""]
+    resources: [namespaces]
+    verbs: [list]
+  # Promise request GVRs are defined dynamically at runtime. Read and create
+  # remain separate so they can be tightened independently in a future server.
+  - apiGroups: ["*"]
+    resources: ["*"]
+    verbs: [list]
+  - apiGroups: ["*"]
+    resources: ["*"]
+    verbs: [create]
+  - apiGroups: [""]
+    resources: [events]
+    verbs: [create]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ include "ske-mcp-server.fullname" . }}
+  labels:
+    {{- include "ske-mcp-server.labels" . | nindent 4 }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ include "ske-mcp-server.fullname" . }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ include "ske-mcp-server.serviceAccountName" . }}
+    namespace: {{ .Release.Namespace }}
+{{- end }}
+

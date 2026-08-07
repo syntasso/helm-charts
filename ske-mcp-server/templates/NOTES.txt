@@ -1,0 +1,23 @@
+The SKE MCP server has been installed.
+
+{{- if .Values.ingress.enabled }}
+
+MCP endpoint:
+  https://{{ .Values.ingress.host }}/mcp
+{{- else }}
+
+The Service is internal to the cluster. To connect locally:
+
+  kubectl port-forward --namespace {{ .Release.Namespace }} service/{{ include "ske-mcp-server.fullname" . }} 8080:{{ .Values.service.port }}
+
+MCP endpoint:
+  http://127.0.0.1:8080/mcp
+{{- end }}
+
+Clients must send both headers:
+  Authorization: Bearer <token>
+  X-User-Identity: <user identity>
+
+The current X-User-Identity value is caller-asserted and is used for audit
+attribution, not authorization.
+
