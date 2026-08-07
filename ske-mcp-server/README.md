@@ -70,6 +70,12 @@ auth:
     subjectClaim: preferred_username
 ```
 
+`subjectClaim` is what attribution is built from, so it is worth getting right: the
+server stamps the principal's subject onto every resource it creates as the
+`kratix.io/requested-by` label, alongside `mcp.syntasso.io/requested-by-issuer`
+and `-actor` annotations. Left as `sub`, those record an opaque id; set to
+`preferred_username`, they record a name.
+
 `issuer` and `resourceURL` are set together, and `resourceURL` must be the
 audience the issuer puts in tokens — normally the public MCP endpoint, so it
 agrees with `ingress.host` and the `/mcp` path. An issuer that omits it mints
