@@ -67,8 +67,8 @@
             "allowedAlgorithms": { "type": "array", "items": { "type": "string", "minLength": 1 } },
             "clockSkew": {
               "type": "string",
-              "pattern": "^(|[0-9]+(ns|us|ms|s|m|h))$",
-              "description": "Go duration, e.g. 60s. Empty means the server default."
+              "pattern": "^(|[0-9]+(ns|us|ms|s|m|h)([0-9]+(ns|us|ms|s|m|h))*)$",
+              "description": "Go duration (supports composite values like 1m30s), e.g. 60s. Empty means the server default."
             }
           },
           "required": [

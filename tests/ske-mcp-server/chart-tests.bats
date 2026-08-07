@@ -20,13 +20,14 @@ setup_file() {
     --set-string auth.token=test-token
 
   [ "$status" -eq 0 ]
-  local deployment
+  local deployment app_version
   deployment="$(printf '%s\n' "$output" | yq 'select(.kind == "Deployment")')"
+  app_version="$(yq '.appVersion' "$CHART/Chart.yaml")"
   [ "$(printf '%s\n' "$deployment" | yq '.metadata.name')" = "platform-mcp-ske-mcp-server" ]
   [ "$(printf '%s\n' "$deployment" | yq '.metadata.namespace')" = "platform-system" ]
   [ "$(printf '%s\n' "$deployment" | yq '.spec.replicas')" = "1" ]
   [ "$(printf '%s\n' "$deployment" | yq '.spec.strategy.type')" = "Recreate" ]
-  [ "$(printf '%s\n' "$deployment" | yq '.spec.template.spec.containers[0].image')" = "ghcr.io/syntasso/ske-mcp-server:v0.2.2" ]
+  [ "$(printf '%s\n' "$deployment" | yq '.spec.template.spec.containers[0].image')" = "ghcr.io/syntasso/ske-mcp-server:${app_version}" ]
   [ "$(printf '%s\n' "$deployment" | yq '.spec.template.spec.containers[0].securityContext.readOnlyRootFilesystem')" = "true" ]
   [ "$(printf '%s\n' "$deployment" | yq '.spec.template.spec.containers[0].securityContext.allowPrivilegeEscalation')" = "false" ]
   [ "$(printf '%s\n' "$deployment" | yq '.spec.template.spec.containers[0].securityContext.runAsNonRoot')" = "true" ]
