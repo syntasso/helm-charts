@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+main() {
+  local latest_release
+  local -x latest_version
+
+  latest_release="$(
+    gh release list \
+      --repo=syntasso/ske-mcp-server \
+      --exclude-pre-releases \
+      --order desc \
+      --json tagName \
+      --jq '.[0].tagName'
+  )"
+
+  if [[ -z "$latest_release" ]]; then
+    echo "No ske-mcp-server release found" >&2
+    exit 1
+  fi
+
+  latest_version="${latest_release#ske-mcp-server-}"
+  yq -i '.appVersion = strenv(latest_version)' ske-mcp-server/Chart.yaml
+}
+
+main "$@"

@@ -1,0 +1,151 @@
+replicaCount: 1
+
+image:
+  repository: ghcr.io/syntasso/ske-mcp-server
+  pullPolicy: IfNotPresent
+  tag: ""
+  digest: ""
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+# At least one mechanism must be configured. With neither, the server serves /mcp to
+# unauthenticated callers, and the chart refuses to render rather than let that happen quietly.
+auth:
+  # A shared static bearer token. Simple, but it identifies no one: every caller is the same
+  # principal, so nothing can be attributed and revoking one caller revokes all of them. Prefer
+  # oidc below wherever there is an issuer to point at.
+  #
+  # `token` puts the value in Helm's release Secret; `existingSecret` keeps it out of Helm
+  # entirely, which is the right choice under GitOps.
+  token: ""
+  existingSecret:
+    name: ""
+    key: token
+
+  # OAuth 2.1 / OIDC. The server validates tokens against the issuer's JWKS, requires
+  # `resourceURL` in each token's `aud`, and gates every tool on scopes — so callers are
+  # distinguishable, and a token minted for something else cannot be replayed here.
+  oidc:
+    # Absolute https URL of the authorization server, e.g.
+    # https://keycloak.example.com/realms/platform. Must equal the `iss` of every token exactly.
+    issuer: ""
+
+    # This server's canonical resource URI, and the audience it requires in every token.
+    # Lowercase https, no query, no fragment, no trailing slash. Normally the public MCP
+    # endpoint — https://mcp.example.com/mcp — so that it agrees with ingress.host and /mcp.
+    #
+    # An issuer that does not put this exact string in `aud` mints tokens this server rejects
+    # while looking entirely correct. It is the likeliest way to misconfigure the pair.
+    resourceURL: ""
+
+    # Optional. Only for an issuer publishing no discovery document; otherwise JWKS is discovered.
+    jwksURI: ""
+
+    # Optional overrides; empty means the server's own default.
+    #
+    # subjectClaim defaults to `sub`, which for most issuers is opaque and changes if the identity
+    # is recreated. Set it to `preferred_username` or similar where the audit subject should be a
+    # name a person recognises.
+    subjectClaim: ""
+    groupsClaim: ""
+    nameClaims: []
+    allowedAlgorithms: []
+    clockSkew: ""
+
+config:
+  port: 8080
+  logLevel: info
+  readinessMode: kubernetes
+
+serviceAccount:
+  create: true
+  automount: true
+  annotations: {}
+  name: ""
+
+rbac:
+  create: true
+
+  # API groups holding the resources Promises define for their requests, which the server needs to
+  # list and create. They cannot be enumerated in this chart: a Promise defines its own group at
+  # runtime.
+  #
+  # An allowlist rather than a wildcard, and not a style preference. `apiGroups: ["*"]` also
+  # matches the core group, where `list` on secrets returns their VALUES — so a wildcard makes this
+  # ServiceAccount a cluster-wide credential reader, and RBAC cannot express an exception to walk
+  # that back.
+  #
+  # Empty is the safe default and a working one: the catalogue, destinations and request status all
+  # remain readable, and only submitting a request fails. Find the groups with
+  # `kubectl get promises -o jsonpath='{.items[*].spec.api.spec.group}'`.
+  requestApiGroups: []
+
+podAnnotations: {}
+podLabels: {}
+
+podSecurityContext:
+  seccompProfile:
+    type: RuntimeDefault
+
+securityContext:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+      - ALL
+  readOnlyRootFilesystem: true
+  runAsNonRoot: true
+  runAsUser: 65532
+  runAsGroup: 65532
+
+service:
+  type: ClusterIP
+  port: 80
+  annotations: {}
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  host: ""
+  tls:
+    secretName: ""
+
+resources:
+  requests:
+    cpu: 10m
+    memory: 32Mi
+  limits:
+    memory: 128Mi
+
+startupProbe:
+  enabled: true
+  httpGet:
+    path: /healthz
+    port: http
+  periodSeconds: 2
+  timeoutSeconds: 2
+  failureThreshold: 15
+
+livenessProbe:
+  enabled: true
+  httpGet:
+    path: /healthz
+    port: http
+  periodSeconds: 10
+  timeoutSeconds: 2
+
+readinessProbe:
+  enabled: true
+  httpGet:
+    path: /readyz
+    port: http
+  periodSeconds: 10
+  timeoutSeconds: 2
+
+priorityClassName: ""
+nodeSelector: {}
+tolerations: []
+affinity: {}
+topologySpreadConstraints: []

@@ -50,6 +50,15 @@ of their Kratix deployments.
 
 For configuration options, see the [chart README](./ske-operator/README.md).
 
+## SKE MCP Server
+
+The standalone SKE MCP Server chart exposes Kratix platform capabilities to MCP
+clients. Install it on a cluster where Kratix is available; it is intentionally
+versioned and upgraded independently from the core `kratix` chart.
+
+For configuration, authentication, RBAC, and ingress guidance, see the
+[chart README](./ske-mcp-server/README.md).
+
 ## Common examples
 
 * If you are running a single cluster setup, you will need to install both

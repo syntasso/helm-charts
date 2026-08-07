@@ -1,0 +1,128 @@
+{{- include "ske-mcp-server.validate" . }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "ske-mcp-server.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "ske-mcp-server.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      {{- include "ske-mcp-server.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- $podAnnotations := deepCopy .Values.podAnnotations }}
+      {{- if .Values.auth.token }}
+      {{- $_ := set $podAnnotations "checksum/auth-secret" (include (print $.Template.BasePath "/secret.yaml") . | sha256sum) }}
+      {{- end }}
+      {{- with $podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- $requiredPodLabels := include "ske-mcp-server.labels" . | fromYaml }}
+        {{- $podLabels := merge $requiredPodLabels .Values.podLabels }}
+        {{- toYaml $podLabels | nindent 8 }}
+    spec:
+      serviceAccountName: {{ include "ske-mcp-server.serviceAccountName" . }}
+      automountServiceAccountToken: {{ .Values.serviceAccount.automount }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- range . }}
+        - name: {{ if kindIs "string" . }}{{ . }}{{ else }}{{ .name }}{{ end }}
+        {{- end }}
+      {{- end }}
+      containers:
+        - name: server
+          image: {{ include "ske-mcp-server.image" . | quote }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.config.port }}
+              protocol: TCP
+          env:
+            - name: PORT
+              value: {{ .Values.config.port | quote }}
+            - name: LOG_LEVEL
+              value: {{ .Values.config.logLevel | quote }}
+            - name: READINESS_MODE
+              value: {{ .Values.config.readinessMode | quote }}
+            {{- if include "ske-mcp-server.staticTokenEnabled" . }}
+            - name: MCP_AUTH_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "ske-mcp-server.authSecretName" . }}
+                  key: {{ if .Values.auth.existingSecret.name }}{{ .Values.auth.existingSecret.key }}{{ else }}token{{ end }}
+            {{- end }}
+            {{- if include "ske-mcp-server.oidcEnabled" . }}
+            - name: OIDC_ISSUER
+              value: {{ .Values.auth.oidc.issuer | quote }}
+            - name: MCP_RESOURCE_URL
+              value: {{ .Values.auth.oidc.resourceURL | quote }}
+            {{- with .Values.auth.oidc.jwksURI }}
+            - name: OIDC_JWKS_URI
+              value: {{ . | quote }}
+            {{- end }}
+            {{- with .Values.auth.oidc.subjectClaim }}
+            - name: OIDC_SUBJECT_CLAIM
+              value: {{ . | quote }}
+            {{- end }}
+            {{- with .Values.auth.oidc.groupsClaim }}
+            - name: OIDC_GROUPS_CLAIM
+              value: {{ . | quote }}
+            {{- end }}
+            {{- with .Values.auth.oidc.nameClaims }}
+            - name: OIDC_NAME_CLAIMS
+              value: {{ join "," . | quote }}
+            {{- end }}
+            {{- with .Values.auth.oidc.allowedAlgorithms }}
+            - name: OIDC_ALLOWED_ALGORITHMS
+              value: {{ join "," . | quote }}
+            {{- end }}
+            {{- with .Values.auth.oidc.clockSkew }}
+            - name: OIDC_CLOCK_SKEW
+              value: {{ . | quote }}
+            {{- end }}
+            {{- end }}
+          {{- if .Values.startupProbe.enabled }}
+          startupProbe:
+            {{- omit .Values.startupProbe "enabled" | toYaml | nindent 12 }}
+          {{- end }}
+          {{- if .Values.livenessProbe.enabled }}
+          livenessProbe:
+            {{- omit .Values.livenessProbe "enabled" | toYaml | nindent 12 }}
+          {{- end }}
+          {{- if .Values.readinessProbe.enabled }}
+          readinessProbe:
+            {{- omit .Values.readinessProbe "enabled" | toYaml | nindent 12 }}
+          {{- end }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          terminationMessagePolicy: FallbackToLogsOnError
+      {{- with .Values.priorityClassName }}
+      priorityClassName: {{ . }}
+      {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.topologySpreadConstraints }}
+      topologySpreadConstraints:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

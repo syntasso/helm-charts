@@ -1,0 +1,62 @@
+{{- if .Values.ingress.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "ske-mcp-server.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "ske-mcp-server.labels" . | nindent 4 }}
+  {{- with .Values.ingress.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  {{- with .Values.ingress.className }}
+  ingressClassName: {{ . }}
+  {{- end }}
+  {{- with .Values.ingress.tls.secretName }}
+  {{/*
+  Only when a Secret is named. Where TLS terminates upstream — a load balancer holding its own
+  certificate — there is no Secret, and emitting `secretName: ""` names one that cannot exist.
+  */}}
+  tls:
+    - hosts:
+        - {{ $.Values.ingress.host | quote }}
+      secretName: {{ . }}
+  {{- end }}
+  rules:
+    - host: {{ .Values.ingress.host | quote }}
+      http:
+        paths:
+          - path: /mcp
+            pathType: Exact
+            backend:
+              service:
+                name: {{ include "ske-mcp-server.fullname" . }}
+                port:
+                  number: {{ .Values.service.port }}
+          {{- if include "ske-mcp-server.oidcEnabled" . }}
+          {{/*
+          RFC 9728 protected-resource metadata, which the server serves at both of these paths and
+          which an MCP client fetches to discover the authorization server. Routing only /mcp
+          leaves them 404 through the Ingress, so the client cannot begin the flow even though the
+          server is answering correctly behind it.
+
+          Listed only with OIDC configured, because the server registers these handlers only then.
+          */}}
+          - path: /.well-known/oauth-protected-resource
+            pathType: Exact
+            backend:
+              service:
+                name: {{ include "ske-mcp-server.fullname" . }}
+                port:
+                  number: {{ .Values.service.port }}
+          - path: /.well-known/oauth-protected-resource/mcp
+            pathType: Exact
+            backend:
+              service:
+                name: {{ include "ske-mcp-server.fullname" . }}
+                port:
+                  number: {{ .Values.service.port }}
+          {{- end }}
+{{- end }}

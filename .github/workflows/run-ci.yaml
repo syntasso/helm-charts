@@ -14,6 +14,7 @@ on:
       - ske-gui/**
       - backstage-controller/**
       - k8s-health-agent/**
+      - ske-mcp-server/**
   workflow_dispatch:
     inputs:
       ssh_session:
@@ -27,6 +28,7 @@ on:
           - ske-gui
           - backstage-controller
           - k8s-health-agent
+          - ske-mcp-server
         description: "Target helm chart"
         required: true
       merge_release_pr:
@@ -69,6 +71,7 @@ jobs:
             ske-operator:
               - 'ske-operator/**'
               - 'tests/**'
+              - '!tests/ske-mcp-server/**'
 
       - name: Set up kubectl
         if: ${{ (github.event_name == 'push' && steps.changes.outputs.ske-operator == 'true') || (github.event_name == 'workflow_dispatch' && inputs.helm_chart_name == 'ske-operator') }}
@@ -152,6 +155,9 @@ jobs:
             ske-operator-chart-tests:
               - 'ske-operator/**'
               - 'tests/ske-operator/**'
+            ske-mcp-server-chart-tests:
+              - 'ske-mcp-server/**'
+              - 'tests/ske-mcp-server/**'
 
       - name: Install Helm
         uses: azure/setup-helm@v5
@@ -177,6 +183,14 @@ jobs:
           BATS_LIB_PATH: ${{ steps.setup-bats.outputs.lib-path }}
           TERM: xterm
         run: bats tests/ske-operator/
+
+      - name: Run ske-mcp-server chart tests
+        if: ${{ steps.chart-test-changes.outputs.ske-mcp-server-chart-tests == 'true' || (github.event_name == 'workflow_dispatch' && inputs.helm_chart_name == 'ske-mcp-server') }}
+        shell: bash
+        env:
+          BATS_LIB_PATH: ${{ steps.setup-bats.outputs.lib-path }}
+          TERM: xterm
+        run: bats tests/ske-mcp-server/
 
   update-and-release:
     if: ${{ !startsWith(github.ref, 'refs/tags/') && (needs.test.result == 'success' || needs.test.result == 'skipped') && (needs.chart-tests.result == 'success' || needs.chart-tests.result == 'skipped') }}
@@ -206,6 +220,7 @@ jobs:
             ske-operator:
               - 'ske-operator/**'
               - 'tests/**'
+              - '!tests/ske-mcp-server/**'
             ske-gui:
               - 'ske-gui/**'
             kratix:
@@ -214,6 +229,8 @@ jobs:
               - 'backstage-controller/**'
             k8s-health-agent:
               - 'k8s-health-agent/**'
+            ske-mcp-server:
+              - 'ske-mcp-server/**'
 
       - name: Set chart change flags
         run: |
@@ -222,6 +239,7 @@ jobs:
           echo "KRATIX_CHANGED=${{ steps.changes.outputs.kratix }}" >> $GITHUB_ENV
           echo "BACKSTAGE_CONTROLLER_CHANGED=${{ steps.changes.outputs.backstage-controller }}" >> $GITHUB_ENV
           echo "K8S_HEALTH_AGENT_CHANGED=${{ steps.changes.outputs.k8s-health-agent }}" >> $GITHUB_ENV
+          echo "SKE_MCP_SERVER_CHANGED=${{ steps.changes.outputs.ske-mcp-server }}" >> $GITHUB_ENV
 
       - name: Set up Node.js
         uses: actions/setup-node@v7
@@ -274,6 +292,7 @@ jobs:
               ["KRATIX_CHANGED"]="kratix"
               ["BACKSTAGE_CONTROLLER_CHANGED"]="backstage-controller"
               ["K8S_HEALTH_AGENT_CHANGED"]="k8s-health-agent"
+              ["SKE_MCP_SERVER_CHANGED"]="ske-mcp-server"
             )
 
             for env_var in "${!chart_mappings[@]}"; do

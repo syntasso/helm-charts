@@ -1,0 +1,50 @@
+{{- if .Values.rbac.create }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ include "ske-mcp-server.fullname" . }}
+  labels:
+    {{- include "ske-mcp-server.labels" . | nindent 4 }}
+rules:
+  - apiGroups: [platform.kratix.io]
+    resources: [promises]
+    verbs: [list, get]
+  - apiGroups: [platform.kratix.io]
+    resources: [destinations]
+    verbs: [list]
+  - apiGroups: [""]
+    resources: [namespaces]
+    verbs: [list]
+  - apiGroups: [""]
+    resources: [events]
+    verbs: [create]
+  {{- with .Values.rbac.requestApiGroups }}
+  # Promise request GVRs are defined by Promises at runtime, so they cannot be enumerated here.
+  # They are granted per API GROUP instead of by wildcard, because `apiGroups: ["*"]` also matches
+  # the core group — and `list` on core secrets returns their values, so a wildcard turns this
+  # ServiceAccount into a cluster-wide credential reader. RBAC has no way to express an exception,
+  # which is why the allowlist is the mechanism rather than a deny rule.
+  #
+  # `resources: ["*"]` is safe within these groups precisely because they hold nothing but the
+  # custom resources Promises define.
+  - apiGroups:
+      {{- toYaml . | nindent 6 }}
+    resources: ["*"]
+    verbs: [list, create]
+  {{- end }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ include "ske-mcp-server.fullname" . }}
+  labels:
+    {{- include "ske-mcp-server.labels" . | nindent 4 }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ include "ske-mcp-server.fullname" . }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ include "ske-mcp-server.serviceAccountName" . }}
+    namespace: {{ .Release.Namespace }}
+{{- end }}
