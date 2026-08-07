@@ -68,6 +68,20 @@ setup_file() {
   [ "$(printf '%s\n' "$deployment" | yq '.spec.template.spec.containers[0].startupProbe.initialDelaySeconds')" = "5" ]
 }
 
+@test "ske-mcp-server rejects malformed probes before rendering" {
+  run helm template test "$CHART" \
+    --set-string auth.token=test-token \
+    --set-string startupProbe.periodSeconds=invalid
+  [ "$status" -ne 0 ]
+  [[ "$output" == *"/startupProbe/periodSeconds"* ]]
+
+  run helm template test "$CHART" \
+    --set-string auth.token=test-token \
+    --set startupProbe.httpGet=null
+  [ "$status" -ne 0 ]
+  [[ "$output" == *"startupProbe"* ]]
+}
+
 @test "ske-mcp-server can reference an externally managed auth secret" {
   run helm template test "$CHART" \
     --set auth.existingSecret.name=external-auth \
