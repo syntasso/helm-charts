@@ -952,6 +952,17 @@ entries:
     urls:
     - https://github.com/syntasso/helm-charts/releases/download/ske-gui-0.1.0/ske-gui-0.1.0.tgz
     version: 0.1.0
+  ske-mcp-server:
+  - apiVersion: v2
+    appVersion: v0.2.2
+    created: "2026-08-07T16:55:45.764202992Z"
+    description: A Helm chart for deploying the SKE MCP server
+    digest: 3812302330f30fc31efaf293f968e6f3c839b8cd800d7c578ddf61daf4a0fd05
+    name: ske-mcp-server
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/ske-mcp-server-1.0.0/ske-mcp-server-1.0.0.tgz
+    version: 1.0.0
   ske-operator:
   - apiVersion: v2
     appVersion: v0.33.0
@@ -2021,4 +2032,4 @@ entries:
     urls:
     - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.8.0/ske-operator-0.8.0.tgz
     version: 0.8.0
-generated: "2026-08-05T12:00:53.176107875Z"
+generated: "2026-08-07T16:55:45.764556332Z"
