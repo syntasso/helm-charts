@@ -73,7 +73,10 @@ setup_file() {
     --set-string auth.token=test-token \
     --set-string startupProbe.periodSeconds=invalid
   [ "$status" -ne 0 ]
-  [[ "$output" == *"/startupProbe/periodSeconds"* ]]
+  [[ "$output" == *"startupProbe"* ]]
+  [[ "$output" == *"periodSeconds"* ]]
+  [[ "$output" == *"integer"* ]]
+  [[ "$output" == *"string"* ]]
 
   run helm template test "$CHART" \
     --set-string auth.token=test-token \
