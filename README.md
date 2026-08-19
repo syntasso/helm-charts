@@ -39,7 +39,7 @@ For configuration options, see the [chart README](./kratix/README.md).
 
 Using Kratix depends on access to a GitOps [state store](https://github.com/open-gitops/documents/blob/v0.1.0/PRINCIPLES.md#state-store).
 It is suggested to register a Git repository or public cloud bucket, however
-for a quick start, you can install and configure a local MinIO or other
+for a quick start, you can install and configure a local SeaweedFS or other
 cluster storage.
 
 ## SKE Operator
