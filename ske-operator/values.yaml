@@ -158,6 +158,15 @@ skeDeployment:
   enabled: true
   # The version of ske to deploy
   version: "latest"
+  # Set the resources for the Job that deploys SKE
+  deployJob:
+    resources:
+      requests:
+        cpu: "100m"
+        memory: "256Mi"
+      limits:
+        cpu: "200m"
+        memory: "512Mi"
   # Opt in to preview features on the deployed SKE platform. Each entry is passed
   # through verbatim as one Kratix spec.featureFlags key, so a flag added by a newer
   # SKE release needs no chart change; the Kratix CRD is what validates the names.

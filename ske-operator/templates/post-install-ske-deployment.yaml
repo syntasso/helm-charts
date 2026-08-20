@@ -32,14 +32,7 @@ spec:
             - name: ske-deployment-config-volume
               mountPath: /etc/config/ske-deployment
           resources:
-            requests:
-              cpu: 100m
-              memory: 100Mi
-              ephemeral-storage: 100Mi
-            limits:
-              cpu: 200m
-              memory: 200Mi
-              ephemeral-storage: 200Mi
+            {{- .Values.skeDeployment.deployJob.resources | toYaml | nindent 12 }}
       volumes:
         - name: ske-deployment-config-volume
           configMap:
