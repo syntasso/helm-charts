@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.85.1](https://github.com/syntasso/helm-charts/compare/ske-operator-0.85.0...ske-operator-v0.85.1) (2026-08-20)
+
+
+### Chores
+
+* values file lets you configure ske-deploy job limits ([#225](https://github.com/syntasso/helm-charts/issues/225)) ([ea4e3eb](https://github.com/syntasso/helm-charts/commit/ea4e3eb451948d2d08f7abd6f18e9a4e2484d185))
+
 ## [0.85.0](https://github.com/syntasso/helm-charts/compare/ske-operator-0.84.0...ske-operator-v0.85.0) (2026-08-18)
 
 
