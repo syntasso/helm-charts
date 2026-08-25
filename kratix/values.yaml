@@ -32,13 +32,13 @@ stateStores:
     name: default
     namespace: default
     secretRef:
-      name: minio-credentials
+      name: bucket-credentials
       # Optional, omit `values` field when the secret creation is managed externally
       values:
-        accesskey: bWluaW9hZG1pbg==
-        secretkey: bWluaW9hZG1pbg==
+        accesskey: a3JhdGl4YWRtaW4=
+        secretkey: a3JhdGl4YWRtaW4=
     insecure: true
-    endpoint: minio.kratix-platform-system.svc.cluster.local
+    endpoint: bucket.seaweedfs.svc.cluster.local
     bucket: kratix
 
 # [DEPRECATED] Use additionalResources instead

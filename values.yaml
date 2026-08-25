@@ -183,12 +183,12 @@ skeDeployment:
 #    metadata:
 #      name: default
 #    spec:
-#      endpoint: minio.kratix-platform-system.svc.cluster.local
+#      endpoint: bucket.seaweedfs.svc.cluster.local
 #      insecure: true
 #      bucketName: kratix
 #      authMethod: accessKey
 #      secretRef:
-#        name: minio-credentials
+#        name: bucket-credentials
 #        namespace: default
 
 backstageIntegration:
