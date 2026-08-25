@@ -31,12 +31,12 @@ additionalResources:
   metadata:
     name: default
   spec:
-    endpoint: bucket.seaweedfs.svc.cluster.local
+    endpoint: minio.kratix-platform-system.svc.cluster.local
     insecure: true
     bucketName: kratix
     authMethod: accessKey
     secretRef:
-      name: bucket-credentials
+      name: minio-credentials
       namespace: default
 - kind: Destination
   apiVersion: platform.kratix.io/v1alpha1
@@ -52,7 +52,7 @@ additionalResources:
 - apiVersion: v1
   kind: Secret
   metadata:
-    name: bucket-credentials
+    name: minio-credentials
     namespace: default
   type: Opaque
   data:
