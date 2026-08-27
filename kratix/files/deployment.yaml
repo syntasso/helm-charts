@@ -30,6 +30,8 @@ spec:
             - --health-probe-bind-address=:8081
             - --leader-elect
           command:
+            - /sbin/tini
+            - --
             - /manager
           env:
             - name: PIPELINE_ADAPTER_IMG
@@ -37,7 +39,7 @@ spec:
                 configMapKeyRef:
                   key: PIPELINE_ADAPTER_IMG
                   name: kratix-platform-pipeline-adapter-config
-          image: syntasso-community.docker.reo.dev/syntasso/kratix-platform@sha256:5ef9b67b4f4069a20a38ed8900fb95f669e4c50abb625775678060d114c60a5f
+          image: syntasso-community.docker.reo.dev/syntasso/kratix-platform@sha256:87376cf98a68cadd6af9fea3e4f8151a8a833d4405d32835aa722790372c2120
           livenessProbe:
             httpGet:
               path: /healthz
