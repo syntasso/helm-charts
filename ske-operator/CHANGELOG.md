@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.88.0](https://github.com/syntasso/helm-charts/compare/ske-operator-0.87.0...ske-operator-v0.88.0) (2026-08-27)
+
+
+### Features
+
+* **ske-operator:** update appVersion (autorelease) ([e5ca7ad](https://github.com/syntasso/helm-charts/commit/e5ca7ad99c81a3f274368006e178aaea50552f80))
+
+
+### Chores
+
+* migrate to seaweedfs ([#224](https://github.com/syntasso/helm-charts/issues/224)) ([9362e34](https://github.com/syntasso/helm-charts/commit/9362e347b33a5f70258c17b1422d48977a30f191))
+* migrate to seaweedfs ([#224](https://github.com/syntasso/helm-charts/issues/224)) ([#233](https://github.com/syntasso/helm-charts/issues/233)) ([0ee2362](https://github.com/syntasso/helm-charts/commit/0ee2362f3d7389782ec3b36d687a8fafbd173583))
+
 ## [0.87.0](https://github.com/syntasso/helm-charts/compare/ske-operator-0.86.0...ske-operator-v0.87.0) (2026-08-25)
 
 
