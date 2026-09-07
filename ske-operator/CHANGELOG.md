@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.90.0](https://github.com/syntasso/helm-charts/compare/ske-operator-0.89.0...ske-operator-v0.90.0) (2026-09-07)
+
+
+### Features
+
+* **ske-operator:** update ske-portal-controller version (autorelease) ([5222c35](https://github.com/syntasso/helm-charts/commit/5222c350a1388f3b25dc6dd217daf1f73c116fee))
+
 ## [0.89.0](https://github.com/syntasso/helm-charts/compare/ske-operator-0.88.0...ske-operator-v0.89.0) (2026-08-27)
 
 
