@@ -80,7 +80,35 @@ rbac:
   # Empty is the safe default and a working one: the catalogue, destinations and request status all
   # remain readable, and only submitting a request fails. Find the groups with
   # `kubectl get promises -o jsonpath='{.items[*].spec.api.spec.group}'`.
+  #
+  # Ignored when impersonation.enabled is true: the ServiceAccount no longer acts as itself for
+  # request-resource operations, so there is nothing to grant it here.
   requestApiGroups: []
+
+  # Per-caller Kubernetes authorization. Instead of the ServiceAccount acting as itself for every
+  # caller, it impersonates the calling principal (Impersonate-User/-Group), and Kubernetes RBAC —
+  # bound by you, outside this chart — decides what that principal may do. Disabled by default:
+  # every existing deployment of this chart already runs the shared-ServiceAccount model above, and
+  # turning this on changes which RBAC actually governs request-resource access.
+  impersonation:
+    enabled: false
+
+    # Prefixes applied to the derived Kubernetes identity, so bindings you author can tell
+    # MCP-originated identities apart from anything else already in your cluster. Server defaults
+    # apply when left empty except clientPrefix, which the chart always sets explicitly below.
+    userPrefix: ""
+    groupPrefix: ""
+    clientPrefix: "mcp:client:"
+
+    # Fixed groups asserted for every client-credentials (machine) caller, regardless of any claim
+    # on its own token. Empty means machine callers get no groups at all.
+    clientGroups: []
+
+    # The closed set of group names the ServiceAccount may assert via Impersonate-Group, beyond
+    # clientGroups above (which this chart always includes automatically). Every group your token
+    # claims resolve to, after groupPrefix, must appear here — Kubernetes denies the *entire*
+    # impersonated request if even one asserted group is not on this list, not just that group.
+    groupAllowlist: []
 
 podAnnotations: {}
 podLabels: {}

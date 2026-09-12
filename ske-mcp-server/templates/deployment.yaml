@@ -92,6 +92,22 @@ spec:
               value: {{ . | quote }}
             {{- end }}
             {{- end }}
+            {{- if .Values.rbac.impersonation.enabled }}
+            {{- with .Values.rbac.impersonation.userPrefix }}
+            - name: IMPERSONATION_USER_PREFIX
+              value: {{ . | quote }}
+            {{- end }}
+            {{- with .Values.rbac.impersonation.groupPrefix }}
+            - name: IMPERSONATION_GROUP_PREFIX
+              value: {{ . | quote }}
+            {{- end }}
+            - name: IMPERSONATION_CLIENT_PREFIX
+              value: {{ .Values.rbac.impersonation.clientPrefix | quote }}
+            {{- with .Values.rbac.impersonation.clientGroups }}
+            - name: IMPERSONATION_CLIENT_GROUPS
+              value: {{ join "," . | quote }}
+            {{- end }}
+            {{- end }}
           {{- if .Values.startupProbe.enabled }}
           startupProbe:
             {{- omit .Values.startupProbe "enabled" | toYaml | nindent 12 }}

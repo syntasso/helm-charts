@@ -18,6 +18,7 @@ rules:
   - apiGroups: [""]
     resources: [events]
     verbs: [create]
+  {{- if not .Values.rbac.impersonation.enabled }}
   {{- with .Values.rbac.requestApiGroups }}
   # Promise request GVRs are defined by Promises at runtime, so they cannot be enumerated here.
   # They are granted per API GROUP instead of by wildcard, because `apiGroups: ["*"]` also matches
@@ -31,6 +32,32 @@ rules:
       {{- toYaml . | nindent 6 }}
     resources: ["*"]
     verbs: [list, create]
+  {{- end }}
+  {{- end }}
+  {{- if .Values.rbac.impersonation.enabled }}
+  - apiGroups: [""]
+    resources: [subjectaccessreviews]
+    verbs: [create]
+  # Every request-resource operation runs impersonated as the calling principal instead of as this
+  # ServiceAccount, so what it may then do is decided by RBAC bound to the impersonated identity —
+  # not by anything granted above.
+  #
+  # Users cannot be restricted by `resourceNames`: impersonated usernames are derived per request
+  # from token subjects, so they cannot be enumerated when this manifest is rendered. This grant
+  # lets the ServiceAccount impersonate any username; what actually constrains it (refusing a
+  # `system:`-prefixed username, `system:masters`, or a header-unsafe value) is enforced in the
+  # server's own code, not by this rule.
+  - apiGroups: [""]
+    resources: [users]
+    verbs: [impersonate]
+  # Groups ARE restricted by `resourceNames`, to the closed set below — a real,
+  # API-server-enforced boundary, since every group this chart can assert is known when it is
+  # rendered. clientGroups is included automatically so it never has to be duplicated here too.
+  - apiGroups: [""]
+    resources: [groups]
+    verbs: [impersonate]
+    resourceNames:
+      {{- concat .Values.rbac.impersonation.groupAllowlist .Values.rbac.impersonation.clientGroups | uniq | toYaml | nindent 6 }}
   {{- end }}
 ---
 apiVersion: rbac.authorization.k8s.io/v1

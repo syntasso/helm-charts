@@ -152,6 +152,41 @@ serviceAccount:
 Restricting the supplied permissions without changing the server leaves some
 advertised MCP tools unavailable at runtime.
 
+### Per-caller authorization (impersonation)
+
+By default the ServiceAccount acts as itself for every caller — the model
+above. Setting `rbac.impersonation.enabled: true` switches to per-caller
+authorization instead: the server impersonates the calling principal
+(`Impersonate-User`/`Impersonate-Group`), and Kubernetes RBAC — RoleBindings
+you author, outside this chart — decides what each caller may actually do.
+`requestApiGroups` is ignored once this is set, since the ServiceAccount no
+longer needs direct access to request resources.
+
+```yaml
+rbac:
+  impersonation:
+    enabled: true
+    groupPrefix: "mcp:group:"
+    groupAllowlist:
+      - "mcp:group:platform-viewers"
+```
+
+**Every group a caller's token resolves to (after `groupPrefix`) must appear in
+`groupAllowlist`.** Kubernetes authorizes the *entire* impersonated request
+against the full set of groups asserted — if even one is missing from this
+list, the whole request is denied, not just that group ignored. In practice
+that means your identity provider's group claim should carry only groups you
+actually intend to use with this server.
+
+`clientGroups` — the fixed groups asserted for every machine (client-credentials)
+caller, regardless of its own token — are included in the allowlist
+automatically; you do not need to also list them in `groupAllowlist`.
+
+`userPrefix` and `groupPrefix` change what identity Kubernetes actually sees:
+an existing RoleBinding written against a caller's literal username or group
+name will not match until either the binding is updated to the prefixed form,
+or the matching prefix is left empty.
+
 ## Availability
 
 The current MCP transport stores sessions in process memory for 30 minutes.
@@ -181,7 +216,13 @@ future stateless or shared-session server implementation.
 | `image.tag` | chart `appVersion` | Optional image tag override |
 | `image.digest` | `""` | Optional digest; takes precedence over the tag |
 | `rbac.create` | `true` | Create ClusterRole and ClusterRoleBinding |
-| `rbac.requestApiGroups` | `[]` | API groups holding Promise request resources. `"*"` is rejected |
+| `rbac.requestApiGroups` | `[]` | API groups holding Promise request resources. `"*"` is rejected. Ignored when `rbac.impersonation.enabled` is `true` |
+| `rbac.impersonation.enabled` | `false` | Switch to per-caller authorization via impersonation instead of the shared ServiceAccount |
+| `rbac.impersonation.userPrefix` | `""` (`mcp:user:`) | Prefix applied to the impersonated username |
+| `rbac.impersonation.groupPrefix` | `""` | Prefix applied to each impersonated group |
+| `rbac.impersonation.clientPrefix` | `mcp:client:` | Prefix applied to a machine caller's impersonated username |
+| `rbac.impersonation.clientGroups` | `[]` | Fixed groups asserted for every machine caller; added to the RBAC allowlist automatically |
+| `rbac.impersonation.groupAllowlist` | `[]` | Closed set of groups the ServiceAccount may impersonate, beyond `clientGroups` |
 | `service.type` | `ClusterIP` | Kubernetes Service type |
 | `service.port` | `80` | Kubernetes Service port |
 | `ingress.enabled` | `false` | Create the `/mcp` Ingress |
