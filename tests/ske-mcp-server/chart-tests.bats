@@ -319,7 +319,7 @@ setup_file() {
     --set auth.oidc.issuer=https://keycloak.example.com/realms/mcp \
     --set auth.oidc.resourceURL=https://mcp.example.com/mcp \
     --set rbac.impersonation.enabled=true \
-    --set-string 'rbac.impersonation.clientGroups[0]=readers,writers'
+    --set-string 'rbac.impersonation.clientGroups[0]=readers\,writers'
   [ "$status" -ne 0 ]
   [[ "$output" == *"must not contain commas"* ]]
 
