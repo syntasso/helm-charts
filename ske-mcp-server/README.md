@@ -158,7 +158,8 @@ By default the ServiceAccount acts as itself for every caller — the model
 above. Setting `rbac.impersonation.enabled: true` switches to per-caller
 authorization instead: the server impersonates the calling principal
 (`Impersonate-User`/`Impersonate-Group`), and Kubernetes RBAC — RoleBindings
-you author, outside this chart — decides what each caller may actually do.
+you author, outside this chart — decides which namespaces each caller can read request resources
+from and create request resources in.
 `requestApiGroups` is ignored once this is set, since the ServiceAccount no
 longer needs direct access to request resources.
 
@@ -181,6 +182,8 @@ actually intend to use with this server.
 `clientGroups` — the fixed groups asserted for every machine (client-credentials)
 caller, regardless of its own token — are included in the allowlist
 automatically; you do not need to also list them in `groupAllowlist`.
+Configure `auth.oidc.clientActorRules` when your provider needs an explicit rule to distinguish
+machine tokens, for example `preferred_username:prefix:service-account-` for Keycloak.
 
 `userPrefix` and `groupPrefix` change what identity Kubernetes actually sees:
 an existing RoleBinding written against a caller's literal username or group
@@ -209,6 +212,7 @@ future stateless or shared-session server implementation.
 | `auth.oidc.nameClaims` | `[]` | Ordered claims tried for the display name |
 | `auth.oidc.allowedAlgorithms` | `[]` | JWS algorithm allowlist |
 | `auth.oidc.clockSkew` | `""` (`60s`) | Tolerance for `exp` and `nbf` |
+| `auth.oidc.clientActorRules` | `[]` | Provider-specific `claim:equals:value` or `claim:prefix:value` rules for machine tokens |
 | `config.logLevel` | `info` | `debug`, `info`, `warn`, or `error` |
 | `config.readinessMode` | `kubernetes` | Dependency-aware `kubernetes` or process-only `process` |
 | `config.port` | `8080` | Server container port |
@@ -218,7 +222,7 @@ future stateless or shared-session server implementation.
 | `rbac.create` | `true` | Create ClusterRole and ClusterRoleBinding |
 | `rbac.requestApiGroups` | `[]` | API groups holding Promise request resources. `"*"` is rejected. Ignored when `rbac.impersonation.enabled` is `true` |
 | `rbac.impersonation.enabled` | `false` | Switch to per-caller authorization via impersonation instead of the shared ServiceAccount |
-| `rbac.impersonation.userPrefix` | `""` (`mcp:user:`) | Prefix applied to the impersonated username |
+| `rbac.impersonation.userPrefix` | `mcp:user:` | Prefix applied to the impersonated username; set to `""` for literal subjects |
 | `rbac.impersonation.groupPrefix` | `""` | Prefix applied to each impersonated group |
 | `rbac.impersonation.clientPrefix` | `mcp:client:` | Prefix applied to a machine caller's impersonated username |
 | `rbac.impersonation.clientGroups` | `[]` | Fixed groups asserted for every machine caller; added to the RBAC allowlist automatically |
@@ -230,4 +234,3 @@ future stateless or shared-session server implementation.
 
 See [values.yaml](values.yaml) for workload resources, probes, scheduling, and
 security-context settings.
-

@@ -84,6 +84,29 @@ accompanies it, so anything downstream can test one field.
 {{- if ne $hasIssuer $hasResourceURL }}
 {{- fail "auth.oidc: set auth.oidc.issuer and auth.oidc.resourceURL together — the resource URL is the audience the server requires in every token, and the server refuses to start with one of the two missing" }}
 {{- end }}
+{{- if and (include "ske-mcp-server.staticTokenEnabled" .) $hasIssuer }}
+{{- fail "auth: OIDC and static-token authentication are mutually exclusive; configure auth.oidc or auth.token/auth.existingSecret.name" }}
+{{- end }}
+
+{{- if and .Values.rbac.impersonation.enabled (not $hasIssuer) }}
+{{- fail "rbac.impersonation.enabled requires OIDC authentication; static-token callers do not have a verified identity to impersonate" }}
+{{- end }}
+{{- range $group := .Values.rbac.impersonation.clientGroups }}
+{{- if ne $group (trim $group) }}
+{{- fail "rbac.impersonation.clientGroups entries must not have leading or trailing whitespace" }}
+{{- end }}
+{{- if contains "," $group }}
+{{- fail "rbac.impersonation.clientGroups entries must not contain commas" }}
+{{- end }}
+{{- if eq $group "system:masters" }}
+{{- fail "rbac.impersonation.clientGroups must not contain system:masters" }}
+{{- end }}
+{{- end }}
+{{- range $group := .Values.rbac.impersonation.groupAllowlist }}
+{{- if eq $group "system:masters" }}
+{{- fail "rbac.impersonation.groupAllowlist must not contain system:masters" }}
+{{- end }}
+{{- end }}
 
 {{/*
 The security guard. With neither mechanism configured the server has no bearer-token middleware
@@ -109,4 +132,3 @@ entirely in that case rather than emitting an empty secretName.
 */}}
 {{- end }}
 {{- end }}
-

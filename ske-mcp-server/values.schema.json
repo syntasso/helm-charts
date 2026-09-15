@@ -65,6 +65,7 @@
             "groupsClaim": { "type": "string" },
             "nameClaims": { "type": "array", "items": { "type": "string", "minLength": 1 } },
             "allowedAlgorithms": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+            "clientActorRules": { "type": "array", "items": { "type": "string", "minLength": 1 } },
             "clockSkew": {
               "type": "string",
               "pattern": "^(|[0-9]+(ns|us|ms|s|m|h)([0-9]+(ns|us|ms|s|m|h))*)$",
@@ -73,7 +74,7 @@
           },
           "required": [
             "issuer", "resourceURL", "jwksURI", "subjectClaim", "groupsClaim",
-            "nameClaims", "allowedAlgorithms", "clockSkew"
+            "nameClaims", "allowedAlgorithms", "clockSkew", "clientActorRules"
           ],
           "additionalProperties": false
         }

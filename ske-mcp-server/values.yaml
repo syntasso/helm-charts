@@ -54,6 +54,10 @@ auth:
     allowedAlgorithms: []
     clockSkew: ""
 
+    # Rules that identify client-credentials tokens from provider-specific claims. Each entry has
+    # the form claim:equals:value or claim:prefix:value.
+    clientActorRules: []
+
 config:
   port: 8080
   logLevel: info
@@ -95,8 +99,8 @@ rbac:
 
     # Prefixes applied to the derived Kubernetes identity, so bindings you author can tell
     # MCP-originated identities apart from anything else already in your cluster. Server defaults
-    # apply when left empty except clientPrefix, which the chart always sets explicitly below.
-    userPrefix: ""
+    # Set a prefix explicitly to keep MCP identities distinct from existing cluster identities.
+    userPrefix: "mcp:user:"
     groupPrefix: ""
     clientPrefix: "mcp:client:"
 

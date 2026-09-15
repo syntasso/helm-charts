@@ -50,6 +50,8 @@ rules:
   - apiGroups: [""]
     resources: [users]
     verbs: [impersonate]
+  {{- $impersonationGroups := concat .Values.rbac.impersonation.groupAllowlist .Values.rbac.impersonation.clientGroups | uniq }}
+  {{- if $impersonationGroups }}
   # Groups ARE restricted by `resourceNames`, to the closed set below — a real,
   # API-server-enforced boundary, since every group this chart can assert is known when it is
   # rendered. clientGroups is included automatically so it never has to be duplicated here too.
@@ -57,7 +59,8 @@ rules:
     resources: [groups]
     verbs: [impersonate]
     resourceNames:
-      {{- concat .Values.rbac.impersonation.groupAllowlist .Values.rbac.impersonation.clientGroups | uniq | toYaml | nindent 6 }}
+      {{- $impersonationGroups | toYaml | nindent 6 }}
+  {{- end }}
   {{- end }}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
