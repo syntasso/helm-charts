@@ -65,6 +65,7 @@
             "groupsClaim": { "type": "string" },
             "nameClaims": { "type": "array", "items": { "type": "string", "minLength": 1 } },
             "allowedAlgorithms": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+            "clientActorRules": { "type": "array", "items": { "type": "string", "minLength": 1 } },
             "clockSkew": {
               "type": "string",
               "pattern": "^(|[0-9]+(ns|us|ms|s|m|h)([0-9]+(ns|us|ms|s|m|h))*)$",
@@ -73,7 +74,7 @@
           },
           "required": [
             "issuer", "resourceURL", "jwksURI", "subjectClaim", "groupsClaim",
-            "nameClaims", "allowedAlgorithms", "clockSkew"
+            "nameClaims", "allowedAlgorithms", "clockSkew", "clientActorRules"
           ],
           "additionalProperties": false
         }
@@ -114,10 +115,23 @@
             "not": { "const": "*" },
             "description": "A named API group. \"*\" is rejected because it also matches the core group, where list on secrets returns their values."
           },
-          "description": "API groups holding Promise-defined request resources. Empty means requests cannot be submitted."
+          "description": "API groups holding Promise-defined request resources. Empty means requests cannot be submitted. Ignored when impersonation.enabled is true."
+        },
+        "impersonation": {
+          "type": "object",
+          "properties": {
+            "enabled": { "type": "boolean" },
+            "userPrefix": { "type": "string" },
+            "groupPrefix": { "type": "string" },
+            "clientPrefix": { "type": "string", "minLength": 1 },
+            "clientGroups": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+            "groupAllowlist": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+          },
+          "required": ["enabled", "userPrefix", "groupPrefix", "clientPrefix", "clientGroups", "groupAllowlist"],
+          "additionalProperties": false
         }
       },
-      "required": ["create", "requestApiGroups"],
+      "required": ["create", "requestApiGroups", "impersonation"],
       "additionalProperties": false
     },
     "podAnnotations": { "type": "object" },

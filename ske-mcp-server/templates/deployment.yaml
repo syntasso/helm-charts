@@ -91,6 +91,24 @@ spec:
             - name: OIDC_CLOCK_SKEW
               value: {{ . | quote }}
             {{- end }}
+            {{- with .Values.auth.oidc.clientActorRules }}
+            - name: OIDC_CLIENT_ACTOR_RULES
+              value: {{ join "," . | quote }}
+            {{- end }}
+            {{- end }}
+            {{- if .Values.rbac.impersonation.enabled }}
+            - name: IMPERSONATION_ENABLED
+              value: "true"
+            - name: IMPERSONATION_USER_PREFIX
+              value: {{ .Values.rbac.impersonation.userPrefix | quote }}
+            - name: IMPERSONATION_GROUP_PREFIX
+              value: {{ .Values.rbac.impersonation.groupPrefix | quote }}
+            - name: IMPERSONATION_CLIENT_PREFIX
+              value: {{ .Values.rbac.impersonation.clientPrefix | quote }}
+            {{- with .Values.rbac.impersonation.clientGroups }}
+            - name: IMPERSONATION_CLIENT_GROUPS
+              value: {{ join "," . | quote }}
+            {{- end }}
             {{- end }}
           {{- if .Values.startupProbe.enabled }}
           startupProbe:

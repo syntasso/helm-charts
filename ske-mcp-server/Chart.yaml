@@ -3,4 +3,4 @@ name: ske-mcp-server
 description: A Helm chart for deploying the SKE MCP server
 type: application
 version: 1.0.0
-appVersion: "v0.2.2"
+appVersion: "v0.2.4"

@@ -96,6 +96,76 @@ setup_file() {
   [[ "$output" == *"requestApiGroups"* ]]
 }
 
+@test "ske-mcp-server does not render impersonation RBAC or env vars by default" {
+  run helm template test "$CHART" \
+    --set-string auth.token=test-token \
+    --set 'rbac.requestApiGroups[0]=testing.kratix.io'
+
+  [ "$status" -eq 0 ]
+  local impersonate_rules env_vars
+  impersonate_rules="$(printf '%s\n' "$output" | yq 'select(.kind == "ClusterRole") | .rules[] | select(.verbs[0] == "impersonate")')"
+  env_vars="$(printf '%s\n' "$output" | yq 'select(.kind == "Deployment") | .spec.template.spec.containers[0].env[].name' | grep '^IMPERSONATION_' || true)"
+
+  [ -z "$impersonate_rules" ]
+  [ -z "$env_vars" ]
+  # The pre-existing direct grant must still render unchanged - this is the backward-compat case.
+  local request_rule
+  request_rule="$(printf '%s\n' "$output" | yq 'select(.kind == "ClusterRole") | .rules[] | select(.apiGroups[0] == "testing.kratix.io")')"
+  [ "$(printf '%s\n' "$request_rule" | yq '.verbs | sort | join(",")')" = "create,list" ]
+}
+
+@test "ske-mcp-server renders impersonation RBAC and env vars when enabled, and drops requestApiGroups" {
+  run helm template test "$CHART" \
+    --set auth.oidc.issuer=https://keycloak.example.com/realms/mcp \
+    --set auth.oidc.resourceURL=https://mcp.example.com/mcp \
+    --set rbac.impersonation.enabled=true \
+    --set rbac.impersonation.userPrefix=mcp:user: \
+    --set rbac.impersonation.groupPrefix=mcp:group: \
+    --set 'rbac.impersonation.groupAllowlist[0]=mcp:group:platform-viewers' \
+    --set 'rbac.impersonation.clientGroups[0]=mcp:clients' \
+    --set 'rbac.requestApiGroups[0]=testing.kratix.io'
+
+  [ "$status" -eq 0 ]
+  local role sar_rule users_rule groups_rule request_rules
+  role="$(printf '%s\n' "$output" | yq 'select(.kind == "ClusterRole")')"
+  sar_rule="$(printf '%s\n' "$role" | yq '.rules[] | select(.resources[0] == "subjectaccessreviews")')"
+  users_rule="$(printf '%s\n' "$role" | yq '.rules[] | select(.resources[0] == "users")')"
+  groups_rule="$(printf '%s\n' "$role" | yq '.rules[] | select(.resources[0] == "groups")')"
+  request_rules="$(printf '%s\n' "$role" | yq '.rules[] | select(.apiGroups[0] == "testing.kratix.io")')"
+
+  [ "$(printf '%s\n' "$sar_rule" | yq '.apiGroups[0]')" = "authorization.k8s.io" ]
+  [ "$(printf '%s\n' "$sar_rule" | yq '.verbs[0]')" = "create" ]
+  [ "$(printf '%s\n' "$users_rule" | yq '.verbs[0]')" = "impersonate" ]
+  [ "$(printf '%s\n' "$users_rule" | yq '.resourceNames // "null"')" = "null" ]
+  [ "$(printf '%s\n' "$groups_rule" | yq '.verbs[0]')" = "impersonate" ]
+  # clientGroups is folded into the allowlist automatically, without duplicating it in
+  # rbac.impersonation.groupAllowlist.
+  [ "$(printf '%s\n' "$groups_rule" | yq '.resourceNames | sort | join(",")')" = "mcp:clients,mcp:group:platform-viewers" ]
+  # requestApiGroups is ignored once impersonation is enabled: the ServiceAccount no longer needs
+  # direct access to request resources.
+  [ -z "$request_rules" ]
+
+  local env
+  env="$(printf '%s\n' "$output" | yq 'select(.kind == "Deployment") | .spec.template.spec.containers[0].env')"
+  [ "$(printf '%s\n' "$env" | yq '.[] | select(.name == "IMPERSONATION_ENABLED") | .value')" = "true" ]
+  [ "$(printf '%s\n' "$env" | yq '.[] | select(.name == "IMPERSONATION_USER_PREFIX") | .value')" = "mcp:user:" ]
+  [ "$(printf '%s\n' "$env" | yq '.[] | select(.name == "IMPERSONATION_GROUP_PREFIX") | .value')" = "mcp:group:" ]
+  [ "$(printf '%s\n' "$env" | yq '.[] | select(.name == "IMPERSONATION_CLIENT_PREFIX") | .value')" = "mcp:client:" ]
+  [ "$(printf '%s\n' "$env" | yq '.[] | select(.name == "IMPERSONATION_CLIENT_GROUPS") | .value')" = "mcp:clients" ]
+}
+
+@test "ske-mcp-server does not grant unrestricted group impersonation for an empty allowlist" {
+  run helm template test "$CHART" \
+    --set auth.oidc.issuer=https://keycloak.example.com/realms/mcp \
+    --set auth.oidc.resourceURL=https://mcp.example.com/mcp \
+    --set rbac.impersonation.enabled=true
+
+  [ "$status" -eq 0 ]
+  local groups_rule
+  groups_rule="$(printf '%s\n' "$output" | yq 'select(.kind == "ClusterRole") | .rules[] | select(.resources[0] == "groups")')"
+  [ -z "$groups_rule" ]
+}
+
 @test "ske-mcp-server keeps selector labels authoritative and supports full probe settings" {
   run helm template custom "$CHART" \
     --set-string auth.token=test-token \
@@ -179,7 +249,9 @@ setup_file() {
   run helm template test "$CHART" \
     --set auth.oidc.issuer=https://keycloak.example.com/realms/mcp \
     --set auth.oidc.resourceURL=https://mcp.example.com/mcp \
-    --set auth.oidc.subjectClaim=preferred_username
+    --set auth.oidc.subjectClaim=preferred_username \
+    --set-string 'auth.oidc.clientActorRules[0]=preferred_username:prefix:service-account-' \
+    --set-string 'auth.oidc.clientActorRules[1]=idtyp:equals:app'
 
   [ "$status" -eq 0 ]
   # One yq pass per lookup: piping a stream of env entries into a second yq re-parses them as a
@@ -190,6 +262,7 @@ setup_file() {
   [ "$(printf '%s\n' "$output" | yq 'select(.kind == "Deployment") | .spec.template.spec.containers[0].env[] | select(.name == "OIDC_ISSUER") | .value')" = "https://keycloak.example.com/realms/mcp" ]
   [ "$(printf '%s\n' "$output" | yq 'select(.kind == "Deployment") | .spec.template.spec.containers[0].env[] | select(.name == "MCP_RESOURCE_URL") | .value')" = "https://mcp.example.com/mcp" ]
   [ "$(printf '%s\n' "$output" | yq 'select(.kind == "Deployment") | .spec.template.spec.containers[0].env[] | select(.name == "OIDC_SUBJECT_CLAIM") | .value')" = "preferred_username" ]
+  [ "$(printf '%s\n' "$output" | yq 'select(.kind == "Deployment") | .spec.template.spec.containers[0].env[] | select(.name == "OIDC_CLIENT_ACTOR_RULES") | .value')" = "preferred_username:prefix:service-account-,idtyp:equals:app" ]
   # No token means no MCP_AUTH_TOKEN and no chart-managed Secret at all.
   [[ "$names" != *"MCP_AUTH_TOKEN"* ]]
   [ -z "$(printf '%s\n' "$output" | yq 'select(.kind == "Secret") | .metadata.name')" ]
@@ -198,18 +271,83 @@ setup_file() {
   [[ "$names" != *"OIDC_CLOCK_SKEW"* ]]
 }
 
-@test "ske-mcp-server supports OIDC and a static token together" {
-  # The two are not exclusive: an installation can carry a legacy token while callers migrate.
+@test "ske-mcp-server rejects OIDC and a static token together" {
   run helm template test "$CHART" \
     --set-string auth.token=test-token \
     --set auth.oidc.issuer=https://keycloak.example.com/realms/mcp \
     --set auth.oidc.resourceURL=https://mcp.example.com/mcp
 
+  [ "$status" -ne 0 ]
+  [[ "$output" == *"mutually exclusive"* ]]
+}
+
+@test "ske-mcp-server rejects impersonation with static-token authentication" {
+  run helm template test "$CHART" \
+    --set-string auth.token=test-token \
+    --set rbac.impersonation.enabled=true
+  [ "$status" -ne 0 ]
+  [[ "$output" == *"impersonation"* ]]
+  [[ "$output" == *"OIDC"* ]]
+
+  run helm template test "$CHART" \
+    --set auth.existingSecret.name=external-auth \
+    --set rbac.impersonation.enabled=true
+  [ "$status" -ne 0 ]
+  [[ "$output" == *"impersonation"* ]]
+  [[ "$output" == *"OIDC"* ]]
+}
+
+@test "ske-mcp-server distinguishes the default user prefix from an explicitly empty prefix" {
+  run helm template test "$CHART" \
+    --set auth.oidc.issuer=https://keycloak.example.com/realms/mcp \
+    --set auth.oidc.resourceURL=https://mcp.example.com/mcp \
+    --set rbac.impersonation.enabled=true
   [ "$status" -eq 0 ]
-  local names
-  names="$(printf '%s\n' "$output" | yq 'select(.kind == "Deployment") | .spec.template.spec.containers[0].env[] | .name' | tr '\n' ' ')"
-  [[ "$names" == *"MCP_AUTH_TOKEN"* ]]
-  [[ "$names" == *"OIDC_ISSUER"* ]]
+  [ "$(printf '%s\n' "$output" | yq 'select(.kind == "Deployment") | .spec.template.spec.containers[0].env[] | select(.name == "IMPERSONATION_USER_PREFIX") | .value')" = "mcp:user:" ]
+
+  run helm template test "$CHART" \
+    --set auth.oidc.issuer=https://keycloak.example.com/realms/mcp \
+    --set auth.oidc.resourceURL=https://mcp.example.com/mcp \
+    --set rbac.impersonation.enabled=true \
+    --set-string rbac.impersonation.userPrefix=
+  [ "$status" -eq 0 ]
+  [ "$(printf '%s\n' "$output" | yq 'select(.kind == "Deployment") | .spec.template.spec.containers[0].env[] | select(.name == "IMPERSONATION_USER_PREFIX") | .value')" = "" ]
+}
+
+@test "ske-mcp-server rejects client groups that cannot round-trip through the server environment" {
+  run helm template test "$CHART" \
+    --set auth.oidc.issuer=https://keycloak.example.com/realms/mcp \
+    --set auth.oidc.resourceURL=https://mcp.example.com/mcp \
+    --set rbac.impersonation.enabled=true \
+    --set-string 'rbac.impersonation.clientGroups[0]=readers\,writers'
+  [ "$status" -ne 0 ]
+  [[ "$output" == *"must not contain commas"* ]]
+
+  run helm template test "$CHART" \
+    --set auth.oidc.issuer=https://keycloak.example.com/realms/mcp \
+    --set auth.oidc.resourceURL=https://mcp.example.com/mcp \
+    --set rbac.impersonation.enabled=true \
+    --set-string 'rbac.impersonation.clientGroups[0]= readers'
+  [ "$status" -ne 0 ]
+  [[ "$output" == *"whitespace"* ]]
+}
+
+@test "ske-mcp-server rejects system:masters from impersonation group configuration" {
+  run helm template test "$CHART" \
+    --set auth.oidc.issuer=https://keycloak.example.com/realms/mcp \
+    --set auth.oidc.resourceURL=https://mcp.example.com/mcp \
+    --set rbac.impersonation.enabled=true \
+    --set-string 'rbac.impersonation.clientGroups[0]=system:masters'
+  [ "$status" -ne 0 ]
+  [[ "$output" == *"system:masters"* ]]
+
+  run helm template test "$CHART" \
+    --set auth.oidc.issuer=https://keycloak.example.com/realms/mcp \
+    --set auth.oidc.resourceURL=https://mcp.example.com/mcp \
+    --set rbac.impersonation.enabled=true \
+    --set-string 'rbac.impersonation.groupAllowlist[0]=system:masters'
+  [ "$status" -ne 0 ]
+  [[ "$output" == *"system:masters"* ]]
 }
 
 @test "ske-mcp-server rejects multiple replicas" {
