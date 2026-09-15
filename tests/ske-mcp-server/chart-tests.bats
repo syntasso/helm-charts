@@ -132,6 +132,7 @@ setup_file() {
   groups_rule="$(printf '%s\n' "$role" | yq '.rules[] | select(.resources[0] == "groups")')"
   request_rules="$(printf '%s\n' "$role" | yq '.rules[] | select(.apiGroups[0] == "testing.kratix.io")')"
 
+  [ "$(printf '%s\n' "$sar_rule" | yq '.apiGroups[0]')" = "authorization.k8s.io" ]
   [ "$(printf '%s\n' "$sar_rule" | yq '.verbs[0]')" = "create" ]
   [ "$(printf '%s\n' "$users_rule" | yq '.verbs[0]')" = "impersonate" ]
   [ "$(printf '%s\n' "$users_rule" | yq '.resourceNames // "null"')" = "null" ]

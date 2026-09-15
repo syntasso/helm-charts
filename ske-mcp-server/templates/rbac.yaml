@@ -35,7 +35,7 @@ rules:
   {{- end }}
   {{- end }}
   {{- if .Values.rbac.impersonation.enabled }}
-  - apiGroups: [""]
+  - apiGroups: [authorization.k8s.io]
     resources: [subjectaccessreviews]
     verbs: [create]
   # Every request-resource operation runs impersonated as the calling principal instead of as this
