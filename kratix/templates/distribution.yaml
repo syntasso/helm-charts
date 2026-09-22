@@ -302,7 +302,7 @@ subjects:
 ---
 apiVersion: v1
 data:
-  PIPELINE_ADAPTER_IMG: syntasso-community.docker.reo.dev/syntasso/kratix-platform@sha256:03d547c72349bc795df587c3b45814e4e0ef66ab00f198506e71b7f4659fee2d
+  PIPELINE_ADAPTER_IMG: syntasso-community.docker.reo.dev/syntasso/kratix-platform@sha256:0439af8ef75a0e2af8b8983b20326514901ed077356b3083a81f99eda6a9cdba
 kind: ConfigMap
 metadata:
   labels:
@@ -518,6 +518,26 @@ webhooks:
           - UPDATE
         resources:
           - destinations
+    sideEffects: None
+  - admissionReviewVersions:
+      - v1
+    clientConfig:
+      service:
+        name: kratix-platform-webhook-service
+        namespace: kratix-platform-system
+        path: /validate-platform-kratix-io-v1alpha1-gitstatestore
+    failurePolicy: Fail
+    name: vgitstatestore-v1alpha1.kb.io
+    rules:
+      - apiGroups:
+          - platform.kratix.io
+        apiVersions:
+          - v1alpha1
+        operations:
+          - CREATE
+          - UPDATE
+        resources:
+          - gitstatestores
     sideEffects: None
   - admissionReviewVersions:
       - v1
