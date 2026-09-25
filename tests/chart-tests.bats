@@ -60,3 +60,26 @@ setup_file() {
   [[ "$pull_secrets" == *"my-existing-pull-secret"* ]]
   [[ "$pull_secrets" != *"syntasso-registry"* ]]
 }
+
+# --- ske-operator resources ---
+
+cr_from_configmap() {
+  # $1: rendered output, $2: configmap name, $3: data key
+  echo "$1" | yq "select(.kind == \"ConfigMap\" and .metadata.name == \"$2\") | .data[\"$3\"]" | yq '.'
+}
+
+@test "ske-operator: default values keep the operator container limits" {
+  run helm template test "$REPO_ROOT/ske-operator"
+  local container=$(echo "$output" | yq 'select(.kind == "Deployment" and .metadata.name == "ske-operator-controller-manager") | .spec.template.spec.containers[0]')
+  [[ $(echo "$container" | yq '.resources.limits.cpu') == "100m" ]]
+  [[ $(echo "$container" | yq '.resources.limits.memory') == "256Mi" ]]
+}
+
+@test "ske-operator: limits set to null removes limits from the operator container" {
+  run helm template test "$REPO_ROOT/ske-operator" \
+    --set skeOperator.resources.limits=null
+  local container=$(echo "$output" | yq 'select(.kind == "Deployment" and .metadata.name == "ske-operator-controller-manager") | .spec.template.spec.containers[0]')
+  [[ $(echo "$container" | yq '.resources.limits') == "null" ]]
+  [[ $(echo "$container" | yq '.resources.requests.cpu') == "100m" ]]
+}
+
