@@ -83,3 +83,37 @@ cr_from_configmap() {
   [[ $(echo "$container" | yq '.resources.requests.cpu') == "100m" ]]
 }
 
+@test "ske-operator: null cpu limit renders the Kratix CR without a cpu limit" {
+  run helm template test "$REPO_ROOT/ske-operator" \
+    --set skeDeployment.deploymentConfig.resources.limits.cpu=null
+  local cr=$(cr_from_configmap "$output" ske-deployment-config ske-deployment)
+  [[ $(echo "$cr" | yq '.spec.deploymentConfig.resources.limits.cpu') == "null" ]]
+  [[ $(echo "$cr" | yq '.spec.deploymentConfig.resources.limits.memory') == "256Mi" ]]
+  [[ $(echo "$cr" | yq '.spec.deploymentConfig.resources.requests.cpu') == "100m" ]]
+}
+
+@test "ske-operator: null limits and requests render an empty resources block in the Kratix CR" {
+  run helm template test "$REPO_ROOT/ske-operator" \
+    --set skeDeployment.deploymentConfig.resources.limits=null \
+    --set skeDeployment.deploymentConfig.resources.requests=null
+  local cr=$(cr_from_configmap "$output" ske-deployment-config ske-deployment)
+  [[ $(echo "$cr" | yq '.spec.deploymentConfig.resources') == "{}" ]]
+}
+
+@test "ske-operator: null limits and requests render an empty resources block for the platform manager" {
+  run helm template test "$REPO_ROOT/ske-operator" \
+    --set skeDeployment.platformManagerDeploymentConfig.resources.limits=null \
+    --set skeDeployment.platformManagerDeploymentConfig.resources.requests=null
+  local cr=$(cr_from_configmap "$output" ske-deployment-config ske-deployment)
+  [[ $(echo "$cr" | yq '.spec.platformManagerDeploymentConfig.resources') == "{}" ]]
+}
+
+@test "ske-operator: null limits and requests render an empty resources block for an integration" {
+  run helm template test "$REPO_ROOT/ske-operator" \
+    --set portalIntegration.enabled=true \
+    --set portalIntegration.deploymentConfig.resources.limits=null \
+    --set portalIntegration.deploymentConfig.resources.requests=null
+  local cr=$(cr_from_configmap "$output" portal-integration-config portal-integration)
+  [[ $(echo "$cr" | yq '.spec.deploymentConfig.resources') == "{}" ]]
+}
+

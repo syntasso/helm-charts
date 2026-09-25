@@ -22,10 +22,10 @@ data:
 {{- toYaml . | nindent 8 }}
 {{- end }}
       {{- $dc := .deploymentConfig }}
-      {{- with $dc.resources }}
+      {{- if and $dc (hasKey $dc "resources") }}
       deploymentConfig:
         resources:
-{{- toYaml . | nindent 10 }}
+{{- toYaml $dc.resources | nindent 10 }}
         {{- with $dc.nodeSelector }}
         nodeSelector:
 {{- toYaml . | nindent 10 }}
@@ -48,10 +48,10 @@ data:
         {{- end }}
       {{- end }}
       {{- $pmdc := .platformManagerDeploymentConfig }}
-      {{- with $pmdc.resources }}
+      {{- if and $pmdc (hasKey $pmdc "resources") }}
       platformManagerDeploymentConfig:
         resources:
-{{- toYaml . | nindent 10 }}
+{{- toYaml $pmdc.resources | nindent 10 }}
         {{- with $pmdc.nodeSelector }}
         nodeSelector:
 {{- toYaml . | nindent 10 }}
