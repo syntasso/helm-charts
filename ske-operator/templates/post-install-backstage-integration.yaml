@@ -36,14 +36,7 @@ spec:
             - name: backstage-integration-config-volume
               mountPath: /etc/config/backstage-integration
           resources:
-            requests:
-              cpu: 100m
-              memory: 100Mi
-              ephemeral-storage: 100Mi
-            limits:
-              cpu: 200m
-              memory: 200Mi
-              ephemeral-storage: 200Mi
+            {{- $.Values.skeDeployment.deployJob.resources | toYaml | nindent 12 }}
       volumes:
         - name: backstage-integration-config-volume
           configMap:

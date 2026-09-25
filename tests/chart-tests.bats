@@ -117,3 +117,13 @@ cr_from_configmap() {
   [[ $(echo "$cr" | yq '.spec.deploymentConfig.resources') == "{}" ]]
 }
 
+@test "ske-operator: post-install jobs use skeDeployment.deployJob.resources" {
+  run helm template test "$REPO_ROOT/ske-operator" \
+    --set portalIntegration.enabled=true \
+    --set skeDeployment.deployJob.resources.limits.cpu=null
+  for job in deploy-ske-deployment deploy-portal-integration; do
+    local container=$(echo "$output" | yq "select(.kind == \"Job\" and .metadata.name == \"$job\") | .spec.template.spec.containers[0]")
+    [[ $(echo "$container" | yq '.resources.limits.cpu') == "null" ]]
+    [[ $(echo "$container" | yq '.resources.requests.cpu') == "100m" ]]
+  done
+}
