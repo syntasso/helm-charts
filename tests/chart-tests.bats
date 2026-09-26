@@ -60,3 +60,70 @@ setup_file() {
   [[ "$pull_secrets" == *"my-existing-pull-secret"* ]]
   [[ "$pull_secrets" != *"syntasso-registry"* ]]
 }
+
+# --- ske-operator resources ---
+
+cr_from_configmap() {
+  # $1: rendered output, $2: configmap name, $3: data key
+  echo "$1" | yq "select(.kind == \"ConfigMap\" and .metadata.name == \"$2\") | .data[\"$3\"]" | yq '.'
+}
+
+@test "ske-operator: default values keep the operator container limits" {
+  run helm template test "$REPO_ROOT/ske-operator"
+  local container=$(echo "$output" | yq 'select(.kind == "Deployment" and .metadata.name == "ske-operator-controller-manager") | .spec.template.spec.containers[0]')
+  [[ $(echo "$container" | yq '.resources.limits.cpu') == "100m" ]]
+  [[ $(echo "$container" | yq '.resources.limits.memory') == "256Mi" ]]
+}
+
+@test "ske-operator: limits set to null removes limits from the operator container" {
+  run helm template test "$REPO_ROOT/ske-operator" \
+    --set skeOperator.resources.limits=null
+  local container=$(echo "$output" | yq 'select(.kind == "Deployment" and .metadata.name == "ske-operator-controller-manager") | .spec.template.spec.containers[0]')
+  [[ $(echo "$container" | yq '.resources.limits') == "null" ]]
+  [[ $(echo "$container" | yq '.resources.requests.cpu') == "100m" ]]
+}
+
+@test "ske-operator: null cpu limit renders the Kratix CR without a cpu limit" {
+  run helm template test "$REPO_ROOT/ske-operator" \
+    --set skeDeployment.deploymentConfig.resources.limits.cpu=null
+  local cr=$(cr_from_configmap "$output" ske-deployment-config ske-deployment)
+  [[ $(echo "$cr" | yq '.spec.deploymentConfig.resources.limits.cpu') == "null" ]]
+  [[ $(echo "$cr" | yq '.spec.deploymentConfig.resources.limits.memory') == "256Mi" ]]
+  [[ $(echo "$cr" | yq '.spec.deploymentConfig.resources.requests.cpu') == "100m" ]]
+}
+
+@test "ske-operator: null limits and requests render an empty resources block in the Kratix CR" {
+  run helm template test "$REPO_ROOT/ske-operator" \
+    --set skeDeployment.deploymentConfig.resources.limits=null \
+    --set skeDeployment.deploymentConfig.resources.requests=null
+  local cr=$(cr_from_configmap "$output" ske-deployment-config ske-deployment)
+  [[ $(echo "$cr" | yq '.spec.deploymentConfig.resources') == "{}" ]]
+}
+
+@test "ske-operator: null limits and requests render an empty resources block for the platform manager" {
+  run helm template test "$REPO_ROOT/ske-operator" \
+    --set skeDeployment.platformManagerDeploymentConfig.resources.limits=null \
+    --set skeDeployment.platformManagerDeploymentConfig.resources.requests=null
+  local cr=$(cr_from_configmap "$output" ske-deployment-config ske-deployment)
+  [[ $(echo "$cr" | yq '.spec.platformManagerDeploymentConfig.resources') == "{}" ]]
+}
+
+@test "ske-operator: null limits and requests render an empty resources block for an integration" {
+  run helm template test "$REPO_ROOT/ske-operator" \
+    --set portalIntegration.enabled=true \
+    --set portalIntegration.deploymentConfig.resources.limits=null \
+    --set portalIntegration.deploymentConfig.resources.requests=null
+  local cr=$(cr_from_configmap "$output" portal-integration-config portal-integration)
+  [[ $(echo "$cr" | yq '.spec.deploymentConfig.resources') == "{}" ]]
+}
+
+@test "ske-operator: post-install jobs use skeDeployment.deployJob.resources" {
+  run helm template test "$REPO_ROOT/ske-operator" \
+    --set portalIntegration.enabled=true \
+    --set skeDeployment.deployJob.resources.limits.cpu=null
+  for job in deploy-ske-deployment deploy-portal-integration; do
+    local container=$(echo "$output" | yq "select(.kind == \"Job\" and .metadata.name == \"$job\") | .spec.template.spec.containers[0]")
+    [[ $(echo "$container" | yq '.resources.limits.cpu') == "null" ]]
+    [[ $(echo "$container" | yq '.resources.requests.cpu') == "100m" ]]
+  done
+}

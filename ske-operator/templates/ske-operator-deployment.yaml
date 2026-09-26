@@ -23,16 +23,12 @@ spec:
       {{- end }}
 {{- end }}
 
-{{- define "containerPatch" }}
-{{- with .Values.skeOperator.resources }}
-resources:
-  {{- . | toYaml | nindent 2 }}
-{{- end }}
-{{- end }}
-
 {{- $manifest := .Files.Get "files/ske-operator-deployment.yaml" | fromYaml }}
-{{- $container := index $manifest.spec.template.spec.containers 0
-                    | merge (include "containerPatch" . | fromYaml) }}
+{{- $container := index $manifest.spec.template.spec.containers 0 }}
+{{/* skeOperator.resources is used as set: a block that is present replaces the bundled one. */}}
+{{- if and .Values.skeOperator (hasKey .Values.skeOperator "resources") }}
+{{- $_ := set $container "resources" (.Values.skeOperator.resources | default dict) }}
+{{- end }}
 
 {{- if .Values.global.skeOperator.tlsConfig.certManager.disabled }}
 {{- with .Values.global.skeOperator.tlsConfig.webhookTLSSecretRef }}
