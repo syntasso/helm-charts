@@ -21,10 +21,10 @@ data:
       portals:
 {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .deploymentConfig.resources }}
+      {{- if and .deploymentConfig (hasKey .deploymentConfig "resources") }}
       deploymentConfig:
         resources:
-{{- toYaml . | nindent 10 }}
+{{- toYaml .deploymentConfig.resources | nindent 10 }}
       {{- end }}
 {{- end }}
 {{- end }}
