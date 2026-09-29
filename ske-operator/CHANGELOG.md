@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.94.0](https://github.com/syntasso/helm-charts/compare/ske-operator-0.93.0...ske-operator-v0.94.0) (2026-09-29)
+
+
+### Features
+
+* **ske-operator:** update appVersion (autorelease) ([60c22fd](https://github.com/syntasso/helm-charts/commit/60c22fd8d673d89982f689bda753933e7df95675))
+
+
+### Bug Fixes
+
+* **ske-operator:** resources set through values are applied as written ([#250](https://github.com/syntasso/helm-charts/issues/250)) ([dc25c2b](https://github.com/syntasso/helm-charts/commit/dc25c2b0b91f60bedbc80767d5198a0ff0adf106))
+
 ## [0.93.0](https://github.com/syntasso/helm-charts/compare/ske-operator-0.92.0...ske-operator-v0.93.0) (2026-09-22)
 
 
