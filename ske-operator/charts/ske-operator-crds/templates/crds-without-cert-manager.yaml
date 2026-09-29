@@ -957,7 +957,10 @@ spec:
                       description: NodeSelector constrains the deployment to nodes matching the specified labels.
                       type: object
                     resources:
-                      description: Resources defines the resource requests and limits for the deployment.
+                      description: |-
+                        Resources sets the resource requests and limits for the deployment. When set it
+                        is applied as written and replaces the resources in the SKE distribution; when
+                        unset the distribution's resources are kept.
                       properties:
                         limits:
                           properties:
@@ -3915,7 +3918,10 @@ spec:
                       description: NodeSelector constrains the deployment to nodes matching the specified labels.
                       type: object
                     resources:
-                      description: Resources defines the resource requests and limits for the deployment.
+                      description: |-
+                        Resources sets the resource requests and limits for the deployment. When set it
+                        is applied as written and replaces the resources in the SKE distribution; when
+                        unset the distribution's resources are kept.
                       properties:
                         limits:
                           properties:
@@ -7065,7 +7071,10 @@ spec:
                       description: NodeSelector constrains the deployment to nodes matching the specified labels.
                       type: object
                     resources:
-                      description: Resources defines the resource requests and limits for the deployment.
+                      description: |-
+                        Resources sets the resource requests and limits for the deployment. When set it
+                        is applied as written and replaces the resources in the SKE distribution; when
+                        unset the distribution's resources are kept.
                       properties:
                         limits:
                           properties:
