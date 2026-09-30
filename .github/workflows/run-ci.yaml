@@ -474,12 +474,3 @@ jobs:
           else
             echo "No new package created, skipping upload"
           fi
-
-      - name: Run ske-gui chart upgrade action (ske-gui only)
-        env:
-          GH_TOKEN: ${{ secrets.GH_ACTION_TOKEN }}
-        run: |
-          if [ "${CHART_NAME}" == "ske-gui" ]; then
-            gh workflow run "Upgrade ske-gui helm chart in LRE" \
-              --repo syntasso/enterprise-kratix
-          fi
