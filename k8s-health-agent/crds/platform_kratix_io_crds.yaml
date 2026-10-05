@@ -119,6 +119,9 @@ spec:
                 details:
                   type: object
                   x-kubernetes-preserve-unknown-fields: true
+                healthDefinitionName:
+                  description: Name of the HealthDefinition that produced this state
+                  type: string
                 lastRun:
                   description: Timestamp of the last healthcheck run
                   format: int64
