@@ -234,6 +234,12 @@ rules:
       - patch
       - update
   - apiGroups:
+      - batch
+    resources:
+      - jobs
+    verbs:
+      - list
+  - apiGroups:
       - platform.kratix.io
     resources:
       - healthdefinitions

@@ -52,6 +52,9 @@ spec:
                   required:
                     - name
                   type: object
+                promiseVersion:
+                  description: Version of the Promise this HealthDefinition checks.
+                  type: string
                 resourceRef:
                   properties:
                     generation:
@@ -134,6 +137,9 @@ spec:
                   required:
                     - name
                   type: object
+                promiseVersion:
+                  description: Promise version the check run that produced this state was built for.
+                  type: string
                 resourceRef:
                   description: Reference to the resource request; required value if HealthData is for a resource request
                   properties:
