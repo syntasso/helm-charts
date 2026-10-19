@@ -1116,6 +1116,20 @@ entries:
   ske-operator:
   - apiVersion: v2
     appVersion: v0.35.2
+    created: "2026-10-19T13:27:47.385288684Z"
+    dependencies:
+    - name: ske-operator-crds
+      repository: ""
+      version: 0.101.0
+    description: A Helm Chart for deploying the SKE-Operator
+    digest: df1f228581bd15b4b6c2417f089e97ca8979e440a11e2271da3c2cb1e9fcf631
+    name: ske-operator
+    type: application
+    urls:
+    - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.101.1/ske-operator-0.101.1.tgz
+    version: 0.101.1
+  - apiVersion: v2
+    appVersion: v0.35.2
     created: "2026-10-16T15:15:54.41542145Z"
     dependencies:
     - name: ske-operator-crds
@@ -2434,4 +2448,4 @@ entries:
     urls:
     - https://github.com/syntasso/helm-charts/releases/download/ske-operator-0.8.0/ske-operator-0.8.0.tgz
     version: 0.8.0
-generated: "2026-10-19T10:31:32.164807647Z"
+generated: "2026-10-19T13:27:47.385561608Z"
