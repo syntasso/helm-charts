@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.101.1](https://github.com/syntasso/helm-charts/compare/ske-operator-v0.101.0...ske-operator-v0.101.1) (2026-10-19)
+
+
+### Bug Fixes
+
+* **ske-operator:** default portal controller to v0.7.1 ([#271](https://github.com/syntasso/helm-charts/issues/271)) ([02b6203](https://github.com/syntasso/helm-charts/commit/02b62036408dae67b8f3e7e83f286e939a570195))
+
 ## [0.101.0](https://github.com/syntasso/helm-charts/compare/ske-operator-0.100.0...ske-operator-v0.101.0) (2026-10-16)
 
 
