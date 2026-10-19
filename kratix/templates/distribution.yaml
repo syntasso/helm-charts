@@ -50,6 +50,20 @@ rules:
       - create
       - patch
 ---
+aggregationRule:
+  clusterRoleSelectors:
+    - matchLabels:
+        kratix.io/aggregate-to-kratix: "true"
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/component: kratix-manager
+    app.kubernetes.io/instance: kratix-platform
+    app.kubernetes.io/part-of: kratix
+  name: kratix-platform-aggregated-role
+rules: []
+---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
@@ -273,6 +287,23 @@ metadata:
     app.kubernetes.io/component: kratix-manager
     app.kubernetes.io/instance: kratix-platform
     app.kubernetes.io/part-of: kratix
+  name: kratix-platform-aggregated-rolebinding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: kratix-platform-aggregated-role
+subjects:
+  - kind: ServiceAccount
+    name: {{ include "kratix.serviceAccountName" . | trim }}
+    namespace: kratix-platform-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+    app.kubernetes.io/component: kratix-manager
+    app.kubernetes.io/instance: kratix-platform
+    app.kubernetes.io/part-of: kratix
   name: kratix-platform-manager-rolebinding
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -302,7 +333,7 @@ subjects:
 ---
 apiVersion: v1
 data:
-  PIPELINE_ADAPTER_IMG: syntasso-community.docker.reo.dev/syntasso/kratix-platform@sha256:e63ac3133b394e47b96b06b8ff4f3774a5bc540d936c172f2a938676c03867b0
+  PIPELINE_ADAPTER_IMG: syntasso-community.docker.reo.dev/syntasso/kratix-platform@sha256:b0546458e317e93d814a43999e7b10475eb296d4a09528baaa38e7d0111a5dfb
 kind: ConfigMap
 metadata:
   labels:
