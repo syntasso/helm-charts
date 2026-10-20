@@ -283,17 +283,21 @@ load helpers
 
   [[ $(printf '%s\n' "$deployment_config" | yq '.spec.deploymentConfig.replicas') == "2" ]]
   [[ $(printf '%s\n' "$deployment_config" | yq '.spec.platformManagerDeploymentConfig.replicas') == "3" ]]
+  [[ $(printf '%s\n' "$deployment_config" | yq '.spec.deploymentConfig.replicas | type') == "!!int" ]]
+  [[ $(printf '%s\n' "$deployment_config" | yq '.spec.platformManagerDeploymentConfig.replicas | type') == "!!int" ]]
 }
 
 @test "replicas: 0 is passed through so the Kratix CRD rejects it, not silently dropped" {
   run helm_ske_operator \
-    --set 'skeDeployment.deploymentConfig.replicas=0'
+    --set 'skeDeployment.deploymentConfig.replicas=0' \
+    --set 'skeDeployment.platformManagerDeploymentConfig.replicas=0'
   [ "$status" -eq 0 ]
 
   local deployment_config
   deployment_config="$(ske_deployment_config "$output")"
 
   [[ $(printf '%s\n' "$deployment_config" | yq '.spec.deploymentConfig.replicas') == "0" ]]
+  [[ $(printf '%s\n' "$deployment_config" | yq '.spec.platformManagerDeploymentConfig.replicas') == "0" ]]
 }
 
 @test "topologySpreadConstraints: rendered as written under both deployment configs" {
