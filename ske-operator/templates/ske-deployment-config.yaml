@@ -46,6 +46,13 @@ data:
         volumeMounts:
 {{- toYaml . | nindent 10 }}
         {{- end }}
+        {{- if not (kindIs "invalid" $dc.replicas) }}
+        replicas: {{ $dc.replicas }}
+        {{- end }}
+        {{- with $dc.topologySpreadConstraints }}
+        topologySpreadConstraints:
+{{- toYaml . | nindent 10 }}
+        {{- end }}
       {{- end }}
       {{- $pmdc := .platformManagerDeploymentConfig }}
       {{- if and $pmdc (hasKey $pmdc "resources") }}
@@ -70,6 +77,13 @@ data:
         {{- end }}
         {{- with $pmdc.volumeMounts }}
         volumeMounts:
+{{- toYaml . | nindent 10 }}
+        {{- end }}
+        {{- if not (kindIs "invalid" $pmdc.replicas) }}
+        replicas: {{ $pmdc.replicas }}
+        {{- end }}
+        {{- with $pmdc.topologySpreadConstraints }}
+        topologySpreadConstraints:
 {{- toYaml . | nindent 10 }}
         {{- end }}
       {{- end }}
