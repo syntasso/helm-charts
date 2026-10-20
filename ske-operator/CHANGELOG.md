@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.102.0](https://github.com/syntasso/helm-charts/compare/ske-operator-0.101.1...ske-operator-v0.102.0) (2026-10-20)
+
+
+### Features
+
+* **ske-operator:** set replicas and topologySpreadConstraints for Kratix and the platform manager ([#274](https://github.com/syntasso/helm-charts/issues/274)) ([a8171f7](https://github.com/syntasso/helm-charts/commit/a8171f77d2882b7e2ff5123f3cd222cc181c9594))
+* **ske-operator:** update appVersion (autorelease) ([cbd8f5d](https://github.com/syntasso/helm-charts/commit/cbd8f5d6a48bf081e5d2326ee4bead70a2f38567))
+
 ## [0.101.1](https://github.com/syntasso/helm-charts/compare/ske-operator-v0.101.0...ske-operator-v0.101.1) (2026-10-19)
 
 
