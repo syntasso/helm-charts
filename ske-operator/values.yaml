@@ -214,6 +214,23 @@ skeDeployment:
     #   - mountPath: /usr/local/libexec/vault
     #     name: plugins
     #     readOnly: true
+    # Number of pods. One pod does the work and the others take over if it stops;
+    # every pod answers webhooks. More pods do not make reconciling faster.
+    # Unset runs 1 pod.
+    # replicas: 2
+    topologySpreadConstraints: []
+    # topologySpreadConstraints:
+    #   - maxSkew: 1
+    #     topologyKey: kubernetes.io/hostname
+    #     whenUnsatisfiable: DoNotSchedule
+    #     # Skip nodes the pods cannot run on, such as tainted control-plane nodes.
+    #     nodeTaintsPolicy: Honor
+    #     # Count only pods from the same rollout, not the ones being replaced.
+    #     matchLabelKeys:
+    #       - pod-template-hash
+    #     labelSelector:
+    #       matchLabels:
+    #         app.kubernetes.io/component: kratix-manager
   platformManagerDeploymentConfig:
     resources:
       requests:
@@ -250,6 +267,23 @@ skeDeployment:
     #   - mountPath: /usr/local/libexec/vault
     #     name: plugins
     #     readOnly: true
+    # Number of pods. One pod does the work and the others take over if it stops;
+    # every pod answers webhooks. More pods do not make reconciling faster.
+    # Unset runs 1 pod.
+    # replicas: 2
+    topologySpreadConstraints: []
+    # topologySpreadConstraints:
+    #   - maxSkew: 1
+    #     topologyKey: kubernetes.io/hostname
+    #     whenUnsatisfiable: DoNotSchedule
+    #     # Skip nodes the pods cannot run on, such as tainted control-plane nodes.
+    #     nodeTaintsPolicy: Honor
+    #     # Count only pods from the same rollout, not the ones being replaced.
+    #     matchLabelKeys:
+    #       - pod-template-hash
+    #     labelSelector:
+    #       matchLabels:
+    #         app.kubernetes.io/component: ske-platform
   # webhookConfig:
   #   timeoutSeconds: 10
   tlsConfig:
