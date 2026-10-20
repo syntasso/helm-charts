@@ -258,3 +258,69 @@ load helpers
   [[ $(printf '%s\n' "$deployment_config" | yq '.spec.platformManagerDeploymentConfig.volumeMounts[0].mountPath') == "/usr/local/libexec/vault" ]]
   [[ $(printf '%s\n' "$deployment_config" | yq '.spec.platformManagerDeploymentConfig.volumeMounts[0].name') == "plugins" ]]
 }
+
+@test "replicas and topologySpreadConstraints: absent from both deployment configs by default" {
+  run helm_ske_operator
+  [ "$status" -eq 0 ]
+
+  local deployment_config
+  deployment_config="$(ske_deployment_config "$output")"
+
+  [[ $(printf '%s\n' "$deployment_config" | yq '.spec.deploymentConfig | has("replicas")') == "false" ]]
+  [[ $(printf '%s\n' "$deployment_config" | yq '.spec.deploymentConfig | has("topologySpreadConstraints")') == "false" ]]
+  [[ $(printf '%s\n' "$deployment_config" | yq '.spec.platformManagerDeploymentConfig | has("replicas")') == "false" ]]
+  [[ $(printf '%s\n' "$deployment_config" | yq '.spec.platformManagerDeploymentConfig | has("topologySpreadConstraints")') == "false" ]]
+}
+
+@test "replicas: rendered under deploymentConfig and platformManagerDeploymentConfig when set" {
+  run helm_ske_operator \
+    --set 'skeDeployment.deploymentConfig.replicas=2' \
+    --set 'skeDeployment.platformManagerDeploymentConfig.replicas=3'
+  [ "$status" -eq 0 ]
+
+  local deployment_config
+  deployment_config="$(ske_deployment_config "$output")"
+
+  [[ $(printf '%s\n' "$deployment_config" | yq '.spec.deploymentConfig.replicas') == "2" ]]
+  [[ $(printf '%s\n' "$deployment_config" | yq '.spec.platformManagerDeploymentConfig.replicas') == "3" ]]
+}
+
+@test "replicas: 0 is passed through so the Kratix CRD rejects it, not silently dropped" {
+  run helm_ske_operator \
+    --set 'skeDeployment.deploymentConfig.replicas=0'
+  [ "$status" -eq 0 ]
+
+  local deployment_config
+  deployment_config="$(ske_deployment_config "$output")"
+
+  [[ $(printf '%s\n' "$deployment_config" | yq '.spec.deploymentConfig.replicas') == "0" ]]
+}
+
+@test "topologySpreadConstraints: rendered as written under both deployment configs" {
+  run helm_ske_operator \
+    --set 'skeDeployment.deploymentConfig.topologySpreadConstraints[0].maxSkew=1' \
+    --set 'skeDeployment.deploymentConfig.topologySpreadConstraints[0].topologyKey=kubernetes.io/hostname' \
+    --set 'skeDeployment.deploymentConfig.topologySpreadConstraints[0].whenUnsatisfiable=DoNotSchedule' \
+    --set 'skeDeployment.deploymentConfig.topologySpreadConstraints[0].nodeTaintsPolicy=Honor' \
+    --set 'skeDeployment.deploymentConfig.topologySpreadConstraints[0].matchLabelKeys[0]=pod-template-hash' \
+    --set 'skeDeployment.deploymentConfig.topologySpreadConstraints[0].labelSelector.matchLabels.app\.kubernetes\.io/component=kratix-manager' \
+    --set 'skeDeployment.platformManagerDeploymentConfig.topologySpreadConstraints[0].maxSkew=1' \
+    --set 'skeDeployment.platformManagerDeploymentConfig.topologySpreadConstraints[0].topologyKey=topology.kubernetes.io/zone' \
+    --set 'skeDeployment.platformManagerDeploymentConfig.topologySpreadConstraints[0].whenUnsatisfiable=ScheduleAnyway'
+  [ "$status" -eq 0 ]
+
+  local deployment_config
+  deployment_config="$(ske_deployment_config "$output")"
+
+  local tsc='.spec.deploymentConfig.topologySpreadConstraints[0]'
+  [[ $(printf '%s\n' "$deployment_config" | yq "${tsc}.maxSkew") == "1" ]]
+  [[ $(printf '%s\n' "$deployment_config" | yq "${tsc}.topologyKey") == "kubernetes.io/hostname" ]]
+  [[ $(printf '%s\n' "$deployment_config" | yq "${tsc}.whenUnsatisfiable") == "DoNotSchedule" ]]
+  [[ $(printf '%s\n' "$deployment_config" | yq "${tsc}.nodeTaintsPolicy") == "Honor" ]]
+  [[ $(printf '%s\n' "$deployment_config" | yq "${tsc}.matchLabelKeys[0]") == "pod-template-hash" ]]
+  [[ $(printf '%s\n' "$deployment_config" | yq "${tsc}.labelSelector.matchLabels[\"app.kubernetes.io/component\"]") == "kratix-manager" ]]
+
+  local pm_tsc='.spec.platformManagerDeploymentConfig.topologySpreadConstraints[0]'
+  [[ $(printf '%s\n' "$deployment_config" | yq "${pm_tsc}.topologyKey") == "topology.kubernetes.io/zone" ]]
+  [[ $(printf '%s\n' "$deployment_config" | yq "${pm_tsc}.whenUnsatisfiable") == "ScheduleAnyway" ]]
+}
