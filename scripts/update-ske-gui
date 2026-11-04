@@ -13,8 +13,8 @@ function main(){
   CHART_DISTRIBUTION=${ske_gui_dir}/templates/distribution.yaml
   DEPLOYMENT_FILE=${ske_gui_dir}/files/ske-gui-deployment.yaml
 
-  # Download the latest release manifest
-  latest_release="$(gh release list --repo=syntasso/enterprise-kratix --exclude-pre-releases --order desc --json tagName --jq "[ .[] | select(.tagName | match(\"ske-gui\")) ][0].tagName")"
+  # Only ske-gui 0.x is the Headlamp GUI; 1.0.0 and later ship with the ske-operator chart.
+  latest_release="$(gh release list --repo=syntasso/enterprise-kratix --exclude-pre-releases --order desc --limit 200 --json tagName --jq "[ .[] | select(.tagName | test(\"^ske-gui-v0\\\\.\")) ][0].tagName")"
   if [ -z "$latest_release" ]; then
     echo "No release found for ske gui"
     exit 1
