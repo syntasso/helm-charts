@@ -46,7 +46,7 @@ jobs:
 
       - name: Upload Package
         run: |
-          cr upload --owner syntasso --git-repo helm-charts --token $GITHUB_TOKEN --push
+          cr upload --owner syntasso --git-repo helm-charts --token $GITHUB_TOKEN
 
       - name: Update Index
         run: |
