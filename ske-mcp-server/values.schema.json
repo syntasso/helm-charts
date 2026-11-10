@@ -125,9 +125,15 @@
             "groupPrefix": { "type": "string" },
             "clientPrefix": { "type": "string", "minLength": 1 },
             "clientGroups": { "type": "array", "items": { "type": "string", "minLength": 1 } },
-            "groupAllowlist": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+            "groupAllowlist": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+            "emailExtraKey": {
+              "type": "string",
+              "pattern": "^$|^[a-z0-9]([-a-z0-9.]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)+/[-a-z0-9_.]+$",
+              "not": { "pattern": "(^|\\.)(k8s|kubernetes)\\.io/" },
+              "description": "Empty, or a lowercase domain-prefixed key such as example.com/email. Keys under k8s.io and kubernetes.io are rejected."
+            }
           },
-          "required": ["enabled", "userPrefix", "groupPrefix", "clientPrefix", "clientGroups", "groupAllowlist"],
+          "required": ["enabled", "userPrefix", "groupPrefix", "clientPrefix", "clientGroups", "groupAllowlist", "emailExtraKey"],
           "additionalProperties": false
         }
       },

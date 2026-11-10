@@ -50,6 +50,12 @@ rules:
   - apiGroups: [""]
     resources: [users]
     verbs: [impersonate]
+  {{- with .Values.rbac.impersonation.emailExtraKey }}
+  # No resourceNames: on userextras they restrict the email values, which differ per caller.
+  - apiGroups: [authentication.k8s.io]
+    resources: [{{ printf "userextras/%s" . | quote }}]
+    verbs: [impersonate]
+  {{- end }}
   {{- $impersonationGroups := concat .Values.rbac.impersonation.groupAllowlist .Values.rbac.impersonation.clientGroups | uniq }}
   {{- if $impersonationGroups }}
   # Groups ARE restricted by `resourceNames`, to the closed set below — a real,
