@@ -109,6 +109,10 @@ spec:
             - name: IMPERSONATION_CLIENT_GROUPS
               value: {{ join "," . | quote }}
             {{- end }}
+            {{- with .Values.rbac.impersonation.emailExtraKey }}
+            - name: IMPERSONATION_EMAIL_EXTRA_KEY
+              value: {{ . | quote }}
+            {{- end }}
             {{- end }}
           {{- if .Values.startupProbe.enabled }}
           startupProbe:

@@ -190,6 +190,11 @@ an existing RoleBinding written against a caller's literal username or group
 name will not match until either the binding is updated to the prefixed form,
 or the matching prefix is left empty.
 
+When `emailExtraKey` is set to the extra key your API server's OIDC
+`claimMappings.extra` uses for the email (for example `example.com/email`), the
+server sends each caller's email under that key, so SKE records the same name
+for a change made through MCP and through kubectl.
+
 ## Availability
 
 The current MCP transport stores sessions in process memory for 30 minutes.
@@ -227,6 +232,7 @@ future stateless or shared-session server implementation.
 | `rbac.impersonation.clientPrefix` | `mcp:client:` | Prefix applied to a machine caller's impersonated username |
 | `rbac.impersonation.clientGroups` | `[]` | Fixed groups asserted for every machine caller; added to the RBAC allowlist automatically |
 | `rbac.impersonation.groupAllowlist` | `[]` | Closed set of groups the ServiceAccount may impersonate, beyond `clientGroups` |
+| `rbac.impersonation.emailExtraKey` | `""` | Extra key the API server's OIDC `claimMappings.extra` uses for the email, for example `example.com/email`. Empty sends no email |
 | `service.type` | `ClusterIP` | Kubernetes Service type |
 | `service.port` | `80` | Kubernetes Service port |
 | `ingress.enabled` | `false` | Create the `/mcp` Ingress |

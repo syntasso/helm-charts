@@ -114,6 +114,10 @@ rbac:
     # impersonated request if even one asserted group is not on this list, not just that group.
     groupAllowlist: []
 
+    # The key your API server's OIDC claimMappings.extra maps the email to, e.g. example.com/email.
+    # The server sends each caller's email under it, so SKE records one name for MCP and kubectl.
+    emailExtraKey: ""
+
 podAnnotations: {}
 podLabels: {}
 
