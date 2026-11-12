@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/syntasso/helm-charts/compare/ske-mcp-server-1.1.0...ske-mcp-server-v1.2.0) (2026-11-12)
+
+
+### Features
+
+* **ske-mcp-server:** send each caller's email as an impersonation extra ([#302](https://github.com/syntasso/helm-charts/issues/302)) ([af650f2](https://github.com/syntasso/helm-charts/commit/af650f2118a18e3ea33a31519760315ddb11e403))
+
 ## [1.1.0](https://github.com/syntasso/helm-charts/compare/ske-mcp-server-1.0.0...ske-mcp-server-v1.1.0) (2026-09-15)
 
 
