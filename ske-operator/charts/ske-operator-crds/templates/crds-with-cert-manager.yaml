@@ -63,6 +63,48 @@ spec:
             spec:
               description: KratixSpec defines the desired state of Kratix
               properties:
+                attribution:
+                  description: Attribution configures how SKE records who made changes on the platform.
+                  properties:
+                    requireAnnotationsFrom:
+                      description: |-
+                        RequireAnnotationsFrom says whose resource requests must carry the
+                        kratix.io/last-changed-by annotation. The SKE Platform Manager rejects a
+                        create or update from them when the annotation is missing. Requests from
+                        anyone else, and deletes, are not checked. When empty, nothing is
+                        checked.
+                      properties:
+                        serviceAccounts:
+                          description: |-
+                            ServiceAccounts lists service accounts, for example a GitOps tool such
+                            as Argo CD.
+                          items:
+                            properties:
+                              name:
+                                description: Name of the service account.
+                                minLength: 1
+                                type: string
+                              namespace:
+                                description: Namespace of the service account.
+                                minLength: 1
+                                type: string
+                            required:
+                              - name
+                              - namespace
+                            type: object
+                          type: array
+                      type: object
+                    skipUsernamePrefixes:
+                      description: SkipUsernamePrefixes are username prefixes, besides system:, whose changes are not recorded.
+                      items:
+                        minLength: 1
+                        type: string
+                      type: array
+                    userInfoField:
+                      description: 'UserInfoField is what kratix.io/last-changed-by records: username (the default), uid or extra.<key>.'
+                      pattern: ^(|username|uid|extra\..+)$
+                      type: string
+                  type: object
                 deploymentConfig:
                   description: DeploymentConfig is the deployment configuration for Kratix.
                   properties:
