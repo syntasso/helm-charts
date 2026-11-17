@@ -459,9 +459,16 @@ spec:
                   properties:
                     name:
                       type: string
+                    version:
+                      default: latest
+                      description: Version selects the PromiseRevision used to execute the DryRun. It defaults to latest.
+                      type: string
                   required:
                     - name
                   type: object
+                  x-kubernetes-validations:
+                    - message: promiseRef is immutable
+                      rule: self == oldSelf
                 resource:
                   description: Resource is the spec to dry-run, in the shape expected by the Promise's resource API.
                   type: object
@@ -489,13 +496,15 @@ spec:
               properties:
                 components:
                   description: |-
-                    Components reports all components DryRun created by this DryRun.
+                    Components reports all component previews discovered by this DryRun.
                     Empty for a non-compound request.
                   items:
-                    description: DryRunComponentStatus reports a single component dry run raised by a compound one.
+                    description: DryRunComponentStatus reports a component preview discovered by a compound DryRun.
                     properties:
                       dryRun:
-                        description: DryRun is the name of the DryRun raised for this component.
+                        description: |-
+                          DryRun is the name of the DryRun raised for this component. It is empty when
+                          the component Promise does not support dry runs.
                         type: string
                       message:
                         description: Message carries the detail when Phase is Failed.
@@ -513,7 +522,6 @@ spec:
                         description: Request is the name of the component resource request.
                         type: string
                     required:
-                      - dryRun
                       - phase
                       - promise
                       - request
@@ -584,6 +592,9 @@ spec:
                       - type
                     type: object
                   type: array
+                promiseVersion:
+                  description: PromiseVersion is the exact PromiseRevision selected for this DryRun.
+                  type: string
               type: object
           type: object
       served: true
@@ -1178,6 +1189,16 @@ spec:
                         config:
                           description: Configuration options that apply to all workflows defined in this Promise
                           properties:
+                            dryRun:
+                              description: DryRun configures whether this Promise's resource workflows can be run as a preview.
+                              properties:
+                                supported:
+                                  default: false
+                                  description: |-
+                                    Supported declares that every resource workflow used by a dry run avoids external
+                                    side effects while still producing its normal desired output.
+                                  type: boolean
+                              type: object
                             pipelineNamespace:
                               description: Namespace for all workflow jobs (promise and resource) to run in; needs to be an existing namespace or else workflow won't start
                               type: string
@@ -1421,6 +1442,16 @@ spec:
                     config:
                       description: Configuration options that apply to all workflows defined in this Promise
                       properties:
+                        dryRun:
+                          description: DryRun configures whether this Promise's resource workflows can be run as a preview.
+                          properties:
+                            supported:
+                              default: false
+                              description: |-
+                                Supported declares that every resource workflow used by a dry run avoids external
+                                side effects while still producing its normal desired output.
+                              type: boolean
+                          type: object
                         pipelineNamespace:
                           description: Namespace for all workflow jobs (promise and resource) to run in; needs to be an existing namespace or else workflow won't start
                           type: string
