@@ -102,6 +102,20 @@ var _ = Describe("ske-gui helm chart", func() {
 			Expect(template).ToNot(ContainSubstring("-oidc-validator-idp-issuer-url"))
 			Expect(template).ToNot(ContainSubstring("-me-user-info-url"))
 		})
+
+		It("adds the validator issuer arg when OIDC_VALIDATOR_ISSUER_URL is set in env with valueFrom", func() {
+			template, _ := run(
+				"helm", "template", "ske-gui", "../../ske-gui/",
+				"-s=templates/deployment.yaml",
+				"-f=../assets/ske-gui-values-with-oidc.yaml",
+				"--set=inCluster=true",
+				"--set=env[0].name=OIDC_VALIDATOR_ISSUER_URL",
+				"--set=env[0].valueFrom.secretKeyRef.name=oidc",
+				"--set=env[0].valueFrom.secretKeyRef.key=validatorIssuerURL",
+			)
+
+			Expect(template).To(ContainSubstring("- \"-oidc-validator-idp-issuer-url=$(OIDC_VALIDATOR_ISSUER_URL)\""))
+		})
 	})
 
 	When("extraArgs are specified", func() {

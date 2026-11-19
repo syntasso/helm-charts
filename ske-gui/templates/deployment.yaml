@@ -24,19 +24,19 @@
     {{- $clientSecret = .value }}
   {{- end }}
   {{- if eq .name "OIDC_ISSUER_URL" }}
-    {{- $issuerUrl = .value }}
+    {{- $issuerUrl = or .value .valueFrom }}
   {{- end }}
   {{- if eq .name "OIDC_SCOPES" }}
     {{- $scopes = .value }}
   {{- end }}
   {{- if eq .name "OIDC_CALLBACK_URL" }}
-    {{- $callbackURL = .value }}
+    {{- $callbackURL = or .value .valueFrom }}
   {{- end }}
   {{- if eq .name "OIDC_VALIDATOR_CLIENT_ID" }}
-    {{- $validatorClientID = .value }}
+    {{- $validatorClientID = or .value .valueFrom }}
   {{- end }}
   {{- if eq .name "OIDC_VALIDATOR_ISSUER_URL" }}
-    {{- $validatorIssuerURL = .value }}
+    {{- $validatorIssuerURL = or .value .valueFrom }}
   {{- end }}
   {{- if eq .name "OIDC_USE_ACCESS_TOKEN" }}
     {{- $useAccessToken = .value | toString }}
@@ -45,7 +45,7 @@
     {{- $usePKCE = .value | toString }}
   {{- end }}
   {{- if eq .name "ME_USER_INFO_URL" }}
-    {{- $meUserInfoURL = .value | toString }}
+    {{- $meUserInfoURL = or .value .valueFrom }}
   {{- end }}
 {{- end }}
 
