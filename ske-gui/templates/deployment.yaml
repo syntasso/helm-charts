@@ -254,7 +254,7 @@ spec:
             {{- if .Values.inCluster }}
             {{- if not (and $oidc.externalSecret $oidc.externalSecret.enabled) }}
             # Check if externalSecret is disabled
-            {{- if or (ne $oidc.clientId "") (ne $clientId "") }}
+            {{- if or $oidc.clientId $clientId }}
             # Check if clientID is non empty either from env or oidc.config
             - "-oidc-client-id=$(OIDC_CLIENT_ID)"
             {{- end }}
@@ -262,7 +262,7 @@ spec:
             # Check if clientSecret is non empty either from env or oidc.config
             - "-oidc-client-secret=$(OIDC_CLIENT_SECRET)"
             {{- end }}
-            {{- if or (ne $oidc.issuerUrl "") (ne $issuerUrl "") }}
+            {{- if or $oidc.issuerUrl $issuerUrl }}
             # Check if issuerURL is non empty either from env or oidc.config
             - "-oidc-idp-issuer-url=$(OIDC_ISSUER_URL)"
             {{- end }}
@@ -270,15 +270,15 @@ spec:
             # Check if scopes are non empty either from env or oidc.config
             - "-oidc-scopes=$(OIDC_SCOPES)"
             {{- end }}
-            {{- if or (ne $oidc.callbackURL "") (ne $callbackURL "") }}
+            {{- if or $oidc.callbackURL $callbackURL }}
             # Check if callbackURL is non empty either from env or oidc.config
             - "-oidc-callback-url=$(OIDC_CALLBACK_URL)"
             {{- end }}
-            {{- if or (ne $oidc.validatorClientID "") (ne $validatorClientID "") }}
+            {{- if or $oidc.validatorClientID $validatorClientID }}
             # Check if validatorClientID is non empty either from env or oidc.config
             - "-oidc-validator-client-id=$(OIDC_VALIDATOR_CLIENT_ID)"
             {{- end }}
-            {{- if or (ne $oidc.validatorIssuerURL "") (ne $validatorIssuerURL "") }}
+            {{- if or $oidc.validatorIssuerURL $validatorIssuerURL }}
             # Check if validatorIssuerURL is non empty either from env or oidc.config
             - "-oidc-validator-idp-issuer-url=$(OIDC_VALIDATOR_ISSUER_URL)"
             {{- end }}
@@ -297,7 +297,7 @@ spec:
             - "-oidc-use-pkce=true"
             {{- end }}
             {{- end }}
-            {{- if or (ne $oidc.meUserInfoURL "") (ne $meUserInfoURL "") }}
+            {{- if or $oidc.meUserInfoURL $meUserInfoURL }}
             - "-me-user-info-url=$(ME_USER_INFO_URL)"
             {{- end }}
             {{- else }}

@@ -85,6 +85,22 @@ var _ = Describe("ske-gui helm chart", func() {
 			Expect(template).To(ContainSubstring("- \"-oidc-idp-issuer-url=$(OIDC_ISSUER_URL)\""))
 			Expect(template).To(ContainSubstring("- \"-oidc-use-access-token=true\""))
 			Expect(template).To(ContainSubstring("- \"-oidc-use-pkce=true\""))
+			Expect(template).To(ContainSubstring("- \"-oidc-validator-client-id=$(OIDC_VALIDATOR_CLIENT_ID)\""))
+			Expect(template).To(ContainSubstring("- \"-oidc-validator-idp-issuer-url=$(OIDC_VALIDATOR_ISSUER_URL)\""))
+			Expect(template).To(ContainSubstring("- \"-me-user-info-url=$(ME_USER_INFO_URL)\""))
+		})
+
+		It("does not add the validator and user info args when validatorClientID, validatorIssuerURL, and meUserInfoURL are not set", func() {
+			template, _ := run(
+				"helm", "template", "ske-gui", "../../ske-gui/",
+				"-s=templates/deployment.yaml",
+				"-f=../assets/ske-gui-values-with-oidc.yaml",
+				"--set=inCluster=true",
+			)
+
+			Expect(template).ToNot(ContainSubstring("-oidc-validator-client-id"))
+			Expect(template).ToNot(ContainSubstring("-oidc-validator-idp-issuer-url"))
+			Expect(template).ToNot(ContainSubstring("-me-user-info-url"))
 		})
 	})
 
