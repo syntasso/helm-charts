@@ -116,6 +116,21 @@ var _ = Describe("ske-gui helm chart", func() {
 
 			Expect(template).To(ContainSubstring("- \"-oidc-validator-idp-issuer-url=$(OIDC_VALIDATOR_ISSUER_URL)\""))
 		})
+
+		It("adds the client id arg when OIDC_CLIENT_ID is set in env with valueFrom and oidc.clientId is not set", func() {
+			template, _ := run(
+				"helm", "template", "ske-gui", "../../ske-gui/",
+				"-s=templates/deployment.yaml",
+				"-f=../assets/ske-gui-values-with-oidc.yaml",
+				"--set=inCluster=true",
+				"--set=oidc.clientId=null",
+				"--set=env[0].name=OIDC_CLIENT_ID",
+				"--set=env[0].valueFrom.secretKeyRef.name=oidc",
+				"--set=env[0].valueFrom.secretKeyRef.key=clientId",
+			)
+
+			Expect(template).To(ContainSubstring("- \"-oidc-client-id=$(OIDC_CLIENT_ID)\""))
+		})
 	})
 
 	When("extraArgs are specified", func() {
