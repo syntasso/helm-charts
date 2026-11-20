@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.35.1](https://github.com/syntasso/helm-charts/compare/ske-gui-0.35.0...ske-gui-v0.35.1) (2026-11-20)
+
+
+### Bug Fixes
+
+* **ske-gui:** only add OIDC args when their values are set ([#314](https://github.com/syntasso/helm-charts/issues/314)) ([282b9a2](https://github.com/syntasso/helm-charts/commit/282b9a29ceac5a185501a7953f82f1aaadb5ab68))
+
 ## [0.35.0](https://github.com/syntasso/helm-charts/compare/ske-gui-0.34.0...ske-gui-v0.35.0) (2026-11-02)
 
 
