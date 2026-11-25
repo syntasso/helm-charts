@@ -1,0 +1,45 @@
+{{- if (.Values.global.skeDeployment).deleteOnUninstall }}
+---
+# With deleteOnUninstall, Helm deletes the CRDs, which deletes the Kratix CR. Kubernetes garbage
+# collection does not reliably delete what the CR owned once its CRD has gone, so the Kratix
+# Deployment can be left running. This deletes the CR and its Deployment first, while the CRD and
+# the operator still exist.
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: delete-ske-deployment
+  namespace: kratix-platform-system
+  annotations:
+    "helm.sh/hook": pre-delete
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+spec:
+  template:
+    spec:
+      serviceAccountName: ske-operator-controller-manager
+      restartPolicy: Never
+      {{- $pullSecret := (include "ske-operator.effectivePullSecretName" . | trim) -}}
+      {{- if $pullSecret }}
+      imagePullSecrets:
+        - name: {{ $pullSecret | quote }}
+      {{- end }}
+      containers:
+        - name: delete-ske
+          image: {{ .Values.imageRegistry.host }}/{{ .Values.imageRegistry.skeOperatorImage.name }}:{{ .Chart.AppVersion }}
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              set -exu
+              kubectl delete kratixes.platform.syntasso.io kratix --ignore-not-found --timeout=300s
+              # The CR is gone, so the operator will not recreate the Deployment.
+              kubectl delete deployments/kratix-platform-controller-manager -n kratix-platform-system --ignore-not-found --timeout=300s
+          resources:
+            {{- .Values.skeDeployment.deployJob.resources | toYaml | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- . | toYaml | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- . | toYaml | nindent 8 }}
+      {{- end }}
+{{- end -}}

@@ -25,11 +25,6 @@ var (
 	kubectlLongTimeout        = time.Second * 300
 	certManagerWebhookTimeout = time.Second * 300
 
-	// Uninstalling with deleteOnUninstall removes the CRDs, so the Kratix Deployment is left to
-	// Kubernetes' garbage collector as a dependent whose owner's CRD is gone. That collection is
-	// discovery-driven, so its tail latency is far longer than a normal owner-triggered delete.
-	gcTimeout = time.Second * 300
-
 	context = "--context=kind-platform"
 )
 
@@ -545,6 +540,11 @@ var _ = Describe("ske-operator helm chart", func() {
 				template, _ := run("helm", "template", "ske-operator", "../ske-operator/", "-s=charts/ske-operator-crds/templates/crds-with-cert-manager.yaml", "-f=./assets/values-with-certmanager.yaml")
 				Expect(template).To(ContainSubstring("helm.sh/resource-policy: keep"))
 			})
+
+			It("does not template the pre-delete job", func() {
+				template, _ := run("helm", "template", "ske-operator", "../ske-operator/", "-f=./assets/values-with-certmanager.yaml")
+				Expect(template).NotTo(ContainSubstring("delete-ske-deployment"))
+			})
 		})
 
 		When("deleteOnUninstall is set to false", func() {
@@ -556,6 +556,11 @@ var _ = Describe("ske-operator helm chart", func() {
 			It("the CRD template sets the resource-policy to 'keep'", func() {
 				template, _ := run("helm", "template", "ske-operator", "../ske-operator/", "-s=charts/ske-operator-crds/templates/crds-with-cert-manager.yaml", "-f=./assets/values-with-delete-on-uninstall-false.yaml")
 				Expect(template).To(ContainSubstring("helm.sh/resource-policy: keep"))
+			})
+
+			It("does not template the pre-delete job", func() {
+				template, _ := run("helm", "template", "ske-operator", "../ske-operator/", "-f=./assets/values-with-delete-on-uninstall-false.yaml")
+				Expect(template).NotTo(ContainSubstring("delete-ske-deployment"))
 			})
 		})
 
@@ -583,6 +588,11 @@ var _ = Describe("ske-operator helm chart", func() {
 					Expect(template).ToNot(ContainSubstring("helm.sh/resource-policy: keep"))
 				})
 
+				By("templating the pre-delete job", func() {
+					template, _ := run("helm", "template", "ske-operator", "../ske-operator/", "-s=templates/pre-delete-ske-deployment.yaml", "-f=./assets/values-with-delete-on-uninstall-true.yaml")
+					Expect(template).To(ContainSubstring("helm.sh/hook\": pre-delete"))
+				})
+
 				By("installing the ske operator", func() {
 					run("pwd")
 					runLongTimeout("helm", "install", "ske-operator", "--create-namespace", "../ske-operator/",
@@ -598,7 +608,7 @@ var _ = Describe("ske-operator helm chart", func() {
 
 					By("deleting operator", func() {
 						Eventually(func() string {
-							out, _ := run("kubectl", context, "get", "deployments", "ske-operator-controller-manager", "--ignore-not-found")
+							out, _ := run("kubectl", context, "get", "deployments", "ske-operator-controller-manager", "-n=kratix-platform-system", "--ignore-not-found")
 							return out
 						}, timeout, interval).Should(BeEmpty())
 					})
@@ -607,7 +617,7 @@ var _ = Describe("ske-operator helm chart", func() {
 						Eventually(func() string {
 							out, _ := run("kubectl", context, "get", "deployments", "kratix-platform-controller-manager", "-n=kratix-platform-system", "--ignore-not-found")
 							return out
-						}, gcTimeout, interval).Should(BeEmpty())
+						}, timeout, interval).Should(BeEmpty())
 					})
 
 					By("deleting the crds", func() { // if the crds are deleted, so are the Kratix custom resources
