@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.123.0](https://github.com/syntasso/helm-charts/compare/ske-operator-0.122.0...ske-operator-v0.123.0) (2026-11-25)
+
+
+### Features
+
+* **ske-operator:** update ske-portal-controller version (autorelease) ([14f2948](https://github.com/syntasso/helm-charts/commit/14f294864fffa2d7405439ff721a5cbd379d2880))
+
+
+### Bug Fixes
+
+* **ske-operator:** delete the Kratix CR before the CRDs on uninstall ([#325](https://github.com/syntasso/helm-charts/issues/325)) ([8ec5e5c](https://github.com/syntasso/helm-charts/commit/8ec5e5c44d7a587d248c701a4c84fc80419bca36))
+
 ## [0.122.0](https://github.com/syntasso/helm-charts/compare/ske-operator-0.121.0...ske-operator-v0.122.0) (2026-11-25)
 
 
