@@ -3,5 +3,5 @@
   "ske-gui": "0.35.1",
   "k8s-health-agent": "0.43.0",
   "ske-mcp-server": "1.2.0",
-  "ske-operator": "0.124.0"
+  "ske-operator": "0.125.0"
 }
